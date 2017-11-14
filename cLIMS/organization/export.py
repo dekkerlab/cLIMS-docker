@@ -12,7 +12,7 @@ from xlwt.compat import xrange
 from openpyxl.reader.excel import load_workbook
 from organization.excelRow import insert_rows
 from openpyxl.styles import Color, Fill
-from cLIMS.base import WORKSPACEPATH, FILEUPLOADPATH, LABNAME
+from cLIMS.base import *
 from dryLab.models import *
 import json
 from _collections import OrderedDict, defaultdict
@@ -163,7 +163,7 @@ def exportGEO(request):
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=GEO.xlsx'
-    file_path_new = WORKSPACEPATH+'/organization/static/siteWide/geo_template_new.xlsx'
+    file_path_new = ROOTFOLDER+'/organization/static/siteWide/geo_template_new.xlsx'
  
     wb = load_workbook(file_path_new)
     ws = wb.worksheets[0]
@@ -229,7 +229,7 @@ def update_dcic(obj):
     obj.save()
                 
 def initialize(tab,sheetTab):
-    file_path_new = WORKSPACEPATH+'/organization/static/siteWide/Metadata_entry_form_V3.xlsx'
+    file_path_new = ROOTFOLDER+'/organization/static/siteWide/Metadata_entry_form_V3.xlsx'
     wb = load_workbook(file_path_new)
     sheet = wb.get_sheet_by_name(tab)
     maxCol=get_column_letter(sheet.max_column)
@@ -1422,7 +1422,7 @@ def exportDCIC(request):
             # Create the HttpResponse object with the appropriate CSV header.
             response = HttpResponse(content_type='application/ms-excel')
             response['Content-Disposition'] = 'attachment; filename=DCIC.xlsx'
-            file_path_new = WORKSPACEPATH+'/organization/static/siteWide/Metadata_entry_form_V3.xlsx'
+            file_path_new = ROOTFOLDER+'/organization/static/siteWide/Metadata_entry_form_V3.xlsx'
             wb = load_workbook(file_path_new)
             
             dcicExcelSheet = populateDict(request, experiments)
