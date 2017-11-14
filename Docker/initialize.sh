@@ -45,3 +45,5 @@ then
   aws s3 cp s3://dekkerlab-web/db-backups/$DBFILE $DBINITFOLDER/initial.sql.txt
   aws s3 cp --recursive s3://dekkerlab-web/media-backups $MEDIAFOLDER
 fi
+
+chmod 755 scripts/backup_to_s3.sh
