@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if object %}
+<div class="bodyContent container">
+    <span class="tableHead">
+    <a target="_blank" href="http://c-world.umassmed.edu">c-World</a>/cMapping pipeline job 
+    </span><br/><br/>
+<span class="rowHead">General</span><hr>
+<table class="table table-responsive">
+<tr>
+	<td>time</td>
+	<td>{{object.analysis_fields.time}}</td>
+</tr>
+<tr>
+	<td>cType</td>
+	<td>{{object.analysis_fields.cType}}</td>
+</tr>
+<tr>
+	<td>logDirectory</td>
+	<td>{{object.analysis_fields.logDirectory}}</td>
+</tr>
+<tr>
+	<td>UUID</td>
+	<td>{{object.analysis_fields.UUID}}</td>
+</tr>
+<tr>
+	<td>cMapping</td>
+	<td>{{object.analysis_fields.cMapping}}</td>
+</tr>
+<tr>
+	<td>computeResource</td>
+	<td>{{object.analysis_fields.computeResource}}</td>
+</tr>
+<tr>
+	<td>reduceResources</td>
+	<td>{{object.analysis_fields.reduceResources}}</td>
+</tr>
+<tr>
+	<td>mapResources</td>
+	<td>{{object.analysis_fields.mapResources}}</td>
+</tr>
+<tr>
+	<td>reduceScratchDir</td>
+	<td>{{object.analysis_fields.reduceScratchDir}}</td>
+</tr>
+<tr>
+	<td>mapScratchDir</td>
+	<td>{{object.analysis_fields.mapScratchDir}}</td>
+</tr>
+<tr>
+	<td>mapScratchSize</td>
+	<td>{{object.analysis_fields.mapScratchSize}}</td>
+</tr>
+<tr>
+	<td>nCPU</td>
+	<td>{{object.analysis_fields.nCPU}}</td>
+</tr>
+<tr>
+	<td>reduceMemoryNeeded</td>
+	<td>{{object.analysis_fields.reduceMemoryNeeded}}</td>
+</tr>
+<tr>
+	<td>mapMemoryNeeded</td>
+	<td>{{object.analysis_fields.mapMemoryNeeded}}</td>
+</tr>
+</table>
+<span class="rowHead">Dataset</span><hr>
+<table class="table table-responsive">
+<tr>
+	<td>jobName</td>
+	<td>{{object.analysis_fields.jobName}}</td>
+</tr>
+<tr>
+	<td>flowCell</td>
+	<td>{{object.analysis_fields.flowCell}}</td>
+</tr>
+<tr>
+	<td>laneName</td>
+	<td>{{object.analysis_fields.laneName}}</td>
+</tr>
+<tr>
+	<td>laneNum</td>
+	<td>{{object.analysis_fields.laneNum}}</td>
+</tr>
+<tr>
+	<td>side1File</td>
+	<td>{{object.analysis_fields.side1File}}</td>
+</tr>
+<tr>
+	<td>side2File</td>
+	<td>{{object.analysis_fields.side2File}}</td>
+</tr>
+<tr>
+	<td>readLength</td>
+	<td>{{object.analysis_fields.readLength}}</td>
+</tr>
+<tr>
+	<td>qvEncoding</td>
+	<td>{{object.analysis_fields.qvEncoding}}</td>
+</tr>
+<tr>
+	<td>numReads</td>
+	<td>{{object.analysis_fields.numReads}}</td>
+</tr>
+</table>
+
+<span class="rowHead">Alignment Options</span><hr>
+<table class="table table-responsive">
+<tr>
+	<td>splitSize</td>
+	<td>{{object.analysis_fields.splitSize}}</td>
+</tr>
+<tr>
+	<td>splitSizeMegabyte</td>
+	<td>{{object.analysis_fields.splitSizeMegabyte}}</td>
+</tr>
+<tr>
+	<td>aligner</td>
+	<td>{{object.analysis_fields.aligner}}</td>
+</tr>
+<tr>
+	<td>alignmentSoftwarePath</td>
+	<td>{{object.analysis_fields.alignmentSoftwarePath}}</td>
+</tr>
+<tr>
+	<td>alignmentOptions</td>
+	<td>{{object.analysis_fields.alignmentOptions}}</td>
+</tr>
+<tr>
+	<td>side1AlignmentOptions</td>
+	<td>{{object.analysis_fields.side1AlignmentOptions}}</td>
+</tr>
+<tr>
+	<td>side2AlignmentOptions</td>
+	<td>{{object.analysis_fields.side2AlignmentOptions}}</td>
+</tr>
+<tr>
+	<td>enzyme</td>
+	<td>{{object.analysis_fields.enzyme}}</td>
+</tr>
+<tr>
+	<td>restrictionSite</td>
+	<td>{{object.analysis_fields.restrictionSite}}</td>
+</tr>
+<tr>
+	<td>restrictionFragmentFile</td>
+	<td>{{object.analysis_fields.restrictionFragmentFile}}</td>
+</tr>
+<tr>
+	<td>genome</td>
+	<td>{{object.analysis_fields.genome}}</td>
+</tr>
+<tr>
+	<td>genomePath</td>
+	<td>{{object.analysis_fields.genomePath}}</td>
+</tr>
+<tr>
+	<td>genomeSize</td>
+	<td>{{object.analysis_fields.genomeSize}}</td>
+</tr>
+</table>
+<span class="rowHead">Mapping Statistics</span><hr>
+<table class="table table-responsive">
+<tr>
+	<td>numRawReads</td>
+	<td>{{object.analysis_fields.numRawReads}}</td>
+</tr>
+<tr>
+	<td>side1Mapped</td>
+	<td>{{object.analysis_fields.side1Mapped}} ({{object.analysis_fields.side1MappedPer}}%)</td>
+</tr>
+<tr>
+	<td>side2Mapped</td>
+	<td>{{object.analysis_fields.side2Mapped}} ({{object.analysis_fields.side2MappedPer}}%)</td>
+</tr>
+<tr>
+	<td>noSideMapped</td>
+	<td>{{object.analysis_fields.noSideMapped}} ({{object.analysis_fields.noSideMappedPer}}%)</td>
+</tr>
+<tr>
+	<td>oneSideMapped</td>
+	<td>{{object.analysis_fields.oneSideMapped}} ({{object.analysis_fields.oneSideMappedPer}}%)</td>
+</tr>
+<tr>
+	<td>bothSideMapped</td>
+	<td>{{object.analysis_fields.bothSideMapped}} ({{object.analysis_fields.bothSideMappedPer}}%)</td>
+</tr>
+<tr>
+	<td>errorPairs</td>
+	<td>{{object.analysis_fields.errorPairs}} ({{object.analysis_fields.errorPairsPer}}%)</td>
+</tr>
+<tr>
+	<td>invalidPairs</td>
+	<td>{{object.analysis_fields.invalidPairs}} ({{object.analysis_fields.invalidPairsPer}}%)</td>
+</tr>
+<tr>
+	<td>validPairs</td>
+	<td>{{object.analysis_fields.validPairs}} ({{object.analysis_fields.validPairsPer}}%)</td>
+</tr>
+</table>
+<span class="rowHead">Mapping Artifacts</span><hr>
+<table class="table table-responsive">
+
+<tr>
+	<td>fHomo</td>
+	<td>{{object.analysis_fields.fHomo}} ({{object.analysis_fields.fHomoPer}}%)</td>
+</tr>
+<tr>
+	<td>rHomo</td>
+	<td>{{object.analysis_fields.rHomo}} ({{object.analysis_fields.rHomoPer}}%)</td>
+</tr>
+</table>
+<span class="rowHead">Advanced</span><hr>
+<table class="table table-responsive">
+<tr>
+	<td>same | ->.-></td>
+	<td>{{object.analysis_fields.same1}}</td>
+</tr>
+<tr>
+	<td>same | ->.<-</td>
+	<td>{{object.analysis_fields.same2}}</td>
+</tr>
+<tr>
+	<td>same | <-.-></td>
+	<td>{{object.analysis_fields.same3}}</td>
+</tr>
+<tr>
+	<td>same | <-.<-</td>
+	<td>{{object.analysis_fields.same4}}</td>
+</tr>
+<tr>
+	<td>different | ->.-></td>
+	<td>{{object.analysis_fields.different1}}</td>
+</tr>
+<tr>
+	<td>different | ->.<-</td>
+	<td>{{object.analysis_fields.different2}}</td>
+</tr>
+<tr>
+	<td>different | <-.-></td>
+	<td>{{object.analysis_fields.different3}}</td>
+</tr>
+<tr>
+	<td>different | <-.<-</td>
+	<td>{{object.analysis_fields.different4}}</td>
+</tr>
+</table>
+{% if images %}
+<span class="rowHead">5C Plots</span><hr>
+<table class="table table-responsive">
+{% for image in images %}
+<tr>
+	<td><img src={{image.image_path}}></td>
+</tr>
+{% endfor %}
+</table>
+{% endif %}
+{% else %}
+    <p>No data available.</p>
+{% endif %}
+<a type="button" class="btn btn-warning pull-right goBack" href="{% url 'detailProject' request.session.projectId %}">Go Back</a><br/><br/>
+</div>
+{% endblock %} 
+

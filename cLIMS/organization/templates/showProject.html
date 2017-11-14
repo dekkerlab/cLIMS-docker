@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}
+ <script src="{% static 'siteWide/js/show.js' %}"></script>
+
+{% if object %}
+<div class="bodyContent container">
+<table class="table table-bordered table-hover table-responsive">
+  <tr>
+    <th>
+    	Project Name
+    	<a class="pull-right" href="/addProject">
+			<button type="button" class="btn btn-success  view_only">Add Project</button>
+		</a>
+    </th>
+    <th>Owner</th>
+    <th>Members</th>
+    <th>Active</th>
+  </tr>
+  {% for fields in object %}
+  <tr>
+    <td><a href="/detailProject/{{fields.pk}}">{{ fields.project_name }}</a></td>
+    <td>{{ fields.project_owner }}</td>
+    <td>
+    	{% if not fields.project_contributor.all  %}
+    		<a href="/editProject/{{ fields.id }}">
+				<button type="button" class="btn btn-primary view_only">Add Members</button>
+			</a>
+		<br/>
+	{% else %}
+		{% include "showProjectFrag.html" with fields=fields %}
+	{% endif %}
+    </td>
+    <!-- <td><a href="#" data-toggle="tooltip" data-placement="bottom" title="{{ fields.notes }}">Notes</a></td> -->
+    <td>{{ fields.project_active }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+    <p>No data available.</p>
+{% endif %}
+<br/><br/>
+</div>
+{% endblock %} 
+

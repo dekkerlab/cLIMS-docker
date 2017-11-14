@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% block content %}
+<script src="{% static "/static/siteWide/js/jquery.init.js" %}"></script> 
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/fonts.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/widgets.css"/>
+<link href="/static/siteWide/css/formSteps.css" rel="stylesheet">
+<div class="bodyContent container">
+	    {% if messages %}
+        {% for message in messages %}
+            <p class="alert alert-danger">{{message}}</p>
+        {% endfor %}
+    {% endif %}
+	<form method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+{% crispy form %}
+	</form>
+</div>
+{% endblock %} 

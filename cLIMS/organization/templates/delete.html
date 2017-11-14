@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container bodyContent">
+<h1>Delete</h1>
+
+<p>Are you sure you want to delete the data?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+
+  <input type="submit" value="Yes, delete." />
+  <a href="{% url 'detailProject' request.session.projectId %}">No, cancel.</a>
+</form>
+</div>
+{% endblock %} 

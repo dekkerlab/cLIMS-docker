@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% block content %}
+<script src="{% static "/static/siteWide/js/jquery.init.js" %}"></script> 
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/fonts.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/widgets.css"/>
+  <link href="/static/siteWide/css/formSteps.css" rel="stylesheet">
+<script type="text/javascript" src="/static/siteWide/js/form.js"></script>
+
+<div class="bodyContent container">
+	    {% if messages %}
+        {% for message in messages %}
+            <p class="alert alert-danger">{{message}}</p>
+        {% endfor %}
+    {% endif %}
+	<form method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+	<div>
+		<h1>Individual</h1>
+		<div class="indDiv">
+		{{ form.non_field_errors }}
+		{% for field in form %}
+		<div class="fieldWrapper">
+		 {{field.errors}}
+		 <a style="cursor: pointer;"><i class="fa fa-question-circle" title="{{field.help_text}}"></i></a>
+	  {{field.label}} {% if field.field.required %} * {% endif %}
+	   {% if field.label == "Individual type" %}
+	   <span class="jsonForm">{{field}}</span>
+	   {% else %}
+	  {{field}}
+	  {% endif %}
+  </div>
+{% endfor %}
+<div class="Individual"></div>
+</div>
+			<input type="submit" value="Next" />
+		</div>
+		</div>
+			 
+	</form>
+</div>
+{% endblock %} 

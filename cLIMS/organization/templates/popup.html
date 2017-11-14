@@ -1,0 +1,60 @@
+{% block content %}
+{% load staticfiles %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+<link href="/static/siteWide/css/bootstrap.min.css" rel="stylesheet">
+
+ <!-- Custom Fonts -->
+ <link href="/static/siteWide/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+ <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+
+<script type="text/javascript" src="{% static '/static/siteWide/js/jquery.init.js' %}"></script> 
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/fonts.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/widgets.css"/>
+<link href="/static/siteWide/css/formSteps.css" rel="stylesheet">
+
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/siteWide/js/form.js"></script>
+<!-- Custom CSS -->
+ <link href="/static/siteWide/css/landing-page.css" rel="stylesheet">
+ 
+ <div class="bodyContent container">
+<h1>Add {{ field }}</h1>
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
+ {% if form %}
+			{{ form.non_field_errors }}
+			{% for field in form %}
+				<div class="fieldWrapper">
+					 {{field.errors}}
+					 <a style="cursor: pointer;"><i class="fa fa-question-circle" title="{{field.help_text}}"></i></a>
+					<span class="formLabel">
+					  {{field.label}} {% if field.field.required %} * {% endif %}
+					  {% if 'add' in field.label_tag %}
+					  	<a href="{% url field.label_tag|cut:field.label|striptags %}" class="add-another" id="add_{{field.auto_id}}" onclick="return showAddAnotherPopup(this);"></a>
+					  {% endif %}
+					  </span>
+					  	{% if field.help_text == "JsonObjField" %}
+					  <span class="jsonForm">
+					  		{{field}}
+					  </span>
+					  {% else %}
+					  	{{field}}
+					  {% endif %}
+					 
+			  	</div>
+				{% endfor %}
+				<div class="inner"></div>
+			{% endif %}
+			<p><input type="submit" value="Submit" /> | <a href="javascript:window.close()">Cancel</a></p>
+</form>
+</div>
+{% endblock %} 

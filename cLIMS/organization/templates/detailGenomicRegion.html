@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}
+
+ <script src="{% static "siteWide/js/show.js" %}"></script> 
+{% if region %}
+<div class="bodyContent container">
+<a href="#">
+		<button type="button" class="btn btn-warning edit pull-right">Edit</button>
+	</a>
+    <span class="tableHead">
+    	GenomicRegions Details:<br/> 
+    </span>
+    <a href="/deleteGenomicRegions/{{ region.id }}">
+	<button type="button" class="btn btn-danger pull-right hidden show view_only">Delete GenomicRegions</button>
+	</a>
+	<a href="/editGenomicRegions/{{region.id}}">
+		<button type="button" class="btn btn-warning pull-right hidden show view_only">Edit GenomicRegions</button>
+	</a>
+	<br/>
+    	<span class="rowHead">GenomicRegions Genome Assembly:</span>{{ region.genomicRegions_genome_assembly }}<br/>
+    	<span class="rowHead">GenomicRegions Chromosome:</span>{{ region.genomicRegions_chromosome }}<br/>
+    	<span class="rowHead">GenomicRegions Start Coordinate:</span>{{ region.genomicRegions_start_coordinate }}<br/>
+    	<span class="rowHead">GenomicRegions End Coordinate:</span>{{ region.genomicRegions_end_coordinate }}<br/>
+    	<span class="rowHead">GenomicRegions Location Description:</span>{{ region.genomicRegions_location_description }}<br/>
+    	<span class="rowHead">GenomicRegions Start Location:</span>{{ region.genomicRegions_start_location }}<br/>
+    	<span class="rowHead">GenomicRegions End Location:</span>{{ region.genomicRegions_end_location }}<br/>
+		{% else %}
+    <p>No data available.</p>
+{% endif %}
+<a type="button" class="btn btn-warning pull-right goBack" href="{% url 'detailExperiment' request.session.experimentId %}">Go Back</a>
+<br/><br/>
+</div>
+{% endblock %} 
+

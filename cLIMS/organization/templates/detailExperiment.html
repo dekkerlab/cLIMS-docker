@@ -1,0 +1,558 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load tags_extras %}
+
+{% block content %}
+ <script src="{% static 'siteWide/js/show.js' %}"></script>
+  <link href="/static/siteWide/css/detail.css" rel="stylesheet">
+{% if experiment %}
+<div class="bodyContent container">
+
+<div>
+	<a href="#">
+		<button type="button" class="btn btn-warning edit pull-right view_only">Edit</button>
+	</a>
+	<a href="/addAnalysis">
+			<button type="button" class="btn btn-success pull-right view_only">Analysis Wizard</button>
+	</a>
+		<a href="/addSeqencingFile/">
+		<button type="button" class="btn btn-success pull-right view_only">Files Wizard</button>
+	</a>
+	<a href="#" class="expandAll">Expand All</a>
+</div>
+<br/>
+<div>
+<div class="col-xs-6 pull-left">
+<span class="tableHead">Details of Experiment -- {{ experiment.experiment_name }}</span>
+<a href="/deleteExperiment/{{ experiment.id }}">
+<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
+</a>
+<a href="/editExperiment/{{experiment.id}}">
+	<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
+</a>
+<br/>
+
+{% if experiment %}
+<span class="rowHead">Project Name: </span>{{experiment.project}}<br/>
+<span class="rowHead">Biological replicate number: </span>{{experiment.bio_rep_no}}<br/>
+<span class="rowHead">Technical replicate number: </span>{{experiment.tec_rep_no}}<br/>
+<span class="rowHead">Biosource: </span>{{experiment.experiment_biosample.biosample_biosource}}<br/>
+<span class="rowHead">Biosample: </span>{{ experiment.experiment_biosample }}<br/>
+<span class="rowHead">Biosample Quantity: </span>{{ experiment.biosample_quantity }}<br/>
+<span class="rowHead">Biosample Quantity Units: </span>{{ experiment.biosample_quantity_units }}<br/>
+<span class="rowHead">Protocol: </span><a href="/detailProtocol/{{ experiment.protocol.id }}">{{ experiment.protocol }}</a><br/>
+<span class="rowHead">Protocol Variations: </span><br/>
+{% if not experiment.variation  == None %}
+	<a href="/detailProtocol/{{ experiment.variation.id }}">{{ experiment.variation }}</a><br/>
+{% endif %}
+
+
+<span class="rowHead">Type: </span>{{ experiment.type }}<br/>
+<span class="rowHead">Enzyme: </span>{{ experiment.experiment_enzyme }}<br/>
+<span class="rowHead">Needs DCIC Update: </span>{{ experiment.update_dcic }}<br/>
+<span class="rowHead">DCIC Submitted: </span>{{ experiment.finalize_dcic_submission }}<br/>
+
+{% if experiment.authentication_docs.all%}
+<span class="rowHead">Authentication Docs: </span><br/>
+{% for values in experiment.authentication_docs.all %}
+	    	({{ forloop.counter }}) <a href="/detailProtocol/{{ values.id }}">{{values}}</a><br/>
+{% endfor %}
+{% endif %}
+
+{% if not experiment.document  == None %}
+	<span class="rowHead">Experiment Documents: </span><a href="/detailDocument/{{experiment.document.id}}">{{experiment.document}}</a><br/>
+{% endif %}
+<span class="rowHead">Description: </span>{{ experiment.experiment_description }}<br/>
+<span class="rowHead">Experiment Images: </span><br/>
+{% for images in experiment.imageObjects.all %}
+<a href="/media/{{images.imageObjects_images}}" target="_blank">{{images.imageObjects_name}}</a><br/>
+<div class="paddingSpace  hidden show">
+<a href="/deleteImageObjects/{{images.id }}">
+<button type="button" class="btn btn-danger pull-right">Delete Image </button>
+</a>
+<a href="/editImageObjects/{{images.id}}">
+	<button type="button" class="btn btn-warning pull-right hidden show">Edit Image</button>
+</a><br/>
+</div>
+{% endfor %}
+<span class="rowHead">Experiment Protocol Details: </span><br/>
+<table class="table table-bordered table-hover table-responsive">
+<th><span class="rowHead">Field</span></th>
+<th><span class="rowHead">Value</span></th>
+	{% for keys,values in experiment.protocol_fields.items %}
+	<tr>
+		<td>{{ keys }}</td>
+		<td>{{ values }}</td>
+	</tr>
+	{% endfor %}
+</table>
+
+{% endif %}
+
+{% if individuals %}
+<hr/>
+<div class="infoBlock">
+<a style="cursor: pointer;"><i class="fa fa-plus-square-o expand" aria-hidden="true"></i></a>
+<a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
+<span class="tableHead">Associated Individual Details</span>
+<br/>
+<div class="divData hidden">
+{% for individual in individuals %}
+<a href="/deleteIndividual/{{ individual.id }}">
+<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
+</a>
+<a href="/editIndividual/{{individual.id}}">
+	<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
+</a>
+<span class="rowHead">Individual Name: </span>{{individual.individual_name}}<br/>
+<span class="rowHead">Individual Vendor: </span>{{individual.individual_vendor}}<br/>
+<span class="rowHead">Individual URL: </span>{{individual.url}}<br/>
+{% if not individual.document  == None %}
+<span class="rowHead">Individual Documents: </span><a href="/detailDocument/{{individual.document.id}}">{{individual.document}}</a><br/>
+{% endif %}
+
+{% if not individual.references  == None %}
+<span class="rowHead">Individual References: </span><a href="/detailPublication/{{ individual.references.id }}">{{individual.references}}</a><br/>
+{% endif %}
+
+<span class="rowHead">Individual DBxrefs: </span>{{individual.dbxrefs}}<br/>
+<span class="rowHead">Individual Type: </span>{{ individual.individual_type }}<br/>
+<span class="rowHead">Individual Details: </span><br/>
+<table class="table table-bordered table-hover table-responsive">
+<th><span class="rowHead">Field</span></th>
+<th><span class="rowHead">Value</span></th>
+	{% for keys,values in individual.individual_fields.items %}
+	<tr>
+		<td>{{ keys }}</td>
+		<td>{{ values }}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% endfor %}
+</div>
+</div>
+{% endif %}
+
+{% if biosource %}
+<hr/>
+<div class="infoBlock">
+<a style="cursor: pointer;"><i class="fa fa-plus-square-o expand" aria-hidden="true"></i></a>
+<a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
+<span class="tableHead">Associated Biosource Details</span><br/>
+<div class="divData hidden">
+<a href="/deleteBiosource/{{ biosource.id }}">
+<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
+</a>
+<a href="/editBiosource/{{biosource.id}}">
+	<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
+</a>
+<span class="rowHead">Biosource Name: </span>{{biosource.biosource_name}}<br/>
+<span class="rowHead">Biosource Type: </span>{{biosource.biosource_type}}<br/>
+<span class="rowHead">Biosource Cell Line: </span>{{ biosource.biosource_cell_line }}<br/>
+<span class="rowHead">Biosource Cell Line Tier: </span>{{ biosource.biosource_cell_line_tier }}<br/>
+{% if not biosource.protocol  == None %}
+<span class="rowHead">Biosource Standard Operation Protocol (4DN): </span><a href="/detailProtocol/{{ biosource.protocol.id }}">{{ biosource.protocol }}</a><br/>
+{% endif %}
+<span class="rowHead">Biosource Vendor: </span>{{ biosource.biosource_vendor }}<br/>
+<span class="rowHead">Biosource Cell Line Term Id: </span>{{ biosource.cell_line_termid }}<br/>
+<span class="rowHead">Biosource Individual: </span>{{ biosource.biosource_individual }}<br/>
+<span class="rowHead">Biosource Tissue: </span>{{ biosource.biosource_tissue }}<br/>
+<span class="rowHead">Biosource Description: </span>{{ biosource.biosource_description }}<br/>
+<span class="rowHead">Biosource URL: </span>{{biosource.url}}<br/>
+{% if not biosource.document  == None %}
+<span class="rowHead">Biosource Documents: </span>
+<a href="/detailDocument/{{biosource.document.id}}">{{biosource.document}}</a><br/>
+{% endif %}
+{% if not biosource.references  == None %}
+<span class="rowHead">Biosource References: </span><a href="/detailPublication/{{biosource.references.id}}">{{biosource.references}}</a><br/>
+{% endif %}
+<span class="rowHead">Biosource DBxrefs: </span>{{biosource.dbxrefs}}<br/>
+{% if biosource.modifications %}
+<span class="rowHead">Biosource Modifications: </span><br/>
+    	{% for values in biosource.modifications.all %}
+	    			({{ forloop.counter }}) {{values}}<br/>
+	  	{% endfor %}
+{% endif %}
+
+</div>
+</div>
+{% endif %}
+
+
+{% if modificationBio %}
+<hr/>
+<div class="infoBlock">
+<a style="cursor: pointer;"><i class="fa fa-plus-square-o expand" aria-hidden="true"></i></a>
+<a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
+<span class="tableHead">Associated Biosource Modification</span><br/>
+{% for modification in modificationBio.all %}
+	
+<div class="divData hidden">
+<a href="/deleteModification/{{ modificationBio.id }}">
+	<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
+</a>
+<a href="/editModification/{{modificationBio.id}}">
+	<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
+</a>
+		<span class="rowHead">Modification Name: </span>{{modification.modification_name}}<br/>
+		<span class="rowHead">Modification Type: </span>{{modification.modification_type}}<br/>
+		<span class="rowHead">Modification Constructs:</span><a href="/detailConstruct/{{modification.constructs.id}}">{{modification.constructs}}</a><br/>
+		<span class="rowHead">Modification Vendor: </span>{{modification.modification_vendor}}<br/>
+		<span class="rowHead">Modification gRNA: </span>{{modification.modification_gRNA}}<br/>
+		<span class="rowHead">Modification Genomic Regions: </span><a href="/detailGenomicRegions/{{modification.modification_genomicRegions.id}}">{{modification.modification_genomicRegions}}</a><br/>
+		<span class="rowHead">Modification Target: </span><a href="/detailTarget/{{modification.target.id}}">{{modification.target}}</a><br/>
+		<span class="rowHead">Modification Description: </span>{{modification.modification_description}}<br/>
+		<span class="rowHead">Modification URL: </span>{{modification.url}}<br/>
+		
+		{% if not modification.document  == None %}
+		<span class="rowHead">Modification Documents: </span><a href="/detailDocument/{{modification.document.id}}">{{modification.document}}</a><br/>
+		{% endif %}
+		
+		{% if not modification.references  == None %}
+		<span class="rowHead">Modification References: </span><a href="/detailPublication/{{ modification.references.id }}">{{modification.references}}</a><br/>
+		{% endif %}
+		
+		<span class="rowHead">Modification DBxrefs: </span>{{modification.dbxrefs}}<br/>
+		<hr/>
+{% endfor %}
+</div></div>
+{% endif %}
+
+
+{% if biosample %}
+<hr/>
+<div class="infoBlock">
+<a style="cursor: pointer;"><i class="fa fa-plus-square-o expand" aria-hidden="true"></i></a>
+<a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
+<span class="tableHead">Associated Biosample Details</span><br/>
+<div class="divData hidden">
+<a href="/deleteBiosample/{{ biosample.id }}">
+<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
+</a>
+<a href="/editBiosample/{{biosample.id}}">
+	<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
+</a>
+<span class="rowHead">Biosample Name: </span>{{biosample.biosample_name}}<br/>
+<span class="rowHead">Biosample Biosource: </span>{{biosample.biosample_biosource}}<br/>
+<span class="rowHead">Biosample Individual: </span>{{ biosample.biosample_individual }}<br/>
+<span class="rowHead">Biosample Modification: </span>{{ biosample.biosample_modification }}<br/>
+{% if not biosample.protocol  == None %}
+<span class="rowHead">Biosample Protocol: </span><a href="/detailProtocol/{{ biosample.protocol.id }}">{{ biosample.protocol }}</a><br/>
+{% endif %}
+
+
+{% if biosample.protocols_additional.all%}
+<span class="rowHead">Additional Protocol: </span><br/>
+{% for values in biosample.protocols_additional.all %}
+	    	({{ forloop.counter }}) <a href="/detailProtocol/{{ values.id }}">{{values}}</a><br/>
+{% endfor %}
+{% endif %}
+
+
+{% if biosample.biosample_TreatmentRnai.all%}
+<span class="rowHead">Biosample Treatment RNAi: </span><br/>
+{% for values in biosample.biosample_TreatmentRnai.all %}
+	    	({{ forloop.counter }}) {{values}}<br/>
+{% endfor %}
+
+{% endif %}
+
+{% if biosample.biosample_TreatmentChemical.all %}
+<span class="rowHead">Biosample TreatmentChemical: </span><br/>
+{% for values in biosample.biosample_TreatmentChemical.all %}
+	    	({{ forloop.counter }}) {{values}}<br/>
+{% endfor %}
+{% endif %}
+
+{% if biosample.biosample_OtherTreatment.all %}
+<span class="rowHead">Biosample Treatment Other: </span><br/>
+{% for values in biosample.biosample_OtherTreatment.all %}
+	    	({{ forloop.counter }}) {{values}}<br/>
+{% endfor %}
+{% endif %}
+
+<span class="rowHead">Biosample URL: </span>{{biosample.url}}<br/>
+{% if not biosample.document  == None %}
+<span class="rowHead">Biosample Documents: </span><a href="/detailDocument/{{biosample.document.id}}">{{biosample.document}}</a><br/>
+{% endif %}
+{% if not biosample.references  == None %}
+<span class="rowHead">Biosample References: </span><a href="/detailPublication/{{biosample.references.id}}">{{biosample.references}}</a><br/>
+{% endif %}
+<span class="rowHead">Biosample DBxrefs: </span>{{biosample.dbxrefs}}<br/>
+<span class="rowHead">Biosample Description: </span>{{ biosample.biosample_description }}<br/>
+<span class="rowHead">Biosample Other Details: </span>{{ biosample.biosample_type }}<br/>
+{% if biosample.biosample_fields %}
+<table class="table table-bordered table-hover table-responsive">
+<th><span class="rowHead">Field</span></th>
+<th><span class="rowHead">Value</span></th>
+	{% for keys,values in biosample.biosample_fields.items %}
+	<tr>
+		<td>{{ keys }}</td>
+		<td>{{ values }}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% endif %}
+<span class="rowHead">Biosample Images: </span><br/>
+{% for images in biosample.imageObjects.all %}
+<a href="/media/{{images.imageObjects_images}}" target="_blank">{{images.imageObjects_name}}</a><br/>
+<div class="paddingSpace  hidden show">
+<a href="/deleteImageObjects/{{images.id }}">
+<button type="button" class="btn btn-danger pull-right">Delete Image </button>
+</a>
+<a href="/editImageObjects/{{images.id}}">
+	<button type="button" class="btn btn-warning pull-right hidden show">Edit Image</button>
+</a><br/>
+</div>
+{% endfor %}
+
+</div></div>
+{% endif %}
+
+
+{% if treatmentRnai %}
+<hr/>
+<div class="infoBlock">
+<a style="cursor: pointer;"><i class="fa fa-plus-square-o expand" aria-hidden="true"></i></a>
+<a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
+<span class="tableHead">Associated Biosample Treatment RNAi</span><br/>
+<div class="divData hidden">
+		{% for treatment in treatmentRnai %}
+			<a href="/deleteTreatmentRnai/{{ treatment.id }}">
+				<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
+			</a>
+			<a href="/editTreatmentRnai/{{treatment.id}}">
+				<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
+			</a>
+			RNAi Treatment<br/>
+			<span class="rowHead">TreatmentRnai Name: </span>{{treatment.treatmentRnai_name}}<br/>
+			<span class="rowHead">TreatmentRnai Type: </span>{{treatment.treatmentRnai_type}}<br/>
+			<span class="rowHead">TreatmentRnai Vendor: </span>{{treatment.treatmentRnai_vendor}}<br/>
+			<span class="rowHead">TreatmentRnai Constructs: </span>{{treatment.constructs}}<br/>
+			<span class="rowHead">TreatmentRnai Target: </span>{{treatment.treatmentRnai_target}}<br/>
+			<span class="rowHead">TreatmentRnai Nucleotide Seq: </span>{{treatment.treatmentRnai_nucleotide_seq}}<br/>
+			<span class="rowHead">TreatmentRnai Description: </span>{{treatment.treatmentRnai_description}}<br/>
+			
+			<span class="rowHead">Treatment Description: </span>{{treatment.description}}<br/>
+			
+			<span class="rowHead">Treatment URL: </span>{{treatment.url}}<br/>
+			{% if not treatment.documents  == None %}
+			<span class="rowHead">Treatment Documents: </span><a href="/detailDocument/{{treatment.document.id}}">{{treatment.document}}</a><br/>
+			{% endif %}
+			
+			{% if not treatment.references  == None %}
+			<span class="rowHead">Treatment References: </span><a href="/detailPublication/{{ treatment.references.id }}">{{treatment.references}}</a><br/>
+			{% endif %}
+			<span class="rowHead">Treatment DBxrefs: </span>{{treatment.dbxrefs}}<br/>
+			<hr/>
+		{% endfor %}
+</div></div>
+{% endif %}
+
+
+{% if treatmentChemical %}
+<hr/>
+<div class="infoBlock">
+<a style="cursor: pointer;"><i class="fa fa-plus-square-o expand" aria-hidden="true"></i></a>
+<a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
+<span class="tableHead">Associated Biosample Treatment Chemical</span><br/>
+<div class="divData hidden">
+		{% for treatment in treatmentChemical %}
+			<a href="/deleteTreatmentChemical/{{ treatment.id }}">
+				<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
+			</a>
+			<a href="/editTreatmentChemical/{{treatment.id}}">
+				<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
+			</a>
+			Chemical Treatment<br/>
+			<span class="rowHead">TreatmentChemical Name: </span>{{treatment.treatmentChemical_name}}<br/>
+			<span class="rowHead">TreatmentChemical Chemical: </span>{{treatment.treatmentChemical_chemical}}<br/>
+			<span class="rowHead">TreatmentChemical Concentration: </span>{{treatment.treatmentChemical_concentration}}<br/>
+			<span class="rowHead">TreatmentChemical Concentration Units: </span>{{treatment.treatmentChemical_concentration_units}}<br/>
+			<span class="rowHead">TreatmeTreatment Duration: </span>{{treatment.treatmentChemical_duration}}<br/>
+			<span class="rowHead">TreatmentChemical Duration Units: </span>{{treatment.treatmentChemical_duration_units}}<br/>
+			<span class="rowHead">TreatmentChemical Temperature: </span>{{treatment.treatmentChemical_temperature}}<br/>
+			<span class="rowHead">TreatmentChemical Description: </span>{{treatment.treatmentChemical_description}}<br/>
+			<span class="rowHead">Treatment Description: </span>{{treatment.description}}<br/>
+			
+			<span class="rowHead">Treatment URL: </span>{{treatment.url}}<br/>
+			{% if not treatment.documents  == None %}
+			<span class="rowHead">Treatment Documents: </span><a href="/detailDocument/{{treatment.document.id}}">{{treatment.document}}</a><br/>
+			{% endif %}
+			
+			{% if not treatment.references  == None %}
+			<span class="rowHead">Treatment References: </span><a href="/detailPublication/{{ treatment.references.id }}">{{treatment.references}}</a><br/>
+			{% endif %}
+			<span class="rowHead">Treatment DBxrefs: </span>{{treatment.dbxrefs}}<br/>
+			<hr/>
+{% endfor %}
+</div></div>
+{% endif %}
+
+
+
+{% if otherTreatment %}
+<hr/>
+<div class="infoBlock">
+<a style="cursor: pointer;"><i class="fa fa-plus-square-o expand" aria-hidden="true"></i></a>
+<a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
+<span class="tableHead">Associated Biosample Treatment Other</span><br/>
+<div class="divData hidden">
+		{% for treatment in otherTreatment %}
+			<a href="/deleteOther/{{ treatment.id }}">
+				<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
+			</a>
+			<a href="/editOther/{{treatment.id}}">
+				<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
+			</a>
+			Other Treatment<br/>
+			<span class="rowHead">Treatment Name: </span>{{treatment.name}}<br/>
+			
+			<span class="rowHead">Treatment Description: </span>{{treatment.description}}<br/>
+			
+			<span class="rowHead">Treatment URL: </span>{{treatment.url}}<br/>
+			{% if not treatment.document  == None %}
+			<span class="rowHead">Treatment Documents: </span><a href="/detailDocument/{{treatment.document.id}}">{{treatment.document}}</a><br/>
+			{% endif %}
+			
+			{% if not treatment.references  == None %}
+			<span class="rowHead">Treatment References: </span><a href="/detailPublication/{{ treatment.references.id }}">{{treatment.references}}</a><br/>
+			{% endif %}
+			
+			
+			<span class="rowHead">Treatment DBxrefs: </span>{{treatment.dbxrefs}}<br/>
+			<hr/>
+			<hr/>
+		{% endfor %}
+</div></div>
+{% endif %}
+
+{% if modification %}
+<hr/>
+<div class="infoBlock">
+<a style="cursor: pointer;"><i class="fa fa-plus-square-o expand" aria-hidden="true"></i></a>
+<a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
+<span class="tableHead">Associated Biosample Modification</span><br/>
+<div class="divData hidden">
+<a href="/deleteModification/{{ modification.id }}">
+	<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
+</a>
+<a href="/editModification/{{modification.id}}">
+	<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
+</a>
+		<span class="rowHead">Modification Name: </span>{{modification.modification_name}}<br/>
+		<span class="rowHead">Modification Type: </span>{{modification.modification_type}}<br/>
+		<span class="rowHead">Modification Constructs:</span><a href="/detailConstruct/{{modification.constructs.id}}">{{modification.constructs}}</a><br/>
+		<span class="rowHead">Modification Vendor: </span>{{modification.modification_vendor}}<br/>
+		<span class="rowHead">Modification gRNA: </span>{{modification.modification_gRNA}}<br/>
+		<span class="rowHead">Modification Genomic Regions: </span><a href="/detailGenomicRegions/{{modification.modification_genomicRegions.id}}">{{modification.modification_genomicRegions}}</a><br/>
+		<span class="rowHead">Modification Target: </span><a href="/detailTarget/{{modification.target.id}}">{{modification.target}}</a><br/>
+		<span class="rowHead">Modification Description: </span>{{modification.modification_description}}<br/>
+		<span class="rowHead">Modification URL: </span>{{modification.url}}<br/>
+		
+		{% if not modification.document  == None %}
+		<span class="rowHead">Modification Documents: </span><a href="/detailDocument/{{modification.document.id}}">{{modification.document}}</a><br/>
+		{% endif %}
+		
+		{% if not modification.references  == None %}
+		<span class="rowHead">Modification References: </span><a href="/detailPublication/{{ modification.references.id }}">{{modification.references}}</a><br/>
+		{% endif %}
+		
+		<span class="rowHead">Modification DBxrefs: </span>{{modification.dbxrefs}}<br/>
+</div></div>
+{% endif %}
+
+</div>
+<br/>
+<br/>
+</div>
+
+<div class="col-xs-6 pull-right">
+{% if seqencingFiles %}
+
+<div class="infoBlock">
+<a style="cursor: pointer;"><i class="fa fa-plus-square-o expand" aria-hidden="true"></i></a>
+<a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
+<span class="tableHead">Associated Seqencing Files</span><br/>
+<div class="divData hidden">
+		{% for file in seqencingFiles %}
+		<a href="/deleteSequencingFile/{{ file.id }}">
+			<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
+		</a>
+		<a href="/editSequencingFile/{{file.id}}">
+			<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
+		</a>
+		<span class="rowHead">Sequencing File Name: </span>{{file.sequencingFile_name}}<br/>
+		<span class="rowHead">Sequencing File Format: </span>{{file.file_format}}<br/>
+		<span class="rowHead">Sequencing File Classification: </span>{{file.file_classification}}<br/>
+		<span class="rowHead">Sequencing File Format Specification: </span>{{file.file_format_specifications}}<br/>
+		<div class="paddingSpace  hidden show">
+	  		<a href="/deleteBarcode/{{file.file_barcode.id }}">
+				<button type="button" class="btn btn-danger pull-left hidden show">Delete Barcode</button>
+			</a>
+			<a href="/editBarcode/{{file.file_barcode.id}}">
+				<button type="button" class="btn btn-warning pull-left  hidden show">Edit Barcode</button> 
+			</a><br/><br/>
+		</div>
+		<span class="rowHead">Sequencing Barcode: </span>{{file.file_barcode.barcode_name}}<br/>
+		<span class="rowHead">Barcode Index: </span>{{file.file_barcode.barcode_index}}<br/>
+		<span class="rowHead">Barcode Position: </span>{{file.file_barcode.barcode_position}}<br/>
+		<span class="rowHead">Sequencing Barcode in Read: </span>{{file.barcode_in_read}}<br/>
+		<span class="rowHead">Sequencing Flowcell Details Chunk: </span>{{file.flowcell_details_chunk}}<br/>
+		<span class="rowHead">Sequencing Flowcell Details Lane: </span>{{file.flowcell_details_lane}}<br/>
+		<span class="rowHead">Paired End: </span>{{file.paired_end}}<br/>
+		<span class="rowHead">Paired File: </span>{{file.related_files}}<br/>
+		<span class="rowHead">Read Length: </span>{{file.read_length}}<br/>
+		<span class="rowHead">Sequencing File Main Path: </span>{{file.sequencingFile_mainPath}}<br/>
+		<span class="rowHead">Sequencing File Backup Path: </span>{{file.sequencingFile_backupPath}}<br/>
+		<span class="rowHead">Sequencing File sha256sum: </span>{{file.sequencingFile_sha256sum}}<br/>
+		<span class="rowHead">Sequencing File md5sum: </span>{{file.sequencingFile_md5sum}}<br/>
+		<span class="rowHead">Sequencing File Run: </span>{{file.sequencingFile_run}}<br/>
+		<span class="rowHead">Sequencing File Exp: </span>{{file.sequencingFile_exp}}<br/>
+		<span class="rowHead">Sequencing dbxrefs: </span>{{file.dbxrefs}}<br/>
+		<hr/>
+		{% endfor %}
+</div></div>
+{% endif %}
+
+
+{% if analyses %}
+<hr/>
+<div class="infoBlock">
+<a style="cursor: pointer;"><i class="fa fa-plus-square-o expand" aria-hidden="true"></i></a>
+<a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
+<span class="tableHead">Analysis Details</span><br/>
+<div class="divData hidden">
+		{% for analysis in analyses %}
+		<a href="/deleteAnalysis/{{ analysis.id }}">
+			<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
+		</a>
+		<a href="/editAnalysis/{{analysis.id}}">
+			<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
+		</a>
+		<span class="rowHead">Analysis Name: </span><a href="/detailAnalysis/{{ analysis.id }}">{{analysis.analysis_name}}</a><br/>
+		<span class="rowHead">Analysis Type: </span>{{analysis.analysis_type}}<br/>
+		<span class="rowHead">Analysis Files: </span><br/>
+		{% for values in analysis.analysis_file.all %}
+	    			({{ forloop.counter }}) {{values}}<br/>
+	  	{% endfor %}
+	  	{% if analysis.analysis_hiGlass %}
+	  	<span class="rowHead">HiGlass File: </span>{{analysis.analysis_hiGlass}}
+			<a href="http://higlass.gehlenborglab.org/" target="_blank">
+				<button type="button" class="btn btn-success pull-right">Visualize in HiGlass Bowser</button>
+			</a>
+		{% endif %}
+		<hr/>
+		{% endfor %}
+</div></div>
+{% endif %}
+
+</div>
+</div>
+{% else %}
+    <p>No data available.</p>
+{% endif %}
+<br/><br/>
+</div>
+{% endblock %} 
+

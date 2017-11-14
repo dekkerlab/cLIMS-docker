@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}
+<script src="{% static "siteWide/js/show.js" %}"></script> 
+<div class="bodyContent container">
+{%if projects%}
+	<h3>PROJECT</h3>
+	<table class="table table-bordered table-hover table-responsive">
+		<tr>
+			<td><span class="rowHead">Project</span></td>
+			<td><span class="rowHead">Owner</span></td>
+			<td><span class="rowHead">Active</span></td>
+		</tr>
+	
+	{% for project in projects %}
+		<tr>
+			<td><a href="/detailProject/{{project.pk}}">{{ project.project_name }}</a></td>
+			<td>{{project.project_owner}}</td>
+			<td>{{project.project_active}}</td>
+		</tr>
+	{% endfor %}
+	</table>
+{%endif%}
+
+{%if experiments%}
+	<h3>EXPERIMENT</h3>
+	<table class="table table-bordered table-hover table-responsive">
+		<tr>
+		<td><span class="rowHead">Experiment Name</span></td>
+  		<td><span class="rowHead">Biosample</span></td>
+  		<td><span class="rowHead">Protocol</span></td>
+  		<td><span class="rowHead">Enzyme</span></td>
+  		<td><span class="rowHead">Description</span></td>
+  		</tr>
+	{% for experiment in experiments %}
+		<tr>
+			<td><a href="/detailExperiment/{{experiment.id}}">{{ experiment.experiment_name }}</a></td>
+			<td>{{ experiment.experiment_biosample }}</td>
+			<td>{{ experiment.experiment_protocol }}</td>
+			<td>{{ experiment.experiment_enzyme }}</td>
+			<td>{{ experiment.experiment_description }}</td>
+		</tr>
+	{% endfor %}
+	</table>
+{%endif%}
+
+{%if runs%}
+	<h3>SEQUENCING RUN</h3>
+	<table class="table table-bordered table-hover table-responsive">
+		 <tr>
+  		<td><span class="rowHead">Sequencing Run</span></td>
+  		<td><span class="rowHead">Sequencing Platform</span></td>
+  		<td><span class="rowHead">Submission Date</span></td>
+  		<td><span class="rowHead">Retrieval Date</span></td>
+  	</tr>
+	{% for run in runs %}
+		<tr>
+			<td><a href="/detailSequencingRun/{{run.id}}">{{ run.run_name }}</a></td>
+			<td>{{ run.run_sequencing_platform }}</td>
+			<td>{{ run.run_submission_date }}</td>
+			<td>{{ run.run_retrieval_date }}</td>
+		</tr>
+	{% endfor %}
+	</table>
+{%endif%}
+
+
+{%if files%}
+	<h3>SEQUENCING FILES</h3>
+		<table class="table table-bordered table-hover table-responsive">
+		 <tr>
+		<td><span class="rowHead">File Name</span></td>
+		<td><span class="rowHead">Project Name</span></td>
+  		<td><span class="rowHead">Experiment Name</span></td>
+  		<td><span class="rowHead">Main Path</span></td>
+  	</tr>
+	{% for file in files %}
+		<tr>
+			<td>{{ file.sequencingFile_name }}</td>
+			<td>{{ file.project }}</a></td>
+			<td><a href="/detailExperiment/{{file.sequencingFile_exp.id}}">{{ file.sequencingFile_exp }}</a></td>
+			<td>{{ file.sequencingFile_mainPath }}</td>
+		</tr>
+	{% endfor %}
+	</table>
+{%endif%}
+
+{%if results%}
+	<p>No match found.</p>
+{%endif%}
+</ul>
+</div>
+{% endblock %}  
+

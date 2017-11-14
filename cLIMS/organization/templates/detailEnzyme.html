@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}
+
+ <script src="{% static "siteWide/js/show.js" %}"></script> 
+{% if enzyme %}
+<div class="bodyContent container">
+    <span class="tableHead">
+    	Enzyme Details: {{ enzyme.enzyme_name }}
+    </span>
+	<br/>
+    	<span class="rowHead">Enzyme Recognition Site:</span>{{ enzyme.enzyme_recogSeq }}<br/>
+    	<span class="rowHead">Enzyme Site Length:</span>{{ enzyme.enzyme_siteLen }}<br/>
+    	<span class="rowHead">Enzyme Cut Position:</span>{{ enzyme.enzyme_cutPos }}<br/>
+    	<span class="rowHead">Enzyme Vendor:</span>{{ enzyme.enzyme_vendor }}<br/>
+    	<span class="rowHead">Enzyme Catalog Number:</span>{{ enzyme.enzyme_catalog_number }}<br/>
+    	<span class="rowHead">Enzyme Description:</span>{{ enzyme.enzyme_description }}<br/>
+    	<span class="rowHead">Enzyme Documents:</span><br/>
+    	{% if not enzyme.documents == None %}
+    	<a href="/detailDocument/{{ enzyme.documentst.id}}">{{ enzyme.documents }}</a><br/>
+    	{% endif %}
+    	<span class="rowHead">Enzyme References:</span>{{ enzyme.references }}<br/>
+    	<span class="rowHead">Enzyme URL:</span>{{ enzyme.url }}<br/>
+    	<span class="rowHead">Enzyme DBXrefs:</span>{{ enzyme.dbxrefs }}<br/>
+    	
+{% else %}
+    <p>No data available.</p>
+{% endif %}
+<a type="button" class="btn btn-warning pull-right goBack" href="{% url 'detailExperiment' request.session.experimentId %}">Go Back</a>
+<br/><br/>
+</div>
+{% endblock %} 
+

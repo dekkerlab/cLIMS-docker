@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if object %}
+<div class="bodyContent container">
+    <span class="tableHead">
+    <a target="_blank" href="http://c-world.umassmed.edu">c-World</a>/cMapping pipeline job 
+    </span><br/><br/>
+<span class="rowHead">General</span><hr>
+<table class="table table-responsive">
+<tr>
+	<td>time</td>
+	<td>{{object.analysis_fields.time}}</td>
+</tr>
+<tr>
+	<td>cType</td>
+	<td>{{object.analysis_fields.cType}}</td>
+</tr>
+<tr>
+	<td>logDirectory</td>
+	<td>{{object.analysis_fields.logDirectory}}</td>
+</tr>
+<tr>
+	<td>UUID</td>
+	<td>{{object.analysis_fields.UUID}}</td>
+</tr>
+<tr>
+	<td>cMapping</td>
+	<td>{{object.analysis_fields.cMapping}}</td>
+</tr>
+<tr>
+	<td>computeResource</td>
+	<td>{{object.analysis_fields.computeResource}}</td>
+</tr>
+<tr>
+	<td>reduceResources</td>
+	<td>{{object.analysis_fields.reduceResources}}</td>
+</tr>
+<tr>
+	<td>mapResources</td>
+	<td>{{object.analysis_fields.mapResources}}</td>
+</tr>
+<tr>
+	<td>reduceScratchDir</td>
+	<td>{{object.analysis_fields.reduceScratchDir}}</td>
+</tr>
+<tr>
+	<td>mapScratchDir</td>
+	<td>{{object.analysis_fields.mapScratchDir}}</td>
+</tr>
+<tr>
+	<td>mapScratchSize</td>
+	<td>{{object.analysis_fields.mapScratchSize}}</td>
+</tr>
+<tr>
+	<td>nCPU</td>
+	<td>{{object.analysis_fields.nCPU}}</td>
+</tr>
+<tr>
+	<td>reduceMemoryNeeded</td>
+	<td>{{object.analysis_fields.reduceMemoryNeeded}}</td>
+</tr>
+<tr>
+	<td>mapMemoryNeeded</td>
+	<td>{{object.analysis_fields.mapMemoryNeeded}}</td>
+</tr>
+</table>
+<span class="rowHead">Dataset</span><hr>
+<table class="table table-responsive">
+<tr>
+	<td>jobName</td>
+	<td>{{object.analysis_fields.jobName}}</td>
+</tr>
+<tr>
+	<td>flowCell</td>
+	<td>{{object.analysis_fields.flowCell}}</td>
+</tr>
+<tr>
+	<td>laneName</td>
+	<td>{{object.analysis_fields.laneName}}</td>
+</tr>
+<tr>
+	<td>laneNum</td>
+	<td>{{object.analysis_fields.laneNum}}</td>
+</tr>
+<tr>
+	<td>side1File</td>
+	<td>{{object.analysis_fields.side1File}}</td>
+</tr>
+<tr>
+	<td>side2File</td>
+	<td>{{object.analysis_fields.side2File}}</td>
+</tr>
+<tr>
+	<td>readLength</td>
+	<td>{{object.analysis_fields.readLength}}</td>
+</tr>
+<tr>
+	<td>qvEncoding</td>
+	<td>{{object.analysis_fields.qvEncoding}}</td>
+</tr>
+<tr>
+	<td>numReads</td>
+	<td>{{object.analysis_fields.numReads}}</td>
+</tr>
+</table>
+
+<span class="rowHead">Alignment Options</span><hr>
+<table class="table table-responsive">
+<tr>
+	<td>splitSize</td>
+	<td>{{object.analysis_fields.splitSize}}</td>
+</tr>
+<tr>
+	<td>splitSizeMegabyte</td>
+	<td>{{object.analysis_fields.splitSizeMegabyte}}</td>
+</tr>
+<tr>
+	<td>aligner</td>
+	<td>{{object.analysis_fields.aligner}}</td>
+</tr>
+<tr>
+	<td>alignmentSoftwarePath</td>
+	<td>{{object.analysis_fields.alignmentSoftwarePath}}</td>
+</tr>
+<tr>
+	<td>alignmentOptions</td>
+	<td>{{object.analysis_fields.alignmentOptions}}</td>
+</tr>
+<tr>
+	<td>side1AlignmentOptions</td>
+	<td>{{object.analysis_fields.side1AlignmentOptions}}</td>
+</tr>
+<tr>
+	<td>side2AlignmentOptions</td>
+	<td>{{object.analysis_fields.side2AlignmentOptions}}</td>
+</tr>
+<tr>
+	<td>enzyme</td>
+	<td>{{object.analysis_fields.enzyme}}</td>
+</tr>
+<tr>
+	<td>restrictionSite</td>
+	<td>{{object.analysis_fields.restrictionSite}}</td>
+</tr>
+<tr>
+	<td>restrictionFragmentFile</td>
+	<td>{{object.analysis_fields.restrictionFragmentFile}}</td>
+</tr>
+<tr>
+	<td>genome</td>
+	<td>{{object.analysis_fields.genome}}</td>
+</tr>
+<tr>
+	<td>genomePath</td>
+	<td>{{object.analysis_fields.genomePath}}</td>
+</tr>
+<tr>
+	<td>genomeSize</td>
+	<td>{{object.analysis_fields.genomeSize}}</td>
+</tr>
+</table>
+<span class="rowHead">Iterative Mapping Options</span><hr>
+<table class="table table-responsive">
+<tr>
+	<td>iterativeMapping</td>
+	<td>{{object.analysis_fields.iterativeMapping}}</td>
+</tr>
+<tr>
+	<td>iterativeMappingStart</td>
+	<td>{{object.analysis_fields.iterativeMappingStart}}</td>
+</tr>
+<tr>
+	<td>iterativeMappingEnd</td>
+	<td>{{object.analysis_fields.iterativeMappingEnd}}</td>
+</tr>
+<tr>
+	<td>iterativeMappingStep</td>
+	<td>{{object.analysis_fields.iterativeMappingStep}}</td>
+</tr>
+</table>
+<span class="rowHead">Mapping Statistics</span><hr>
+<table class="table table-responsive">
+<tr>
+	<td>side1TotalReads</td>
+	<td>{{object.analysis_fields.side1TotalReads}}</td>
+</tr>
+<tr>
+	<td>side1NoMap</td>
+	<td>{{object.analysis_fields.side1NoMap}} ({{object.analysis_fields.side1NoMapPer}}%)</td>
+</tr>
+<tr>
+	<td>side1MultiMap</td>
+	<td>{{object.analysis_fields.side1MultiMap}} ({{object.analysis_fields.side1MultiMapPer}}%)</td>
+</tr>
+<tr>
+	<td>side1UniqueMap</td>
+	<td>{{object.analysis_fields.side1UniqueMap}} ({{object.analysis_fields.side1UniqueMapPer}}%)</td>
+</tr>
+<tr>
+	<td>side2TotalReads</td>
+	<td>{{object.analysis_fields.side2TotalReads}}</td>
+</tr>
+<tr>
+	<td>side2NoMap</td>
+	<td>{{object.analysis_fields.side2NoMap}} ({{object.analysis_fields.side2NoMapPer}}%)</td>
+</tr>
+<tr>
+	<td>side2MultiMap</td>
+	<td>{{object.analysis_fields.side2MultiMap}} ({{object.analysis_fields.side2MultiMapPer}}%)</td>
+</tr>
+<tr>
+	<td>side2UniqueMap</td>
+	<td>{{object.analysis_fields.side2UniqueMap}} ({{object.analysis_fields.side2UniqueMapPer}}%)</td>
+</tr>
+</table>
+<span class="rowHead">Hi-C Library Quality Metrics</span><hr>
+<table class="table table-responsive">
+<tr>
+	<td>totalReads</td>
+	<td>{{object.analysis_fields.totalReads}}</td>
+</tr>
+<tr>
+	<td>unMapped</td>
+	<td>{{object.analysis_fields.unMapped}} ({{object.analysis_fields.unMappedPer}}%)</td>
+</tr>
+<tr>
+	<td>singleSided</td>
+	<td>{{object.analysis_fields.singleSided}} ({{object.analysis_fields.singleSidedPer}}%)</td>
+</tr>
+<tr>
+	<td>bothSideMapped</td>
+	<td>{{object.analysis_fields.bothSideMapped}} ({{object.analysis_fields.bothSideMappedPer}}%)</td>
+</tr>
+<tr>
+	<td>sameFragment</td>
+	<td>{{object.analysis_fields.sameFragment}} ({{object.analysis_fields.sameFragmentPer}}%)</td>
+</tr>
+<tr>
+	<td>selfCircle</td>
+	<td>{{object.analysis_fields.selfCircle}} ({{object.analysis_fields.selfCirclePer}}%)</td>
+</tr>
+<tr>
+	<td>danglingEnd</td>
+	<td>{{object.analysis_fields.danglingEnd}} ({{object.analysis_fields.danglingEndPer}}%)</td>
+</tr>
+<tr>
+	<td>bounded</td>
+	<td>{{object.analysis_fields.bounded}} ({{object.analysis_fields.boundedPer}}%)</td>
+</tr>
+<tr>
+	<td>internal</td>
+	<td>{{object.analysis_fields.internal}} ({{object.analysis_fields.internalPer}}%)</td>
+</tr>
+<tr>
+	<td>error</td>
+	<td>{{object.analysis_fields.error}} ({{object.analysis_fields.errorPer}}%)</td>
+</tr>
+<tr>
+	<td>validPair</td>
+	<td>{{object.analysis_fields.validPair}} ({{object.analysis_fields.validPairPer}}%)</td>
+</tr>
+<tr>
+	<td>cis</td>
+	<td>{{object.analysis_fields.cis}} ({{object.analysis_fields.cisPer}}%)</td>
+</tr>
+<tr>
+	<td>trans</td>
+	<td>{{object.analysis_fields.trans}} ({{object.analysis_fields.transPer}}%)</td>
+</tr>
+</table>
+<span class="rowHead">Hi-C Library Redundancy Metrics</span><hr>
+<table class="table table-responsive">
+<tr>
+	<td>validPairRed</td>
+	<td>{{object.analysis_fields.validPairRed}} ({{object.analysis_fields.validPairRed}}%)</td>
+</tr>
+<tr>
+	<td>totalMolecules</td>
+	<td>{{object.analysis_fields.totalMolecules}} ({{object.analysis_fields.totalMoleculesPer}}%)</td>
+</tr>
+<tr>
+	<td>redundantInteractions</td>
+	<td>{{object.analysis_fields.redundantInteractions}} ({{object.analysis_fields.redundantInteractionsPer}}%)</td>
+</tr>
+<tr>
+	<td>nonRedundantInteractions</td>
+	<td>{{object.analysis_fields.nonRedundantInteractions}} ({{object.analysis_fields.nonRedundantInteractionsPer}}%)</td>
+</tr>
+<tr>
+	<td>percentRedundant</td>
+	<td>{{object.analysis_fields.percentRedundant}}%</td>
+</tr>
+</table>
+{% if images %}
+<span class="rowHead">Hi-C Plots</span><hr>
+<table class="table table-responsive">
+{% for image in images %}
+<tr>
+	<td><img src={{image.image_path}}></td>
+</tr>
+{% endfor %}
+</table>
+{% endif %}
+{% else %}
+    <p>No data available.</p>
+{% endif %}
+<a type="button" class="btn btn-warning pull-right goBack" href="{% url 'detailProject' request.session.projectId %}">Go Back</a><br/><br/>
+</div>
+{% endblock %} 
+

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}
+
+ <script src="{% static "siteWide/js/show.js" %}"></script> 
+{% if construct %}
+<div class="bodyContent container">
+<a href="#">
+		<button type="button" class="btn btn-warning edit pull-right">Edit</button>
+	</a>
+    <span class="tableHead">
+    	Construct Details:<br/> 
+    </span>
+    <a href="/deleteConstruct/{{ construct.id }}">
+			<button type="button" class="btn btn-danger pull-right hidden show view_only">Delete</button>
+		</a>
+		<a href="/editConstruct/{{construct.id}}">
+			<button type="button" class="btn btn-warning pull-right hidden show view_only">Edit</button>
+		</a>
+		<span class="rowHead">Construct Name: </span>{{construct.construct_name}}<br/>
+		<span class="rowHead">Construct Type: </span>{{construct.construct_type}}<br/>
+		<span class="rowHead">Construct Vendor: </span>{{construct.construct_vendor}}<br/>
+		<span class="rowHead">Construct Designed To Target: </span>{{construct.construct_designed_to_Target}}<br/>
+		<span class="rowHead">Construct Insert Sequence: </span>{{construct.construct_insert_sequence}}<br/>
+		<span class="rowHead">Construct Map: </span>
+		{% if not construct.document  == None %}
+		<a href="/detailDocument/{{document.id}}">{{construct.document}}</a>
+		{% endif %}<br/>
+		<span class="rowHead">Construct Tag: </span>{{construct.construct_tag}}<br/>
+		<span class="rowHead">Construct Vector Backbone: </span>{{construct.construct_vector_backbone}}<br/>
+		<span class="rowHead">Construct Description: </span>{{construct.construct_description}}<br/>
+		{% if not construct.references  == None %}
+			<span class="rowHead">Construct References: </span><a href="/detailPublication/{{ construct.references.id }}">{{construct.references}}</a><br/>
+		{% endif %}
+		<span class="rowHead">Construct URL: </span>{{construct.url}}<br/>		
+		{% else %}
+    <p>No data available.</p>
+{% endif %}
+<a type="button" class="btn btn-warning pull-right goBack" href="{% url 'detailExperiment' request.session.experimentId %}">Go Back</a>
+<br/><br/>
+</div>
+{% endblock %} 
+

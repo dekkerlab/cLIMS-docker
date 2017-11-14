@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}
+ <script src="{% static "siteWide/js/show.js" %}"></script> 
+
+{% if project %}
+<div class="bodyContent container">
+
+<table class="table">
+<thead>
+  <tr>
+    <th class="tableHead">{{ project.project_name }} 
+    <span class="pull-right">
+    <a href="/addIndividual">
+		<button type="button" class="btn btn-success view_only">Experiment Wizard</button>
+	</a>
+     <a href="/addSequencingRun">
+		<button type="button" class="btn btn-success view_only">Sequencing Run Wizard</button>
+	</a>
+	<a href="#">
+		<button  type="button" class="btn btn-warning edit view_only">Edit</button>
+	</a>
+	</span>
+	</th>
+  </tr>	
+</thead>
+<tbody>
+  <tr>
+    <td><span class="rowHead">Project Owner:</span>{{ project.project_owner }}</td>
+   </tr>
+   <tr>
+    <td><span class="rowHead">Project Members:</span><br/>
+          	{% for values in project.project_contributor.all %}
+  		({{ forloop.counter }}) {{values}}<br/>
+		{% endfor %}
+		</td>
+  </tr>
+  <tr>
+    <td><span class="rowHead">Description:</span>{{ project.project_notes }}</td>
+  </tr>
+  <tr>
+    <td><span class="rowHead">Active:</span>{{ project.project_active }}
+    <a href="/deleteProject/{{ project.id }}">
+		<button type="button" class="btn btn-danger pull-right hidden show">Delete Project</button>
+	</a>
+   	<a href="/editProject/{{ project.id }}">
+		<button type="button" class="btn btn-warning pull-right hidden show">Edit Project</button>
+	</a>
+    </td>
+  </tr>
+ </tbody></table>
+ 
+ {% if experiments %}
+ <hr/>
+<span class="tableHead">
+	Experiment Details
+</span>
+{% if messages %}
+        {% for message in messages %}
+            <p class="alert alert-danger">{{message}}</p>
+        {% endfor %}
+{% endif %}
+<table class="table table-bordered table-hover table-responsive paginationTable">
+	<thead>
+  	<tr>
+		<th><span class="rowHead">Experiment Name</span></th>
+  		<th><span class="rowHead">Biosource</span></th>
+  		<th><span class="rowHead">Biosample</span></th>
+  		<th><span class="rowHead">Protocol</span></th>
+  		<th><span class="rowHead">Enzyme</span></th>
+  		<th><span class="rowHead">Needs DCIC Update</span></th>
+  		<th><span class="rowHead">DCIC Submitted</span></th>
+  		<th></th>
+  	</tr>
+  	</thead>
+  	<tbody>
+  		{% for exp in experiments %}
+		<tr>
+			<td><a href="/detailExperiment/{{exp.id}}">{{exp.experiment_name}}</a></td>
+			<td>{{exp.experiment_biosample.biosample_biosource}}</td>
+			<td>{{exp.experiment_biosample}}</td>
+			<td>{{exp.protocol}}</td>
+			<td>{{exp.experiment_enzyme}}</td>
+			<td>{{exp.update_dcic}}</td>
+			<td>{{exp.finalize_dcic_submission}}</td>
+			<td>
+			<a href="/deleteExperiment/{{ exp.id }}">
+				<button type="button" class="btn btn-danger pull-right hidden show">Delete Experiment</button>
+			</a>
+			<a href="/editExperiment/{{exp.id}}">
+				<button type="button" class="btn btn-warning pull-right hidden show">Edit Experiment</button>
+			</a>
+			</td>
+  	</tr>
+    {% endfor %}
+  	</tbody>
+ </table>
+ <a href="/exportExperiment">
+		<button type="button" class="btn btn-success">Export Experiment meta data</button>
+	</a>
+	<a href="/exportAnalysis">
+		<button type="button" class="btn btn-success">Export Analysis</button>
+	</a>
+	<a href="/exportGEO">
+		<button type="button" class="btn btn-success">Export- GEO</button>
+	</a>
+	<a href="/dcicView">
+		<button type="button" class="btn btn-success">DCIC View</button>
+	</a>
+{% endif %}
+ 
+ {% if sequencingRuns %}
+  <hr/>
+ <span class="tableHead">
+	Sequencing Run Details
+</span>
+<table class="table table-bordered table-hover table-responsive paginationTable">
+	<thead>
+  	<tr>
+  		<th><span class="rowHead">Sequencing Run Name</span></th>
+  		<th><span class="rowHead">Experiments</span></th>
+  		<th><span class="rowHead">Submission Date</span></th>
+  		<th><span class="rowHead">Retrieval Date</span></th>
+  		<th><span class="rowHead">Submitted</span></th>
+  		
+  		<td></td>
+  	</tr>
+  	</thead>
+  	<tbody>
+    {% for run in sequencingRuns %}
+	<tr>
+	<td><a href="/detailSequencingRun/{{run.id}}">{{ run.run_name }}</a></td>
+	<td>
+		{% for values in run.run_Experiment.all %}
+	    			({{ forloop.counter }}) {{values}}<br/>
+	  	{% endfor %}
+	</td>
+	<td>{{ run.run_submission_date }}</td>
+	<td>{{ run.run_retrieval_date }}</td>
+	<td>
+		{% if run.run_submitted == False %}
+        <a href="/submitSequencingRun/{{ run.id}}">
+			<button type="button" class="btn btn-info"> Submit Unit</button>
+		</a>
+		{% elif run.run_submitted == True and run.run_approved == True %}
+			<button type="button" class="btn btn-warning disabled">Approved</button> 
+		{% else %}
+			<button type="button" class="btn btn-primary disabled">Submitted</button>
+		{% endif %}
+	</td>
+	<td>
+	<a href="/deleteSequencingRun/{{ run.id }}">
+		<button type="button" class="btn btn-danger pull-right hidden show">Delete Run</button>
+		</a>
+	<a href="/editSequencingRun/{{run.id}}">
+		<button type="button" class="btn btn-warning pull-right hidden show">Edit Run</button>
+	</a>
+	</td>
+  </tr>
+    {% endfor %}
+    </tbody>
+     </table>
+{% endif %}
+
+ <hr/>
+ <span class="tableHead">
+	Tags and Sets
+</span>
+<ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#add">Add</a></li>
+    
+    <li class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tags<span class="caret"></span></a>
+       {% if tags %}
+      <ul class="dropdown-menu">
+       {% for tag in tags %}
+        <li><a data-toggle="tab" href=#{{tag.tag_name}}{{tag.id}}>{{tag.tag_name}}</a></li>
+      {% endfor %}
+      </ul>
+      {% endif %}
+    </li>
+    
+    <li class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#">Experiment Sets <span class="caret"></span></a>
+       {% if experimentSets %}
+      <ul class="dropdown-menu">
+       {% for expSet in experimentSets %}
+        <li><a data-toggle="tab" href=#{{expSet.experimentSet_name}}{{expSet.id}}>{{expSet.experimentSet_name}}</a></li>
+      {% endfor %}
+      </ul>
+      {% endif %}
+    </li>
+    
+    <li class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#">File Sets <span class="caret"></span></a>
+       {% if fileSets %}
+      <ul class="dropdown-menu">
+       {% for fileSet in fileSets %}
+        <li><a data-toggle="tab" href=#{{fileSet.fileSet_name}}{{fileSet.id}}>{{fileSet.fileSet_name}}</a></li>
+      {% endfor %}
+      </ul>
+      {% endif %}
+    </li>
+  </ul>
+<div class="tab-content">
+  <div id="add" class="tab-pane fade in active view_only">
+    <h3>Add Tags and Sets</h3>
+    <a href="/addTag">
+		<button type="button" class="btn btn-success">Tag Experiments</button>
+	</a>
+    <a href="/addExperimentSet">
+		<button type="button" class="btn btn-success">Experiment Set</button>
+	</a>
+	<a href="/addFileSet">
+		<button type="button" class="btn btn-success">File Set</button>
+	</a><br/><br/>
+  </div>
+  {% if tags %}
+        <br/>
+       {% for tag in tags %}
+       <div id={{tag.tag_name}}{{tag.id}} class="tab-pane fade">
+        <a href="/deleteTag/{{ tag.id }}">
+			<button type="button" class="btn btn-danger pull-right hidden show">Delete Tag</button>
+	  	</a>
+	   	<a href="/editTag/{{ tag.id}}">
+			<button type="button" class="btn btn-warning pull-right hidden show">Edit Tag</button>
+		</a>
+        <span class="rowHead">Tag Name</span>{{tag.tag_name | linebreaks}}
+        <span class="rowHead">Tagged Experiments</span><br/>
+        {% for values in tag.tag_exp.all %}
+	    			({{ forloop.counter }}) {{values}}<br/>
+	  	{% endfor %}
+        </div>
+      {% endfor %}
+  		
+{% endif %}
+  
+  {% if experimentSets %}
+       {% for expSet in experimentSets %}
+       <div id={{expSet.experimentSet_name}}{{expSet.id}} class="tab-pane fade">
+        <a href="/deleteExperimentSet/{{ expSet.id }}">
+			<button type="button" class="btn btn-danger pull-right hidden show">Delete ExperimentSet</button>
+	  	</a>
+	   	<a href="/editExperimentSet/{{ expSet.id}}">
+			<button type="button" class="btn btn-warning pull-right hidden show">Edit ExperimentSet</button>
+		</a>
+        <span class="rowHead">Experiment Set Name</span>{{expSet.experimentSet_name | linebreaks}}
+        <span class="rowHead">Experiment Set Type</span>{{expSet.experimentSet_type | linebreaks}}
+        <span class="rowHead">Experiment Set </span><br/>
+        {% for values in expSet.experimentSet_exp.all %}
+	    			({{ forloop.counter }}) {{values}}<br/>
+	  	{% endfor %}
+	  	<span class="rowHead">Experiment Set Description</span>{{expSet.description | linebreaks}}
+        </div>
+      {% endfor %}
+  		
+{% endif %}
+
+
+ {% if fileSets %}
+       {% for fileSet in fileSets %}
+       <div id={{fileSet.fileSet_name}}{{fileSet.id}} class="tab-pane fade">
+       <a href="/deleteFileSet/{{ fileSet.id }}">
+			<button type="button" class="btn btn-danger pull-right hidden show">Delete FileSet</button>
+	  </a>
+	   	<a href="/editFileSet/{{ fileSet.id}}">
+			<button type="button" class="btn btn-warning pull-right hidden show">Edit FileSet</button>
+		</a>
+        <span class="rowHead">File Set Name</span>{{fileSet.fileSet_name | linebreaks}}
+        <span class="rowHead">File Set Type</span>{{fileSet.fileset_type | linebreaks}}
+        {% for values in fileSet.fileSet_file.all %}
+	    			({{ forloop.counter }}) {{values}}<br/>
+	  	{% endfor %}
+	  	<span class="rowHead">File Set Description</span>{{fileSet.fileset_description | linebreaks}}
+        </div>
+      {% endfor %}
+  		
+{% endif %}
+
+</div>
+<!-- 
+{% if files %}
+ <hr/>
+    <span class="tableHead">
+    	Files Details
+    </span>
+<table class="table table-bordered table-hover table-responsive">
+	 <tr>
+		<td><span class="rowHead">File Name</span></td>
+  		<td><span class="rowHead">Sample Name</span></td>
+  		<td><span class="rowHead">Sequencing Unit</span></td>
+  		<td><span class="rowHead">Number Of Reads</span></td>
+  		<td></td>
+  	</tr>
+    {% for file in files %}
+	<tr>
+			<td><a href="/showFiles/{{ file.id }}">{{ file.name }}</a></td>
+			<td>{{ file.sample.name }}</td>
+			<td>{{ file.lane.name }}</td>
+			<td>{{ file.number_of_reads }}</td>
+			<td>
+			 <a href="/deleteFile/{{ file.id }}">
+				<button type="button" class="btn btn-danger pull-right hidden show">Delete File</button>
+			</a>
+		    <a href="/editFile/{{file.id}}">
+				<button type="button" class="btn btn-warning pull-right hidden show">Edit File</button>
+			</a>
+			</td>
+    <td>
+    	<span class="rowHead">Sample Name:</span> {{ file.sample.name }}<br/>
+    	<span class="rowHead">Sequencing Unit:</span> {{ file.lane.name }}<br/>
+    	<span class="rowHead">File Name:</span> {{ file.name }}<br/>
+    	<span class="rowHead">Main File Path:</span>{{ file.main_file_path }}<br/>
+    	<span class="rowHead">Backup Path:</span>{{ file.backup_path }}<br/>
+    	<span class="rowHead">s3 Path:</span>{{ file.s3_path }}<br/>
+    	<span class="rowHead">sha256sum:</span>{{ file.sha256sum }}<br/>
+    	<span class="rowHead">md5sum:</span>{{ file.md5sum }}<br/>
+    	<span class="rowHead">Number Of Reads :</span>{{ file.number_of_reads }}<br/>
+    	<span class="rowHead">Notes :</span>{{ file.notes }}<br/>
+    <a href="/deleteFile/{{ file.id }}">
+		<button type="button" class="btn btn-danger pull-right hidden show">Delete File</button>
+	</a>
+    <a href="/editFile/{{file.id}}">
+		<button type="button" class="btn btn-warning pull-right hidden show">Edit File</button>
+	</a>
+    </td>
+  </tr>
+    {% endfor %}
+{% endif %}
+</table> -->
+{% else %}
+    <p>No data available.</p>
+{% endif %}
+<br/><br/>
+</div>
+{% endblock %} 
+

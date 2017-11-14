@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% block content %}
+<script type="text/javascript" src="{% static '/static/siteWide/js/jquery.init.js' %}"></script> 
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/fonts.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/widgets.css"/>
+  <link href="/static/siteWide/css/formSteps.css" rel="stylesheet">
+<script type="text/javascript" src="/static/siteWide/js/form.js"></script>
+<div class="bodyContent container">
+	    {% if messages %}
+        {% for message in messages %}
+            <p class="alert alert-danger">{{message}}</p>
+        {% endfor %}
+    {% endif %}
+	<form method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+	<div>
+  {% if form %}
+		<h1>Modification</h1>
+		{{ form.non_field_errors }}
+		{% for field in form %}
+		<div class="fieldWrapper">
+		 {{field.errors}}
+		 <a style="cursor: pointer;"><i class="fa fa-question-circle" title="{{field.help_text}}"></i></a>
+		 <span class="formLabel">
+		  	{{field.label}} {% if field.field.required %} * {% endif %}
+		  	{% if 'add' in field.label_tag %}
+				<a href="{% url field.label_tag|cut:field.label|striptags %}" class="add-another" id="add_{{field.auto_id}}" onclick="return showAddAnotherPopup(this);"></a>
+			{% endif %}
+		  </span>
+	  {{field}}
+  </div>
+{% endfor %}
+	 {% endif %}
+	  {% if construct_form %}
+		<h1>Construct</h1>
+		{{ construct_form.non_field_errors }}
+		{% for field in construct_form %}
+		<div class="fieldWrapper">
+		 {{field.errors}}
+		 <a style="cursor: pointer;"><i class="fa fa-question-circle" title="{{field.help_text}}"></i></a>
+	   <span class="formLabel">
+		  	{{field.label}} {% if field.field.required %} * {% endif %}
+		  	{% if 'add' in field.label_tag %}
+				<a href="{% url field.label_tag|cut:field.label|striptags %}" class="add-another" id="add_{{field.auto_id}}" onclick="return showAddAnotherPopup(this);"></a>
+			{% endif %}
+		  </span>
+	  {{field}}
+  </div>
+{% endfor %}
+	 {% endif %}
+	 {% if regions_form %}
+		<h1>Genomic Regions</h1>
+		{{ regions_form.non_field_errors }}
+		{% for field in regions_form %}
+		<div class="fieldWrapper">
+		 {{field.errors}}
+		 <a style="cursor: pointer;"><i class="fa fa-question-circle" title="{{field.help_text}}"></i></a>
+	   <span class="formLabel">
+		  	{{field.label}} {% if field.field.required %} * {% endif %}
+		  	{% if 'add' in field.label_tag %}
+				<a href="{% url field.label_tag|cut:field.label|striptags %}" class="add-another" id="add_{{field.auto_id}}" onclick="return showAddAnotherPopup(this);"></a>
+			{% endif %}
+		  </span>
+	  {{field}}
+  </div>
+{% endfor %}
+	 {% endif %}
+	   {% if target_form %}
+		<h1>Target</h1>
+		{{ target_form.non_field_errors }}
+		{% for field in target_form %}
+		<div class="fieldWrapper">
+		 {{field.errors}}
+		 {% if field.label == "Targeted region" %}
+	    
+	   	{% else %}
+		 <a style="cursor: pointer;"><i class="fa fa-question-circle" title="{{field.help_text}}"></i></a>
+	   <span class="formLabel">
+		  	{{field.label}} {% if field.field.required %} * {% endif %}
+		  	{% if 'add' in field.label_tag %}
+				<a href="{% url field.label_tag|cut:field.label|striptags %}" class="add-another" id="add_{{field.auto_id}}" onclick="return showAddAnotherPopup(this);"></a>
+			{% endif %}
+		</span>
+	  {{field}}
+	   {% endif %}
+  </div>
+{% endfor %}
+	 {% endif %}
+			<input type="submit" value="Submit" />
+		</div>
+		</div>
+			 
+	</form>
+</div>
+{% endblock %} 

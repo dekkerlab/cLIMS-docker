@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+ <script src="{% static "siteWide/js/show.js" %}"></script> 
+<div class="bodyContent container">
+{% if project %}
+<span class="tableHead">
+	Project: {{ project.project_name }}
+</span>
+ {% endif %}
+ <br/> <br/>
+ {% if experiments %}
+<span class="tableHead">
+	Experiment Details
+</span>
+{% if messages %}
+        {% for message in messages %}
+            <p class="alert alert-danger">{{message}}</p>
+        {% endfor %}
+{% endif %}
+<table class="table table-bordered table-hover table-responsive">
+  	<tr>
+  		<td class="col-xs-6"><span class="rowHead">DCIC Export or Finalize DCIC Submission</span><br/>**If nothing is selected by default it will take all experiments</td>
+		<td><span class="rowHead">Experiment Name</span></td>
+  	</tr>
+  	<form method="POST">
+    {% csrf_token %}
+  	
+    {% for exp in experiments %}
+		<tr>
+			<td><input type="checkbox" name="dcic" value="{{exp.id}}" checked><br></td>
+			<td><a href="/detailExperiment/{{exp.id}}">{{exp.experiment_name}}</a></td>
+  		</tr>
+    {% endfor %}
+ </table>
+ 	<button type="submit" class="btn btn-success" formaction="/exportDCIC/">Export- DCIC</button>
+ 	<button type="submit" class="btn btn-success view_only" formaction="/dcicFinalizeSubmission/">Finalize DCIC Submission</button>
+ 	<button type="button" class="btn btn-danger" id="unselect">Unselect All</button>
+</form>
+{% else %}
+    <p>No data available.</p>
+{% endif %}
+<br/><br/>
+</div>
+{% endblock %} 
+

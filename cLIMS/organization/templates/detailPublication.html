@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}
+
+ <script src="{% static "siteWide/js/show.js" %}"></script> 
+{% if publication %}
+<div class="bodyContent container">
+    <span class="tableHead">
+    	Publication Details: {{ publication.publication_title }}
+    </span>
+   <a href="/deletePublication/{{ publication.id }}">
+	<button type="button" class="btn btn-danger pull-right view_only">Delete Reference</button>
+	</a>
+	<a href="/editPublication/{{ publication.id}}">
+		<button type="button" class="btn btn-warning pull-right view_only">Edit Reference</button>
+	</a>
+	<br/>
+    	<span class="rowHead">Publication Title:</span>{{ publication.publication_title }}<br/>
+    	<span class="rowHead">Publication Authors:</span>{{ publication.publication_id }}<br/>
+    	{% if not publication.attachment  == None %}
+    	<span class="rowHead">Publication Attachment:</span><a href="/media/{{ publication.attachment }}">{{ publication.attachment }}</a><br/>
+    	{% endif %}
+    	<span class="rowHead">Publication Experiment Set Produced:</span>{{ publication.exp_sets_prod_in_pub}}<br/>
+    	{% for values in publication.exp_sets_prod_in_pub.experimentSet_exp.all %}
+	    			({{ forloop.counter }}) {{values}}<br/>
+	  	{% endfor %}
+	  	<span class="rowHead">Publication Experiment Set Used:</span>{{ publication.exp_sets_used_in_pub}}<br/>
+    	{% for values in publication.exp_sets_used_in_pub.experimentSet_exp.all %}
+	    			({{ forloop.counter }}) {{values}}<br/>
+	  	{% endfor %}
+    	<span class="rowHead">Publication Categories:</span>{{ publication.publication_categories }}<br/>
+    	<span class="rowHead">Publication Published By:</span>{{ publication.publication_published_by }}<br/>
+    	
+{% else %}
+    <p>No data available.</p>
+{% endif %}
+<a type="button" class="btn btn-warning pull-right goBack" href="{% url 'detailExperiment' request.session.experimentId %}">Go Back</a>
+<br/><br/>
+</div>
+{% endblock %} 
+

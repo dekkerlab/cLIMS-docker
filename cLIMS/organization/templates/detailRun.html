@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}
+
+ <script src="{% static "siteWide/js/show.js" %}"></script> 
+  <link href="/static/siteWide/css/detail.css" rel="stylesheet">
+{% if sequencingRun %}
+<div class="bodyContent container">
+    <span class="tableHead">
+    	Sequencing Run Details: {{ sequencingRun.run_name }}
+    </span>
+    
+    
+    
+{% comment %}
+ {% if sequencingRun.run_Add_Barcode == "Yes" %}
+    	<a href="/addBarcode/{{ object.id }}">
+			<button type="button" class="btn btn-success pull-right view_only">Add/Delete Barcode</button>
+	</a>
+	{% endif %}
+{% endcomment %}
+
+
+
+    <a href="#">
+		<button type="button" class="btn btn-warning edit pull-right view_only">Edit</button>
+	</a>
+	 <a href="/deleteSequencingRun/{{ sequencingRun.id }}">
+		<button type="button" class="btn btn-danger pull-right hidden show">Delete Run</button>
+		</a>
+	<a href="/editSequencingRun/{{sequencingRun.id}}">
+		<button type="button" class="btn btn-warning pull-right hidden show">Edit Run</button>
+	</a>
+	<br/>
+    	<span class="rowHead">Project Name:</span>{{ sequencingRun.project }}<br/>
+    	<span class="rowHead">Attached Experiments:</span><br/>
+    	{% for values in sequencingRun.run_Experiment.all %}
+	  		({{ forloop.counter }}) {{values}}<br/>
+		{% endfor %} 
+    	<span class="rowHead">Submission Date:</span>{{ sequencingRun.run_submission_date }}<br/>
+    	<span class="rowHead">Retrieval Date:</span>{{ sequencingRun.run_retrieval_date }}<br/>
+    	<span class="rowHead">Sequencing Platform:</span>{{ sequencingRun.run_sequencing_machine }}<br/>
+    	<span class="rowHead">Sequencing Center:</span>{{ sequencingRun.run_sequencing_center }}<br/>
+    	<span class="rowHead">Sequencing Instrument:</span>{{ sequencingRun.run_sequencing_instrument }}<br/>
+    	
+{% comment %}    	
+    	<span class="rowHead">Barcode:</span>{{ sequencingRun.run_Add_Barcode }}<br/>
+    	{% for barcode in barcodes %}
+	  		({{ forloop.counter }}) {{barcode.barcode_exp}} - {{barcode.barcode_name_1}} -  {{barcode.barcode_name_2}}<br/>
+	  		<div class="paddingSpace  hidden show">
+	  		<a href="/deleteBarcode/{{ barcode.id }}">
+				<button type="button" class="btn btn-danger pull-left hidden show">Delete Barcode</button>
+			</a>
+			<a href="/editBarcode/{{barcode.id}}">
+				<button type="button" class="btn btn-warning pull-left  hidden show">Edit Barcode</button> 
+			</a><br/><br/>
+			</div>
+		{% endfor %}
+ {% endcomment %}
+ 
+ 
+    	<span class="rowHead">Approved:</span>{{ sequencingRun.run_approved }}<br/>
+    	{% if sequencingRun.run_submitted == False %}
+       <a href="/submitSequencingRun/{{ sequencingRun.id}}">
+			<button type="button" class="btn btn-info pull-right"> Submit Unit</button>
+		</a>
+		 {% elif sequencingRun.run_submitted == True and sequencingRun.run_approved == True %}
+			<button type="button" class="btn btn-warning disabled pull-right">Approved</button> 
+		{% else %}
+			<button type="button" class="btn btn-primary disabled pull-right">Submitted</button>
+		{% endif %}
+{% else %}
+    <p>No data available.</p>
+{% endif %}
+<a type="button" class="btn btn-warning pull-right goBack" href="{% url 'detailProject' request.session.projectId %}">Go Back</a>
+<br/><br/>
+</div>
+{% endblock %} 
+

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+<div class="bodyContent container">
+{% if currentUserName %}
+	<p class="para">Welcome {{currentUserName}}!</p>
+{% endif %}
+<table class="table table-bordered table-hover table-responsive">
+<thead>
+  <tr>
+    <th class="tableHead">
+    	Active Projects
+    	<a class="pull-right" href="/addProject">
+			<button type="button" class="btn btn-success view_only">Add Project</button>
+		</a>
+    </th>
+  </tr>
+</thead>
+<tbody>
+{% if projects %}
+  {% for project in projects %}
+  <tr> 
+	<td>
+		<a href="/detailProject/{{project.pk}}">{{project.project_name}}</a>
+	</td>
+</tr>
+	{% endfor %}
+</tbody>
+{% else %}
+    <p>No data available.</p>
+</table>
+</div>
+{% endif %}
+{% endblock %} 

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>UMass-Dekker Lab</title>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css"/>
+ 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.js"></script>
+<script type="text/javascript" src="/static/siteWide/js/baseCustom.js"></script>
+
+<!-- Bootstrap Core CSS -->
+    <link href="/static/siteWide/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+    <!-- Custom Fonts -->
+    <link href="/static/siteWide/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- Custom CSS -->
+    <link href="/static/siteWide/css/landing-page.css" rel="stylesheet">
+    
+
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+        <div class="container topnav">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand topnav" href="#">Dekker Lab</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/home">Home</a>
+                    </li>
+                    <li>
+                        <a href="/showProject">Projects</a>
+                    </li>
+                    <!-- <li>
+                        <a href="/showSamples">Samples</a>
+                    </li> -->
+                    {% if request.session.currentGroup  ==  "admin"%}
+                    <li>
+                        <a href="/sequencingRunView">Sequencing Runs</a>
+                    </li>
+                    {% endif %}
+                     <li>
+                        <a style="color:#cf0b06;" href="/logout">Logout</a>
+                    </li>
+                    <li>
+                    	<br/>
+						 <form id="searchform" action="{% url 'searchView' %}" method="get" accept-charset="utf-8">
+						  <button class="searchbutton" type="submit">
+						    <i class="fa fa-search"></i>
+						  </button>
+						  <input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
+						</form>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+    {% block content %}
+     {% endblock %}
+</body>
+{% if request.session.view_only_user  ==  True%}
+	<input type="hidden" id="hdnSession" value=True />
+{% else %}
+	<input type="hidden" id="hdnSession" value=False />
+{% endif %}
+</html>

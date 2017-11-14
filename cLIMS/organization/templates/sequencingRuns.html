@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}
+
+ <script src="{% static "siteWide/js/show.js" %}"></script> 
+
+{% if sequencingRuns %}
+<div class="bodyContent container">
+<table class="table">
+<thead>
+  <tr>
+    <th class="tableHead">Sequencing Run Details</th>
+   </tr>
+</thead>
+<tbody>
+	{% for project, runs in sequencingRuns.items %}
+			<tr class="warning">
+				<td><span class="rowHead">Project Name:</span> {{ project }}</td>
+			</tr>
+	{% for run in runs %}
+		<tr>
+    <td>
+    	<span class="rowHead">SequencingRun Name:</span> <a href="/detailSequencingRun/{{run.id}}">{{ run.run_name }}</a>&nbsp;&nbsp;
+    	<span class="rowHead">Attached Experiments:</span>&nbsp;&nbsp;
+    	{% for values in run.run_Experiment.all %}
+	  		({{ forloop.counter }}) {{values}}&nbsp;&nbsp;
+		{% endfor %}
+		
+    	<span class="rowHead">Sequencing Platform:</span> {{ run.run_sequencing_platform }}&nbsp;&nbsp;
+    	<span class="rowHead">Sequencing Center:</span> {{ run.run_sequencing_center }}&nbsp;&nbsp;
+    	<span class="rowHead">SequencingRun Name:</span> {{ run.run_name }}&nbsp;&nbsp;
+    	<span class="rowHead">Submission Date:</span>{{ run.run_submission_date }}&nbsp;&nbsp;
+    	<span class="rowHead">Retrieval Date:</span>{{ run.run_retrieval_date }}&nbsp;&nbsp;
+
+    	<span class="rowHead">Submitted:</span>{{ run.run_submitted }}&nbsp;&nbsp;
+    	{% if run.run_submitted == True and run.run_approved == False %}
+        <a href="/approveSequencingRun/{{ run.id}}">
+			<button type="button" class="btn btn-info"> Approve Unit</button>
+		</a>
+		{% elif run.run_submitted == False and run.run_approved == False %}
+			<button type="button" class="btn btn-warning disabled"> Not Submitted</button>
+		{% else %}
+			<button type="button" class="btn btn-primary disabled">Approved</button>
+		{% endif %}
+    </td>
+  </tr>
+   {% endfor %}
+{% endfor %}
+</tbody>
+</table>
+{% else %}
+    <p>No data available.</p>
+{% endif %}
+<br/><br/>
+</div>
+{% endblock %} 
+

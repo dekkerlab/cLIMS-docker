@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}
+
+ <script src="{% static "siteWide/js/show.js" %}"></script> 
+{% if protocol %}
+<div class="bodyContent container">
+    <span class="tableHead">
+    	Protocol Details: {{ protocol.name }}
+    </span>
+   <a href="/deleteProtocol/{{ protocol.id }}">
+	<button type="button" class="btn btn-danger pull-right view_only">Delete Protocol</button>
+	</a>
+	<a href="/editProtocol/{{ protocol.id}}">
+		<button type="button" class="btn btn-warning pull-right view_only">Edit Protocol</button>
+	</a>
+	<br/>
+	
+    	<span class="rowHead">Protocol Attachment:</span>
+    	{% if not  protocol.attachment == None %} 
+    		<a href="/media/{{ protocol.attachment }}">{{ protocol.attachment }}</a>
+    	{% endif %}<br/>
+    	<span class="rowHead">Protocol Enzyme:</span>
+    	{% if not protocol.enzyme == None %}
+    		<a href="/detailEnzyme/{{ protocol.enzyme.id}}">{{ protocol.enzyme }}</a>
+    	{% endif %}
+    	<br/>
+    	<span class="rowHead">Protocol protocol_description:</span>{{ protocol.description }}<br/>
+    	
+{% else %}
+    <p>No data available.</p>
+{% endif %}
+<a type="button" class="btn btn-warning pull-right goBack" href="{% url 'detailExperiment' request.session.experimentId %}">Go Back</a>
+<br/><br/>
+</div>
+{% endblock %} 
+

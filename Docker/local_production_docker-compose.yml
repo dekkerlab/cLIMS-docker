@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+  db:
+    image: postgres:9.5
+    volumes:
+      - ../../pgdata:/var/lib/postgresql/data
+      - ../database-initialization_files:/docker-entrypoint-initdb.d
+      - ../../db_backups:/db_backups
+  web:
+    restart: always
+    build: .
+    environment:
+       - LOCAL_PRODUCTION=1
+    env_file:
+       - ./config/db_variables.env
+    command: bash /code/start_django_server.sh
+    volumes:
+      - ../cLIMS:/cLIMS
+      - ../../static:/cLIMS/static
+      - ../../media:/cLIMS/media
+    expose:
+      - "8080"
+    depends_on:
+      - db
+
+  nginx:
+    restart: always
+    image: nginx:1.12.1
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../../static:/static
+      - ../cLIMS:/src
+      - ./config/nginx/local_production:/etc/nginx/conf.d
+    depends_on:
+      - web
