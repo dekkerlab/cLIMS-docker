@@ -12,7 +12,7 @@ from organization.forms import *
 import json
 from organization.decorators import *
 from django.utils.decorators import method_decorator
-from cLIMS.base import LABNAME
+from cLIMS.base import *
 
 def createJSON(request, fieldTypePk):
     json_object = JsonObjField.objects.get(pk=fieldTypePk).field_set
