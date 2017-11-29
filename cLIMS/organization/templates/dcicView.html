@@ -28,6 +28,7 @@
       </tr>
       <form method="POST">
     {% csrf_token %}
+    
     {% for exp in experiments %}
 		<tr>
 			<td><input type="checkbox" name="dcic" value="{{exp.id}}" checked><br></td>

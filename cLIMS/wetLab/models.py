@@ -139,6 +139,8 @@ class Protocol(UserOwner):
     def __str__(self):
         return self.name
 
+
+
 class Biosource(References):
     biosource_name = models.CharField(max_length=50, null=False, unique=True, db_index=True, default="", validators=[alphanumeric])
     biosource_type =  models.ForeignKey('organization.Choice', on_delete=models.CASCADE, related_name='sourceChoice', help_text="The categorization of the biosource.")

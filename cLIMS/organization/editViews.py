@@ -743,7 +743,6 @@ class EditProtocol(UpdateView):
     @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,  *args, **kwargs)
-   
       
 @class_login_required 
 class DeleteProtocol(DeleteView):
