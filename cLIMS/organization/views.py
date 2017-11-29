@@ -780,6 +780,7 @@ class AddProtocol(View):
         form.fields["protocol_classification"].queryset = Choice.objects.filter(choice_type="protocol_classification")
         return render(request, "popup.html", pageContext)
     
+    
     def post(self,request):
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():

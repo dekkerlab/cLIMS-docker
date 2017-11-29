@@ -228,7 +228,6 @@ def appendFilterdcic(dcicExcelSheet,sheetname,entry):
     if(not(entry[0].split(":")[0]=="dcic")):
         dcicExcelSheet[sheetname].append(entry)
         
-
 def update_dcic(obj):
     obj.update_dcic = False
     obj.save()

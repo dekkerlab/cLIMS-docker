@@ -185,6 +185,7 @@ class BiosampleForm(ModelForm):
         fields = ['biosample_name','modifications','protocol','biosample_TreatmentRnai',
                   'biosample_TreatmentChemical','biosample_OtherTreatment','imageObjects','authentication_protocols','protocols_additional','biosample_type',
                   'references','document','url','dbxrefs','biosample_description']
+  
     
     def save (self, *args, **kwargs):
         if(self.instance.pk):
