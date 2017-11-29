@@ -83,7 +83,6 @@ $(function() {
 	}
 	
 	
-	
 
 	//$( ".formLabel:contains('Document')" ).append('<a href="/addDocumens/" class="add-another" id="add_id_document" onclick="return showAddAnotherPopup(this);"></a>');
 	
@@ -93,5 +92,23 @@ $(function() {
 		
 		
 	//}
-	
+		
+	$( "#autoPop" ).click(function() {
+		$('[name=experiment_type]').val("in situ Hi-C");
+		$('[name=biotin_removed]').val("Yes");
+		$('[name=crosslinking_method]').val("1% Formaldehyde");
+		$('[name=crosslinking_temperature]').val("23");
+		$('[name=crosslinking_time]').val("10");
+		$('[name=digestion_temperature]').val("37");
+		$('[name=digestion_time]').val("960");
+		$('[name=average_fragment_size]').val("350");
+		$('[name=fragment_size_range]').val("250-450");
+		$('[name=fragment_size_selection_method]').val("SPRI beads");
+		$('[name=fragmentation_method]').val("sonication");
+		$('[name=ligation_temperature]').val("16");
+		$('[name=ligation_time]').val("240");
+		$('[name=ligation_volume]').val("1.2");
+		$('[name=tagging_method]').val("biotin-dATP");
+	});
+
 });

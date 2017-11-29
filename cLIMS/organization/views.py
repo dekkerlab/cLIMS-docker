@@ -577,7 +577,7 @@ class AddExperiment(View):
         return render(request, self.template_name,{'form':form, 'form_class':"Experiment"})
     
     def post(self,request):
-        form = self.form_class(request.POST)
+        form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
             form = form.save(commit=False)
             form.project = Project.objects.get(pk=request.session['projectId'])
@@ -1107,7 +1107,7 @@ class AddSeqencingFile(View):
         if form.is_valid():
             file = form.save(commit=False)
             file.project = Project.objects.get(pk=request.session['projectId'])
-            file.sequencingFile_backupPath = "/s4s/" + file.sequencingFile_mainPath
+            file.sequencingFile_backupPath = ""
             file.sequencingFile_sha256sum = ""
             file.sequencingFile_md5sum = ""
             file.sequencingFile_exp = Experiment.objects.get(pk = self.request.session['experimentId'] )

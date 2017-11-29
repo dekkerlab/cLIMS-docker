@@ -9,7 +9,7 @@
 <link rel="stylesheet" type="text/css" href="/static/admin/css/base.css"/>
 <link rel="stylesheet" type="text/css" href="/static/admin/css/widgets.css"/>
 <link href="/static/siteWide/css/formSteps.css" rel="stylesheet">
-<script type="text/javascript" src="/static/siteWide/js/form.js"></script>
+<script type="text/javascript" src="{% static '/static/siteWide/js/form.js' %}"></script>
 <script>
 
 function makeReq() {
@@ -62,6 +62,9 @@ function makeReq() {
 					  {% endif %}
 			  	</div>
 				{% endfor %}
+				{% if form_class == "Experiment" %}
+				<button type="button" id="autoPop" class="btn btn-link pull-right">Auto populate fields with in situ Hi-C details</button><br/><br/>
+				{% endif %}
 				{% if jsonObj %}
 					  	<input type="text" class ="hidden" id = "jso" value="{{jsonObj}}">
 				{% endif %}
