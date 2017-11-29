@@ -134,6 +134,8 @@ class Protocol(UserOwner):
     description = models.CharField(max_length=200,  null=True, blank=True)
     dcic_alias = models.CharField(max_length=500, null=False, default="", unique=True, db_index=True, help_text="Provide an alias name for the object for DCIC submission.")
     update_dcic = models.BooleanField(default=False, help_text="This object needs to be updated at DCIC.")
+    protocol_classification = models.ForeignKey('organization.Choice', null=True, blank=True, on_delete=models.SET_NULL, help_text="A classification for a protocol or document that is more specific than it's type. "\
+                                                "For example, an Authentication document can be classified as a 'Cell Cycle Authentication' or a Biosample preparation protocol can be classified as 'Tissue Preparation Methods'")
     def __str__(self):
         return self.name
 
@@ -196,13 +198,15 @@ class Biosample(UserOwner, References):
     biosample_biosource =  models.ForeignKey(Biosource, on_delete=models.CASCADE, related_name='bioSource', help_text="The cell lines or tissue types used in the experiment")
     biosample_individual =  models.ForeignKey(Individual,on_delete=models.CASCADE, related_name='bioIndi')
     modifications =  models.ManyToManyField(Modification, related_name='bioMod', blank=True, help_text="Expression or targeting vectors stably transfected to generate Crispr'ed or other genomic modification")
-    protocol =  models.ForeignKey(Protocol, null=True, blank=True, on_delete=models.CASCADE, related_name='bioProto', verbose_name="Growth protocol", help_text="Information about biosample preparation protocols.")
+    protocol =  models.ForeignKey(Protocol, null=True, blank=True, on_delete=models.SET_NULL, related_name='bioProto', verbose_name="Growth protocol", help_text="Information about biosample preparation protocols.")
     biosample_TreatmentRnai =  models.ManyToManyField(TreatmentRnai, blank=True, related_name='biosamTreatmentRnai', help_text="Select previously created treatment")
     biosample_TreatmentChemical =  models.ManyToManyField(TreatmentChemical, blank=True, related_name='biosamTreatmentChemical', help_text="Select previously created treatment")
     biosample_OtherTreatment =  models.ManyToManyField(OtherTreatment, blank=True, related_name='biosamOtherTreatment', help_text="Select previously created treatment")
     biosample_type =  models.ForeignKey('organization.JsonObjField',on_delete=models.CASCADE, related_name='biotype', null=False, default="", verbose_name="BiosampleCellCulture Details",help_text="JsonObjField")
     biosample_fields = JSONField(  null=True, blank=True)
-    imageObjects = models.ManyToManyField( 'dryLab.ImageObjects', related_name='bioImg', blank=True, help_text="Cell growth images, karyotype_image, morphology_image.")
+    imageObjects = models.ManyToManyField( 'dryLab.ImageObjects', related_name='bioImg', blank=True, help_text="Cell growth images, morphology_image.")
+    authentication_protocols = models.ManyToManyField(Protocol, blank=True, related_name='bioProtoimg', 
+                                                      help_text="One or more Protocol objects that are linked to authentication images or documents, e.ge. karyotype_image.")
     protocols_additional =  models.ManyToManyField(Protocol,blank=True, related_name='bioAddProto', 
                                                    help_text="Protocols describing deviations from 4DN SOPs, including additional culture manipulations eg. stem cell differentiation or cell cycle synchronization if they do not follow recommended 4DN SOPs"
                                                    )

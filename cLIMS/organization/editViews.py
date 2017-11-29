@@ -735,6 +735,7 @@ class EditProtocol(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(EditProtocol , self).get_context_data(**kwargs)
         context['form'].fields["protocol_type"].queryset = Choice.objects.filter(choice_type="protocol_type")
+        context['form'].fields["protocol_classification"].queryset = Choice.objects.filter(choice_type="protocol_classification")
         context['action'] = reverse('detailExperiment',
                                 kwargs={'pk': self.get_object().id})
         return context  

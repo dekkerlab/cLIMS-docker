@@ -19,11 +19,14 @@
         {% endfor %}
 {% endif %}
 <table class="table table-bordered table-hover table-responsive">
-  	<tr>
-  		<td class="col-xs-6"><span class="rowHead">DCIC Export or Finalize DCIC Submission</span><br/>**If nothing is selected by default it will take all experiments</td>
-		<td><span class="rowHead">Experiment Name</span></td>
-  	</tr>
-  	<form method="POST">
+      <tr>
+          
+          <td class="col-xs-6"><span class="rowHead">DCIC Export or Finalize DCIC Submission</span><br/>**If nothing is selected by default it will take all experiments<br/>
+          <input type="checkbox" id="checkAll" checked/> Uncheck/Check all
+          </td>
+        <td><span class="rowHead">Experiment Name</span></td>
+      </tr>
+      <form method="POST">
     {% csrf_token %}
   	
     {% for exp in experiments %}
