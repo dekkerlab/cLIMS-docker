@@ -306,9 +306,14 @@
 </div>
 {% endfor %}
 
+{% if biosample.authentication_protocols.all%}
+<span class="rowHead">Authentication Protocol Documents: </span><br/>
+{% for values in biosample.authentication_protocols.all %}
+            ({{ forloop.counter }}) <a href="/detailProtocol/{{ values.id }}">{{values}}</a><br/>
+{% endfor %}
+{% endif %}
 </div></div>
 {% endif %}
-
 
 {% if treatmentRnai %}
 <hr/>

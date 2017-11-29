@@ -777,6 +777,7 @@ class AddProtocol(View):
         form = self.form_class()
         pageContext = {'form': form, 'field':self.field}
         form.fields["protocol_type"].queryset = Choice.objects.filter(choice_type="protocol_type")
+        form.fields["protocol_classification"].queryset = Choice.objects.filter(choice_type="protocol_classification")
         return render(request, "popup.html", pageContext)
     
     def post(self,request):
@@ -798,6 +799,7 @@ class AddProtocol(View):
         else:
             pageContext = {'form': form, 'field':self.field}
             form.fields["protocol_type"].queryset = Choice.objects.filter(choice_type="protocol_type")
+            form.fields["protocol_classification"].queryset = Choice.objects.filter(choice_type="protocol_classification")
             return render(request, "popup.html", pageContext)
 
     @method_decorator(view_only)

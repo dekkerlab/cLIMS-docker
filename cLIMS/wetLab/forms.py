@@ -169,7 +169,11 @@ class BiosampleForm(ModelForm):
     biosample_OtherTreatment= forms.ModelMultipleChoiceField(OtherTreatment.objects.all(), widget=MultipleSelectWithPop, required=False,
                                                              help_text="Select previously created treatment", label_suffix='addOther')
     imageObjects = forms.ModelMultipleChoiceField (ImageObjects.objects.all(), widget=MultipleSelectWithPop, required=False,
-                                                    help_text="Cell growth images, karyotype_image, morphology_image.", label_suffix='addImageObjects')
+                                                    help_text="Cell growth images, morphology_image.", label_suffix='addImageObjects')
+    authentication_protocols = forms.ModelMultipleChoiceField(Protocol.objects.filter(protocol_type__choice_name="Authentication document"), widget=MultipleSelectWithPop, required=False,
+                                                              help_text="One or more Protocol objects that are linked to authentication images or documents, e.ge. karyotype_image.",
+                                                              label_suffix='addProtocol')
+    
     protocols_additional = forms.ModelMultipleChoiceField (Protocol.objects.all(), widget=MultipleSelectWithPop, required=False,
                                                            label_suffix='addProtocol',
                                                            help_text="Protocols describing deviations from 4DN SOPs, including additional culture manipulations eg. stem cell differentiation \
@@ -179,7 +183,7 @@ class BiosampleForm(ModelForm):
         model = Biosample
         exclude = ('biosample_fields','userOwner','biosample_biosource', 'biosample_individual','dcic_alias','update_dcic',)
         fields = ['biosample_name','modifications','protocol','biosample_TreatmentRnai',
-                  'biosample_TreatmentChemical','biosample_OtherTreatment','imageObjects','protocols_additional','biosample_type',
+                  'biosample_TreatmentChemical','biosample_OtherTreatment','imageObjects','authentication_protocols','protocols_additional','biosample_type',
                   'references','document','url','dbxrefs','biosample_description']
     
     def save (self, *args, **kwargs):
