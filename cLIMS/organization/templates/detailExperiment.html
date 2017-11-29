@@ -235,7 +235,12 @@
 <span class="rowHead">Biosample Name: </span>{{biosample.biosample_name}}<br/>
 <span class="rowHead">Biosample Biosource: </span>{{biosample.biosample_biosource}}<br/>
 <span class="rowHead">Biosample Individual: </span>{{ biosample.biosample_individual }}<br/>
-<span class="rowHead">Biosample Modification: </span>{{ biosample.biosample_modification }}<br/>
+{% if biosample.modifications.all %}
+<span class="rowHead">Biosample Modifications: </span><br/>
+    	{% for values in biosample.modifications.all %}
+	    			({{ forloop.counter }}) {{values}}<br/>
+	  	{% endfor %}
+{% endif %}
 {% if not biosample.protocol  == None %}
 <span class="rowHead">Biosample Protocol: </span><a href="/detailProtocol/{{ biosample.protocol.id }}">{{ biosample.protocol }}</a><br/>
 {% endif %}
@@ -432,38 +437,42 @@
 </div></div>
 {% endif %}
 
+
 {% if modification %}
+
 <hr/>
 <div class="infoBlock">
 <a style="cursor: pointer;"><i class="fa fa-plus-square-o expand" aria-hidden="true"></i></a>
 <a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
 <span class="tableHead">Associated Biosample Modification</span><br/>
 <div class="divData hidden">
-<a href="/deleteModification/{{ modification.id }}">
+{% for mod in modification.all %}
+<a href="/deleteModification/{{ mod.id }}">
 	<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
 </a>
-<a href="/editModification/{{modification.id}}">
+<a href="/editModification/{{mod.id}}">
 	<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
 </a>
-		<span class="rowHead">Modification Name: </span>{{modification.modification_name}}<br/>
-		<span class="rowHead">Modification Type: </span>{{modification.modification_type}}<br/>
-		<span class="rowHead">Modification Constructs:</span><a href="/detailConstruct/{{modification.constructs.id}}">{{modification.constructs}}</a><br/>
-		<span class="rowHead">Modification Vendor: </span>{{modification.modification_vendor}}<br/>
-		<span class="rowHead">Modification gRNA: </span>{{modification.modification_gRNA}}<br/>
-		<span class="rowHead">Modification Genomic Regions: </span><a href="/detailGenomicRegions/{{modification.modification_genomicRegions.id}}">{{modification.modification_genomicRegions}}</a><br/>
-		<span class="rowHead">Modification Target: </span><a href="/detailTarget/{{modification.target.id}}">{{modification.target}}</a><br/>
-		<span class="rowHead">Modification Description: </span>{{modification.modification_description}}<br/>
-		<span class="rowHead">Modification URL: </span>{{modification.url}}<br/>
+		<span class="rowHead">Modification Name: </span>{{mod.modification_name}}<br/>
+		<span class="rowHead">Modification Type: </span>{{mod.modification_type}}<br/>
+		<span class="rowHead">Modification Constructs:</span><a href="/detailConstruct/{{mod.constructs.id}}">{{mod.constructs}}</a><br/>
+		<span class="rowHead">Modification Vendor: </span>{{mod.modification_vendor}}<br/>
+		<span class="rowHead">Modification gRNA: </span>{{mod.modification_gRNA}}<br/>
+		<span class="rowHead">Modification Genomic Regions: </span><a href="/detailGenomicRegions/{{mod.modification_genomicRegions.id}}">{{mod.modification_genomicRegions}}</a><br/>
+		<span class="rowHead">Modification Target: </span><a href="/detailTarget/{{mod.target.id}}">{{mod.target}}</a><br/>
+		<span class="rowHead">Modification Description: </span>{{mod.modification_description}}<br/>
+		<span class="rowHead">Modification URL: </span>{{mod.url}}<br/>
 		
 		{% if not modification.document  == None %}
-		<span class="rowHead">Modification Documents: </span><a href="/detailDocument/{{modification.document.id}}">{{modification.document}}</a><br/>
+		<span class="rowHead">Modification Documents: </span><a href="/detailDocument/{{mod.document.id}}">{{mod.document}}</a><br/>
 		{% endif %}
 		
 		{% if not modification.references  == None %}
-		<span class="rowHead">Modification References: </span><a href="/detailPublication/{{ modification.references.id }}">{{modification.references}}</a><br/>
+		<span class="rowHead">Modification References: </span><a href="/detailPublication/{{ mod.references.id }}">{{mod.references}}</a><br/>
 		{% endif %}
 		
-		<span class="rowHead">Modification DBxrefs: </span>{{modification.dbxrefs}}<br/>
+		<span class="rowHead">Modification DBxrefs: </span>{{mod.dbxrefs}}<br/>
+{% endfor %}
 </div></div>
 {% endif %}
 
@@ -479,6 +488,9 @@
 <a style="cursor: pointer;"><i class="fa fa-plus-square-o expand" aria-hidden="true"></i></a>
 <a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
 <span class="tableHead">Associated Seqencing Files</span><br/>
+{% for file in seqencingFiles %}
+ ({{ forloop.counter }}) {{file.sequencingFile_mainPath}} <br/><br/>
+{% endfor %}
 <div class="divData hidden">
 		{% for file in seqencingFiles %}
 		<a href="/deleteSequencingFile/{{ file.id }}">
@@ -509,9 +521,9 @@
 		<span class="rowHead">Paired File: </span>{{file.related_files}}<br/>
 		<span class="rowHead">Read Length: </span>{{file.read_length}}<br/>
 		<span class="rowHead">Sequencing File Main Path: </span>{{file.sequencingFile_mainPath}}<br/>
-		<span class="rowHead">Sequencing File Backup Path: </span>{{file.sequencingFile_backupPath}}<br/>
-		<span class="rowHead">Sequencing File sha256sum: </span>{{file.sequencingFile_sha256sum}}<br/>
-		<span class="rowHead">Sequencing File md5sum: </span>{{file.sequencingFile_md5sum}}<br/>
+	{#	<span class="rowHead">Sequencing File Backup Path: </span>{{file.sequencingFile_backupPath}}<br/> #}
+	{#	<span class="rowHead">Sequencing File sha256sum: </span>{{file.sequencingFile_sha256sum}}<br/> #}
+	{#	<span class="rowHead">Sequencing File md5sum: </span>{{file.sequencingFile_md5sum}}<br/> #}
 		<span class="rowHead">Sequencing File Run: </span>{{file.sequencingFile_run}}<br/>
 		<span class="rowHead">Sequencing File Exp: </span>{{file.sequencingFile_exp}}<br/>
 		<span class="rowHead">Sequencing dbxrefs: </span>{{file.dbxrefs}}<br/>
