@@ -232,7 +232,7 @@ class DetailExperiment(View):
                 biosource = Biosource.objects.get(bioSource__pk=biosample.pk)
                 if(Individual.objects.filter(sourceInd__pk=biosource.pk)):
                     individual = Individual.objects.filter(sourceInd__pk=biosource.pk)
-                if(Modification.objects.filter(biosMod__pk=biosample.pk)):
+                if(Modification.objects.filter(biosMod__pk=biosource.pk)):
                     modificationBio = Modification.objects.filter(biosMod__pk=biosource.pk)
             if(TreatmentRnai.objects.filter(biosamTreatmentRnai=biosample.pk)):
                 treatmentRnai = TreatmentRnai.objects.filter(biosamTreatmentRnai=biosample.pk)
@@ -579,16 +579,20 @@ class AddExperiment(View):
     def post(self,request):
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
-            form = form.save(commit=False)
-            form.project = Project.objects.get(pk=request.session['projectId'])
-            form.experiment_biosample = Biosample.objects.get(pk=request.session['biosamplePK'])
+            exp = form.save(commit=False)
+            exp.project = Project.objects.get(pk=request.session['projectId'])
+            exp.experiment_biosample = Biosample.objects.get(pk=request.session['biosamplePK'])
             
             if(request.POST.get('type')):
                 exp_type = request.POST.get('type')
-                form.experiment_fields = createJSON(request, exp_type)
-            aliasList=["Experiment",form.project.project_name,form.experiment_name]
-            form.dcic_alias = LABNAME +"_".join(aliasList)
-            form.save()
+                exp.experiment_fields = createJSON(request, exp_type)
+            aliasList=["Experiment",exp.project.project_name,exp.experiment_name]
+            exp.dcic_alias = LABNAME +"_".join(aliasList)
+            auth = request.POST.getlist('authentication_docs')
+            exp.save()
+            for a in auth:
+                auDoc = Protocol.objects.get(pk=a)
+                exp.authentication_docs.add(auDoc)
             return HttpResponseRedirect('/detailProject/'+request.session['projectId'])
         else:
             form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=request.session['projectId'])

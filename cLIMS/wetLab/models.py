@@ -75,7 +75,7 @@ class  GenomicRegions(models.Model):
         verbose_name_plural = 'GenomicRegions'
     
 class  Target(References):
-    name = models.CharField(max_length=50, null=False, default="", unique=True, db_index=True, help_text="Please give a name.", validators=[alphanumeric])
+    name = models.CharField(max_length=50, null=True, blank=True, unique=True, db_index=True, help_text="Please give a name.", validators=[alphanumeric])
     targeted_genes = models.CharField(max_length=200, null=True, blank=True, help_text="The genes that are specifically targeted - can also be derived from genomic region info.")
     targeted_region =  models.ForeignKey(GenomicRegions, null=True, blank=True, related_name='targetGenAsm', on_delete=models.CASCADE, help_text="The genome assembly, chromosome and coordinates of the region that is targeted")
     target_description = models.CharField(max_length=200,  null=True, blank=True, help_text="A brief plain text description of the target.")
