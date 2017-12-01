@@ -36,7 +36,7 @@ class ModificationForm(ModelForm):
 
 class ConstructForm(ModelForm):
     use_required_attribute = False
-    document = forms.ModelChoiceField(Document.objects.all(), widget=SelectWithPop, required=False, label="Construct Map", help_text="Map of the construct - document", 
+    construct_map = forms.ModelChoiceField(Document.objects.all(), widget=SelectWithPop, required=False, label="Construct Map", help_text="Map of the construct - document", 
                                       label_suffix='addDocumens')
     class Meta:
         model = Construct
@@ -67,7 +67,7 @@ class TargetForm(ModelForm):
     class Meta:
         model = Target
         exclude = ('dcic_alias','update_dcic',)
-        fields = ['name','targeted_genes','targeted_region','targeted_proteins','targeted_rnas','targeted_structure','references','document','url','dbxrefs']
+        fields = ['target_name','targeted_genes','targeted_region','targeted_proteins','targeted_rnas','targeted_structure','references','document','url','dbxrefs']
     
     def save (self, *args, **kwargs):
         if(self.changed_data != None):

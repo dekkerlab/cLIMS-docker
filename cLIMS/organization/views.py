@@ -604,7 +604,7 @@ class AddExperiment(View):
         return super().dispatch(request,  *args, **kwargs)
 
 @class_login_required
-class AddModification(View): 
+class AddModification(View):
     template_name = 'modificationForm.html'
     error_page = 'error.html'
     form_class = ModificationForm
@@ -637,16 +637,16 @@ class AddModification(View):
                 construct.dcic_alias = LABNAME +"_".join(aliasList)
                 construct.save()
                 modification.constructs = construct
-            if(regions_form['name'].value() != ""):
+            if(regions_form['genomicRegions_name'].value() != ""):
                 regions = regions_form.save(commit= False)
-                aliasList=["GenomicRegion",regions.name]
+                aliasList=["GenomicRegion",regions.genomicRegions_name]
                 regions.dcic_alias = LABNAME +"_".join(aliasList)
                 regions.save()
                 modification.modification_genomicRegions = regions
-            if(target_form['name'].value() != ""):
+            if(target_form['target_name'].value() != ""):
                 target = target_form.save(commit= False)
                 target.targeted_region = regions
-                aliasList=["Target",target.name]
+                aliasList=["Target",target.target_name]
                 target.dcic_alias = LABNAME +"_".join(aliasList)
                 target.save()
                 modification.target = target
@@ -718,7 +718,7 @@ class AddTarget(View):
             newObject = None
             try:
                 newObject = form.save(commit= False)
-                aliasList=["Target",newObject.name]
+                aliasList=["Target",newObject.target_name]
                 newObject.dcic_alias = LABNAME +"_".join(aliasList)
                 newObject.save()
             
@@ -753,7 +753,7 @@ class AddGenomicRegions(View):
             newObject = None
             try:
                 newObject = form.save(commit= False)
-                aliasList=["GenomicRegion",newObject.name]
+                aliasList=["GenomicRegion",newObject.genomicRegions_name]
                 newObject.dcic_alias = LABNAME +"_".join(aliasList)
                 newObject.save()
             
