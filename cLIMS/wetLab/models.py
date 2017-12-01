@@ -46,7 +46,7 @@ class Construct(models.Model):
     construct_vendor = models.ForeignKey(Vendor,related_name='conVendor',null=True, blank=True, help_text="The Lab or Vendor that provided the construct.")
     construct_designed_to_Target = models.CharField(max_length=200, null=True, blank=True, help_text="The gene or genomic region that this construct is designed to target")
     construct_insert_sequence = models.CharField(max_length=200, null=True, blank=True, help_text="Nucleotide Sequence of the Insert")
-    document =  models.ForeignKey(Document,verbose_name="construct_map",related_name='conDoc',null=True, blank=True, on_delete=models.CASCADE, help_text="Map of the construct - document")
+    construct_map =  models.ForeignKey(Document,verbose_name="construct_map",related_name='conDoc',null=True, blank=True, on_delete=models.CASCADE, help_text="Map of the construct - document")
     construct_tag = models.CharField(max_length=200, null=True, blank=True, help_text="String describing tags the construct contains.")
     construct_vector_backbone = models.CharField(max_length=200, null=True, blank=True, help_text="The vector backbone for this construct")
     construct_description = models.CharField(max_length=200, null=True, blank=True, help_text="A plain text description of the construct.")
@@ -59,7 +59,7 @@ class Construct(models.Model):
         
 
 class  GenomicRegions(models.Model):
-    name = models.CharField(max_length=50, null=False, default="", unique=True, db_index=True, help_text="Please give a name.", validators=[alphanumeric])
+    genomicRegions_name = models.CharField(max_length=50, null=False, default="", unique=True, db_index=True, help_text="Please give a name.", validators=[alphanumeric])
     genomicRegions_genome_assembly = models.ForeignKey('organization.Choice',related_name='genAsmChoice', null=False, default="", on_delete=models.CASCADE, help_text="The genome assembly from which the region was derived", validators=[alphanumeric])
     genomicRegions_chromosome = models.ForeignKey('organization.Choice',related_name='chrChoice',null=True, blank=True, help_text="The chromosome containing the region")
     genomicRegions_start_coordinate =  models.IntegerField(null=True, blank=True, help_text="The base position of the start coordinate of the region - start < end")
@@ -70,12 +70,12 @@ class  GenomicRegions(models.Model):
     dcic_alias = models.CharField(max_length=500, null=False, default="", unique=True, db_index=True, help_text="Provide an alias name for the object for DCIC submission.")
     update_dcic = models.BooleanField(default=False, help_text="This object needs to be updated at DCIC.")
     def __str__(self):
-        return self.name
+        return self.genomicRegions_name
     class Meta:
         verbose_name_plural = 'GenomicRegions'
     
 class  Target(References):
-    name = models.CharField(max_length=50, null=True, blank=True, unique=True, db_index=True, help_text="Please give a name.", validators=[alphanumeric])
+    target_name = models.CharField(max_length=50, null=True, blank=True, unique=True, db_index=True, help_text="Please give a name.", validators=[alphanumeric])
     targeted_genes = models.CharField(max_length=200, null=True, blank=True, help_text="The genes that are specifically targeted - can also be derived from genomic region info.")
     targeted_region =  models.ForeignKey(GenomicRegions, null=True, blank=True, related_name='targetGenAsm', on_delete=models.CASCADE, help_text="The genome assembly, chromosome and coordinates of the region that is targeted")
     target_description = models.CharField(max_length=200,  null=True, blank=True, help_text="A brief plain text description of the target.")
@@ -85,7 +85,7 @@ class  Target(References):
     dcic_alias = models.CharField(max_length=500, null=False, default="", unique=True, db_index=True, help_text="Provide an alias name for the object for DCIC submission.")
     update_dcic = models.BooleanField(default=False, help_text="This object needs to be updated at DCIC.")
     def __str__(self):
-        return self.name
+        return self.target_name
 
 class Modification(UserOwner,References): 
     modification_name = models.CharField(max_length=50, null=False, unique=True, db_index=True, default="", validators=[alphanumeric])
