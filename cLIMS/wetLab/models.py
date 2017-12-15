@@ -60,7 +60,7 @@ class Construct(models.Model):
 
 class  GenomicRegions(models.Model):
     genomicRegions_name = models.CharField(max_length=100, null=False, default="", unique=True, db_index=True, help_text="Please give a name.", validators=[alphanumeric])
-    genomicRegions_genome_assembly = models.ForeignKey('organization.Choice',related_name='genAsmChoice', null=False, default="", on_delete=models.SET_NULL, help_text="The genome assembly from which the region was derived", validators=[alphanumeric])
+    genomicRegions_genome_assembly = models.ForeignKey('organization.Choice',related_name='genAsmChoice', null=True, default="", on_delete=models.SET_NULL, help_text="The genome assembly from which the region was derived", validators=[alphanumeric])
     genomicRegions_chromosome = models.ForeignKey('organization.Choice',related_name='chrChoice',null=True, blank=True, help_text="The chromosome containing the region")
     genomicRegions_start_coordinate =  models.IntegerField(null=True, blank=True, help_text="The base position of the start coordinate of the region - start < end")
     genomicRegions_end_coordinate = models.IntegerField(null=True, blank=True, help_text="The base position of the end coordinate - end > start")
