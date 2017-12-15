@@ -1457,6 +1457,10 @@ class CloneExperimentList(View):
     def post(self,request):
         selectedExpPK = request.POST.get("clone")
         return HttpResponseRedirect('/cloneExperiment/'+selectedExpPK)
+    
+    @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
 
 @class_login_required        
 class CloneExperiment(View): 
@@ -1501,6 +1505,8 @@ class CloneExperiment(View):
             return HttpResponseRedirect('/detailProject/'+request.session['projectId'])
         else:
             return render(request, self.template_name,{'form':form, 'form_class':"Experiment Clone"})
-    
-    
+        
+    @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
     
