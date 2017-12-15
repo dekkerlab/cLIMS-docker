@@ -11,7 +11,7 @@ class UserOwner (models.Model):
         abstract = True
 
 class Document(models.Model):
-    name = models.CharField(max_length=50, null=False, default="", unique=True, db_index=True, help_text="Name of the document", validators=[alphanumeric])
+    name = models.CharField(max_length=100, null=False, default="", unique=True, db_index=True, help_text="Name of the document", validators=[alphanumeric])
     description = models.CharField(max_length=200, null=False, default="")
     type = models.ForeignKey('organization.Choice',related_name='docChoice',on_delete=models.CASCADE, help_text="The category that best describes the document.")
     attachment = models.FileField(upload_to='uploads/')
@@ -41,7 +41,7 @@ class Vendor(models.Model):
         return self.vendor_title    
     
 class Construct(models.Model):
-    construct_name = models.CharField(max_length=50, null=False, default="", unique=True, db_index=True, help_text="Short name for construct - letters, numbers, hyphens or underscores allowed (no spaces)", validators=[alphanumeric])
+    construct_name = models.CharField(max_length=100, null=False, default="", unique=True, db_index=True, help_text="Short name for construct - letters, numbers, hyphens or underscores allowed (no spaces)", validators=[alphanumeric])
     construct_type = models.ForeignKey('organization.Choice',related_name='conChoice', null=True, blank=True, on_delete=models.CASCADE, help_text="The categorization of the construct.")
     construct_vendor = models.ForeignKey(Vendor,related_name='conVendor',null=True, blank=True, help_text="The Lab or Vendor that provided the construct.")
     construct_designed_to_Target = models.CharField(max_length=200, null=True, blank=True, help_text="The gene or genomic region that this construct is designed to target")
@@ -59,8 +59,8 @@ class Construct(models.Model):
         
 
 class  GenomicRegions(models.Model):
-    genomicRegions_name = models.CharField(max_length=50, null=False, default="", unique=True, db_index=True, help_text="Please give a name.", validators=[alphanumeric])
-    genomicRegions_genome_assembly = models.ForeignKey('organization.Choice',related_name='genAsmChoice', null=False, default="", on_delete=models.CASCADE, help_text="The genome assembly from which the region was derived", validators=[alphanumeric])
+    genomicRegions_name = models.CharField(max_length=100, null=False, default="", unique=True, db_index=True, help_text="Please give a name.", validators=[alphanumeric])
+    genomicRegions_genome_assembly = models.ForeignKey('organization.Choice',related_name='genAsmChoice', null=False, default="", on_delete=models.SET_NULL, help_text="The genome assembly from which the region was derived", validators=[alphanumeric])
     genomicRegions_chromosome = models.ForeignKey('organization.Choice',related_name='chrChoice',null=True, blank=True, help_text="The chromosome containing the region")
     genomicRegions_start_coordinate =  models.IntegerField(null=True, blank=True, help_text="The base position of the start coordinate of the region - start < end")
     genomicRegions_end_coordinate = models.IntegerField(null=True, blank=True, help_text="The base position of the end coordinate - end > start")
@@ -75,7 +75,7 @@ class  GenomicRegions(models.Model):
         verbose_name_plural = 'GenomicRegions'
     
 class  Target(References):
-    target_name = models.CharField(max_length=50, null=True, blank=True, unique=True, db_index=True, help_text="Please give a name.", validators=[alphanumeric])
+    target_name = models.CharField(max_length=100, null=False, default="", unique=True, db_index=True, help_text="Please give a name.", validators=[alphanumeric])
     targeted_genes = models.CharField(max_length=200, null=True, blank=True, help_text="The genes that are specifically targeted - can also be derived from genomic region info.")
     targeted_region =  models.ForeignKey(GenomicRegions, null=True, blank=True, related_name='targetGenAsm', on_delete=models.CASCADE, help_text="The genome assembly, chromosome and coordinates of the region that is targeted")
     target_description = models.CharField(max_length=200,  null=True, blank=True, help_text="A brief plain text description of the target.")
@@ -88,7 +88,7 @@ class  Target(References):
         return self.target_name
 
 class Modification(UserOwner,References): 
-    modification_name = models.CharField(max_length=50, null=False, unique=True, db_index=True, default="", validators=[alphanumeric])
+    modification_name = models.CharField(max_length=100, null=False, unique=True, db_index=True, default="", validators=[alphanumeric])
     modification_type = models.ForeignKey('organization.Choice',related_name='modChoice',on_delete=models.CASCADE, help_text="The type of genomic modification.")
     constructs = models.ForeignKey(Construct,related_name='modConstructs', on_delete=models.CASCADE, null=True, blank=True,help_text="Recombinant constructs used to make modification.")
     modification_vendor = models.ForeignKey(Vendor,related_name='modVendor',on_delete=models.CASCADE, null=True, blank=True, help_text="Lab or Company that produced the modfication")
@@ -103,7 +103,7 @@ class Modification(UserOwner,References):
  
 
 class Individual(References, UserOwner):
-    individual_name = models.CharField(max_length=50, null=False, unique=True, db_index=True, default="", validators=[alphanumeric])
+    individual_name = models.CharField(max_length=100, null=False, unique=True, db_index=True, default="", validators=[alphanumeric])
     individual_vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='indVen',null=True, blank=True)
     individual_type = models.ForeignKey('organization.JsonObjField',related_name='indType',  help_text="JsonObjField")
     individual_fields = JSONField(null=True, blank=True)
@@ -127,7 +127,7 @@ class Enzyme(References):
 
      
 class Protocol(UserOwner):
-    name =  models.CharField(max_length=50, null=False, unique=True, db_index=True, default="", validators=[alphanumeric])
+    name =  models.CharField(max_length=100, null=False, unique=True, db_index=True, default="", validators=[alphanumeric])
     attachment = models.FileField(upload_to='uploads/', null=True, blank=True)
     enzyme = models.ForeignKey(Enzyme, on_delete=models.CASCADE, related_name='proEnzyme',null=True, blank=True)
     protocol_type = models.ForeignKey('organization.Choice', null=True, blank=True, on_delete=models.SET_NULL, related_name='protoChoice', help_text="The category that best describes the protocol or document.")
@@ -142,7 +142,7 @@ class Protocol(UserOwner):
 
 
 class Biosource(References):
-    biosource_name = models.CharField(max_length=50, null=False, unique=True, db_index=True, default="", validators=[alphanumeric])
+    biosource_name = models.CharField(max_length=100, null=False, unique=True, db_index=True, default="", validators=[alphanumeric])
     biosource_type =  models.ForeignKey('organization.Choice', on_delete=models.CASCADE, related_name='sourceChoice', help_text="The categorization of the biosource.")
     biosource_cell_line = models.CharField(max_length=200,  null=True, blank=True, help_text="Ontology term for the cell line used.")
     biosource_cell_line_tier = models.ForeignKey('organization.Choice', null=True, blank=True, on_delete=models.CASCADE, verbose_name="4DN cell line tier", related_name='bioCellChoice', help_text="Tier into which the cell line has been classified")
@@ -161,7 +161,7 @@ class Biosource(References):
  
      
 class TreatmentRnai(References, UserOwner):
-    treatmentRnai_name = models.CharField(max_length=50, null=False, default="", unique=True, db_index=True, validators=[alphanumeric])
+    treatmentRnai_name = models.CharField(max_length=100, null=False, default="", unique=True, db_index=True, validators=[alphanumeric])
     treatmentRnai_type = models.ForeignKey('organization.Choice',on_delete=models.CASCADE, related_name='rnaiType')
     constructs= models.ForeignKey(Construct, on_delete=models.CASCADE, related_name='rnaiType',null=True, blank=True, verbose_name="treatmentRnai_constructs", help_text="Recombinant constructs used for RNAi")
     treatmentRnai_vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='rnaiVendor',null=True, blank=True, help_text="RNAi center that provided the RNAi.")
@@ -174,7 +174,7 @@ class TreatmentRnai(References, UserOwner):
         return self.treatmentRnai_name
 
 class TreatmentChemical(References, UserOwner):
-    treatmentChemical_name = models.CharField(max_length=50, null=False, unique=True, db_index=True, default="", validators=[alphanumeric])
+    treatmentChemical_name = models.CharField(max_length=100, null=False, unique=True, db_index=True, default="", validators=[alphanumeric])
     treatmentChemical_chemical = models.CharField(max_length=50, null=False, default="")
     treatmentChemical_concentration = models.FloatField(max_length=10, null=True, blank=True)
     treatmentChemical_concentration_units = models.ForeignKey('organization.Choice',on_delete=models.CASCADE, null=True, blank=True, related_name='conUnits')
@@ -195,7 +195,7 @@ class OtherTreatment(References, UserOwner):
         return self.name
 
 class Biosample(UserOwner, References):
-    biosample_name = models.CharField(max_length=50, null=False, unique=True, db_index=True, default="", validators=[alphanumeric])
+    biosample_name = models.CharField(max_length=100, null=False, unique=True, db_index=True, default="", validators=[alphanumeric])
     biosample_biosource =  models.ForeignKey(Biosource, on_delete=models.CASCADE, related_name='bioSource', help_text="The cell lines or tissue types used in the experiment")
     biosample_individual =  models.ForeignKey(Individual,on_delete=models.CASCADE, related_name='bioIndi')
     modifications =  models.ManyToManyField(Modification, related_name='bioMod', blank=True, help_text="Expression or targeting vectors stably transfected to generate Crispr'ed or other genomic modification")

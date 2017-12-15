@@ -613,6 +613,7 @@ class AddModification(View):
     target_form = TargetForm
     
     def get(self,request):
+        #messages.info(request,"Fill genomic regions if different than target.")
         form = self.form_class()
         construct_form = self.construct_form()
         regions_form = self.regions_form()
@@ -1439,7 +1440,67 @@ class DcicFinalizeSubmission(View):
         exportDCIC(request)
         request.session['finalizeOnly'] = False
         return HttpResponseRedirect('/detailProject/'+request.session['projectId'])
-        
+
+
+@class_login_required
+class CloneExperimentList(View):
+    template_name = 'cloneExperimentList.html'
+    error_page = 'error.html'
+    def get(self,request):
+        projectId = request.session['projectId']
+        context = {}
+        project = Project.objects.get(pk=projectId)
+        experiments=Experiment.objects.filter(project=projectId).order_by('-pk')
+        context['project']= project
+        context['experiments']= experiments
+        return render(request, self.template_name, context)
+    def post(self,request):
+        selectedExpPK = request.POST.get("clone")
+        return HttpResponseRedirect('/cloneExperiment/'+selectedExpPK)
+
+@class_login_required        
+class CloneExperiment(View): 
+    template_name = 'customForm.html'
+    error_page = 'error.html'
+    form_class = CloneExperimentForm
+    
+    def get(self,request,pk):
+        form = self.form_class()
+        return render(request, self.template_name,{'form':form, 'form_class':"Experiment Clone"})
+    
+    def post(self,request,pk):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            experiment_name=request.POST.get("experiment_name")
+            experiment_description=request.POST.get("experiment_description")
+            biosample_name=request.POST.get("biosample_name")
+            biosample_description=request.POST.get("biosample_description")
+            
+            if(biosample_name != ""):
+                clonedBiosampleobj = Biosample.objects.get(expBio__pk=pk)
+                clonedBiosampleobj.pk = None
+                clonedBiosampleobj.biosample_name = biosample_name
+                clonedBiosampleobj.biosample_description = biosample_description
+                aliasList=["Biosample",clonedBiosampleobj.biosample_biosource.biosource_name,clonedBiosampleobj.biosample_name]
+                clonedBiosampleobj.dcic_alias = LABNAME +"_".join(aliasList)
+                clonedBiosampleobj.save()
+                biosamplePk = clonedBiosampleobj.pk
+            
+            else:
+                biosamplePk = Biosample.objects.get(expBio__pk=pk).pk
+            
+            clonedExpobj = Experiment.objects.get(pk=pk)
+            clonedExpobj.pk = None
+            clonedExpobj.experiment_name = experiment_name
+            clonedExpobj.experiment_description = experiment_description
+            clonedExpobj.experiment_biosample = Biosample.objects.get(pk=biosamplePk)
+            aliasList=["Experiment",clonedExpobj.project.project_name,clonedExpobj.experiment_name]
+            clonedExpobj.dcic_alias = LABNAME +"_".join(aliasList)
+            clonedExpobj.save()
+            
+            return HttpResponseRedirect('/detailProject/'+request.session['projectId'])
+        else:
+            return render(request, self.template_name,{'form':form, 'form_class':"Experiment Clone"})
     
     
     

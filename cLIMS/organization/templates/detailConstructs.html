@@ -25,8 +25,8 @@
 		<span class="rowHead">Construct Designed To Target: </span>{{construct.construct_designed_to_Target}}<br/>
 		<span class="rowHead">Construct Insert Sequence: </span>{{construct.construct_insert_sequence}}<br/>
 		<span class="rowHead">Construct Map: </span>
-		{% if not construct.document  == None %}
-		<a href="/detailDocument/{{document.id}}">{{construct.document}}</a>
+		{% if not construct.construct_map  == None %}
+		<a href="/detailDocument/{{construct_map.id}}">{{construct.construct_map}}</a>
 		{% endif %}<br/>
 		<span class="rowHead">Construct Tag: </span>{{construct.construct_tag}}<br/>
 		<span class="rowHead">Construct Vector Backbone: </span>{{construct.construct_vector_backbone}}<br/>
