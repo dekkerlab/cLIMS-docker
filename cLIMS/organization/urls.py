@@ -126,5 +126,7 @@ urlpatterns = [
     url(r'^exportDCIC/$', exportDCIC, name='exportDCIC'),
     url(r'^dcicView/$', DcicView.as_view(), name='dcicView'),
     url(r'^dcicFinalizeSubmission/$', DcicFinalizeSubmission.as_view(), name='dcicFinalizeSubmission'),
+    url(r'^cloneExperimentList/$', CloneExperimentList.as_view(), name='cloneExperimentList'),
+    url(r'^cloneExperiment/(?P<pk>[0-9]+)/$', CloneExperiment.as_view(), name='cloneExperiment'),
     
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 

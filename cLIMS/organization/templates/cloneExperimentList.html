@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+ <script src="{% static "siteWide/js/show.js" %}"></script> 
+<div class="bodyContent container">
+{% if project %}
+<span class="tableHead">
+	Project: {{ project.project_name }}
+</span>
+ {% endif %}
+ <br/> <br/>
+ {% if experiments %}
+<span class="tableHead">
+	Experiment Details
+</span>
+{% if messages %}
+        {% for message in messages %}
+            <p class="alert alert-danger">{{message}}</p>
+        {% endfor %}
+{% endif %}
+<table class="table table-bordered table-hover table-responsive">
+      <tr>
+          
+          <td class="col-xs-6"><span class="rowHead">Clone an Experiment</span><br/>
+          </td>
+        <td><span class="rowHead">Experiment Name</span></td>
+      </tr>
+      <form method="POST">
+    {% csrf_token %}
+    
+    {% for exp in experiments %}
+		<tr>
+			<td><input type="radio" name="clone" value="{{exp.id}}"><br></td>
+			<td><a href="/detailExperiment/{{exp.id}}">{{exp.experiment_name}}</a></td>
+  		</tr>
+    {% endfor %}
+ </table>
+ 	<button type="submit" class="btn btn-success" formaction="/cloneExperimentList/">Clone Selected Experiment</button>
+</form>
+{% else %}
+    <p>No data available.</p>
+{% endif %}
+<br/><br/>
+</div>
+{% endblock %}
+

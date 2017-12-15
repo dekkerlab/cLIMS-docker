@@ -13,7 +13,7 @@ from wetLab.models import Protocol, Document
 from wetLab.wrapper import SelectWithPop, MultipleSelectWithPop
 from dryLab.models import ImageObjects
 import json
-from organization.validators import compareJsonInitial
+from organization.validators import *
 
 class ProjectForm(ModelForm):
     use_required_attribute = False
@@ -129,3 +129,10 @@ class TagForm(ModelForm):
         model = Tag
         exclude = ('tag_user','project',)
 
+class CloneExperimentForm(forms.Form):
+    use_required_attribute = False
+    experiment_name = forms.CharField(max_length=100, validators=[alphanumeric], help_text="Name of the experiment")
+    experiment_description = forms.CharField(max_length=200, widget=forms.Textarea(), help_text="A short description of the experiment")
+    biosample_name = forms.CharField(max_length=100, validators=[alphanumeric],required=False, help_text="Name of the Biosample")
+    biosample_description = forms.CharField(max_length=200, widget=forms.Textarea(), required=False, help_text="A plain text for catalog description.")
+    
