@@ -545,6 +545,14 @@ class AddBiosample(View):
                 for im in imageObjects:
                     img = ImageObjects.objects.get(pk=im)
                     biosample.imageObjects.add(img)
+                auPro = request.POST.getlist('authentication_protocols')
+                for au in auPro:
+                    a = Protocol.objects.get(pk=au)
+                    biosample.authentication_protocols.add(a)
+                proAdd = request.POST.getlist('protocols_additional')
+                for pro in proAdd:
+                    p = Protocol.objects.get(pk=pro)
+                    biosample.protocols_additional.add(p)
                 request.session['biosamplePK'] = biosample.pk
                 return HttpResponseRedirect('/addExperiment/')
             else:
@@ -593,6 +601,10 @@ class AddExperiment(View):
             for a in auth:
                 auDoc = Protocol.objects.get(pk=a)
                 exp.authentication_docs.add(auDoc)
+            img = request.POST.getlist('imageObjects')
+            for i in img:
+                iDoc = ImageObjects.objects.get(pk=i)
+                exp.imageObjects.add(iDoc)
             return HttpResponseRedirect('/detailProject/'+request.session['projectId'])
         else:
             form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=request.session['projectId'])
@@ -1488,6 +1500,28 @@ class CloneExperiment(View):
                 aliasList=["Biosample",clonedBiosampleobj.biosample_biosource.biosource_name,clonedBiosampleobj.biosample_name]
                 clonedBiosampleobj.dcic_alias = LABNAME +"_".join(aliasList)
                 clonedBiosampleobj.save()
+                modifications = Biosample.objects.get(expBio__pk=pk).modifications.all()
+                for m in modifications:
+                    clonedBiosampleobj.modifications.add(m)
+                biosample_TreatmentRnai = Biosample.objects.get(expBio__pk=pk).biosample_TreatmentRnai.all()
+                for b in biosample_TreatmentRnai:
+                    clonedBiosampleobj.biosample_TreatmentRnai.add(b)
+                biosample_TreatmentChemical = Biosample.objects.get(expBio__pk=pk).biosample_TreatmentChemical.all()
+                for b in biosample_TreatmentChemical:
+                    clonedBiosampleobj.biosample_TreatmentChemical.add(b)
+                biosample_OtherTreatment = Biosample.objects.get(expBio__pk=pk).biosample_OtherTreatment.all()
+                for b in biosample_OtherTreatment:
+                    clonedBiosampleobj.biosample_OtherTreatment.add(b)
+                imageObjects = Biosample.objects.get(expBio__pk=pk).imageObjects.all()
+                for im in imageObjects:
+                    clonedBiosampleobj.imageObjects.add(im)
+                auPro = Biosample.objects.get(expBio__pk=pk).authentication_protocols.all()
+                for a in auPro:
+                    clonedBiosampleobj.imageObjects.add(a)
+                proAdd = Biosample.objects.get(expBio__pk=pk).protocols_additional.all()
+                for p in proAdd:
+                    clonedBiosampleobj.imageObjects.add(p)
+                
                 biosamplePk = clonedBiosampleobj.pk
             
             else:
@@ -1501,6 +1535,12 @@ class CloneExperiment(View):
             aliasList=["Experiment",clonedExpobj.project.project_name,clonedExpobj.experiment_name]
             clonedExpobj.dcic_alias = LABNAME +"_".join(aliasList)
             clonedExpobj.save()
+            auth = Experiment.objects.get(pk=pk).authentication_docs.all()
+            for a in auth:
+                clonedExpobj.authentication_docs.add(a)
+            img = Experiment.objects.get(pk=pk).imageObjects.all()
+            for i in img:
+                clonedExpobj.imageObjects.add(i)
             
             return HttpResponseRedirect('/detailProject/'+request.session['projectId'])
         else:
