@@ -1517,10 +1517,10 @@ class CloneExperiment(View):
                     clonedBiosampleobj.imageObjects.add(im)
                 auPro = Biosample.objects.get(expBio__pk=pk).authentication_protocols.all()
                 for a in auPro:
-                    clonedBiosampleobj.imageObjects.add(a)
+                    clonedBiosampleobj.authentication_protocols.add(a)
                 proAdd = Biosample.objects.get(expBio__pk=pk).protocols_additional.all()
                 for p in proAdd:
-                    clonedBiosampleobj.imageObjects.add(p)
+                    clonedBiosampleobj.protocols_additional.add(p)
                 
                 biosamplePk = clonedBiosampleobj.pk
             
