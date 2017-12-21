@@ -34,6 +34,9 @@ from organization.export import exportDCIC
 from django.utils.decorators import method_decorator
 import organization
 from django.contrib.auth.models import Permission
+from organization.importSeqFiles import *
+import ast
+from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 
 @receiver(user_logged_in)
@@ -1549,4 +1552,96 @@ class CloneExperiment(View):
     @method_decorator(view_only)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,  *args, **kwargs)
+
+@class_login_required        
+class ImportSequencingFiles(View): 
+    template_name = 'customForm.html'
+    error_page = 'error.html'
+    form_class = ImportSequencingFilesForm
+    
+    def get(self,request,pk):
+        form = self.form_class()
+        return render(request, self.template_name,{'form':form, 'form_class':"Import Sequencing Files"})
+    
+    def post(self,request,pk):
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            request, template_name, context = importSeqFiles(request,pk)
+            return render(request,template_name, context)
+        else:
+            return render(request, self.template_name,{'form':form, 'form_class':"Import Sequencing Files"})
+    
+    @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+
+
+
+@class_login_required        
+class CreateSequencingFiles(View):
+    def post(self,request,pk):
+        runDict=request.POST.get('runDict')
+        c=ast.literal_eval(runDict)
+        notExist=[]
+        for keys, values in c:
+            exp=None
+            run=None
+            filePath=keys
+            n=filePath.split("/")
+            name=n[-1].split(".")
+            fileName=name[0]
+            filenameSplit=fileName.split("_")
+            paired_end=filenameSplit[-2][1]
+            expName=values[0]
+            seqRunName=values[1]
+            try:
+                if (Experiment.objects.get(experiment_name=expName)):
+                    exp=Experiment.objects.get(experiment_name=expName)
+                    exp_project=exp.project.pk
+                if (SequencingRun.objects.get(run_name=seqRunName)):
+                    run=SequencingRun.objects.get(run_name=seqRunName)
+                if(Experiment.objects.get(experiment_name=expName) and SequencingRun.objects.get(run_name=seqRunName) and exp_project==int(pk)):
+                    print(fileName)
+                    f=SeqencingFile(sequencingFile_name=fileName, project = Project.objects.get(pk=pk))
+                    f.file_format= Choice.objects.get(pk=126)
+                    f.paired_end= paired_end
+                    if(paired_end=='2'):
+                        filenameSplit[-2]="R1"
+                        pairedFile="_".join(filenameSplit)
+                        print(pairedFile)
+                        f.relationship_type= Choice.objects.get(pk=141)
+                        f.related_files=SeqencingFile.objects.get(sequencingFile_name=pairedFile)
+                    f.flowcell_details_lane=filenameSplit[-3]
+                    f.read_length=50
+                    f.sequencingFile_mainPath=filePath
+                    f.sequencingFile_run=run
+                    f.sequencingFile_exp=exp
+                    aliasList=["SeqencingFile",f.project.project_name,f.sequencingFile_exp.experiment_name,f.sequencingFile_name]
+                    f.dcic_alias = LABNAME +"_".join(aliasList)
+                    f.update_dcic = True
+                    f.save()
+            except ObjectDoesNotExist:
+                if(exp is None):
+                    notExist.append(expName)
+                if(run is None):
+                    notExist.append(seqRunName)
+            if(exp_project!=int(pk)):
+                notExist.append(expName)
+        if(len(notExist)>0):
+            messages.error(request,",".join(set(notExist))+' does not exists in this project. Files not added for these.')
+        return HttpResponseRedirect('/detailProject/'+pk)
+    
+    @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+
+
+
+
+
+
+
+
+
     

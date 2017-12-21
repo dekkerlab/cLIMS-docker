@@ -96,7 +96,7 @@
   	</tr>
     {% endfor %}
   	</tbody>
- </table>
+ </table><br/>
  <a href="/exportExperiment">
 		<button type="button" class="btn btn-success">Export Experiment meta data</button>
 	</a>
@@ -111,6 +111,9 @@
 	</a>
 	<a href="/cloneExperimentList">
 		<button type="button" class="btn btn-success view_only">Clone Experiment</button>
+	</a>
+	<a href="/importSequencingFiles/{{ project.id }}">
+		<button type="button" class="btn btn-success view_only">Import Sequencing Files</button>
 	</a>
 {% endif %}
  

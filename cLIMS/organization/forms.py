@@ -135,4 +135,21 @@ class CloneExperimentForm(forms.Form):
     experiment_description = forms.CharField(max_length=200, widget=forms.Textarea(), help_text="A short description of the experiment")
     biosample_name = forms.CharField(max_length=100, validators=[alphanumeric],required=False, help_text="Name of the Biosample")
     biosample_description = forms.CharField(max_length=200, widget=forms.Textarea(), required=False, help_text="A plain text for catalog description.")
+
+class ImportSequencingFilesForm(forms.Form):
+    use_required_attribute = False
+    excel_file=forms.FileField(help_text="Upload the excel sheet in correct format here")
     
+    
+    
+    
+    
+     
+    
+    
+    
+    
+    
+
+
+
