@@ -205,11 +205,11 @@ class Biosample(UserOwner, References):
     biosample_OtherTreatment =  models.ManyToManyField(OtherTreatment, blank=True, related_name='biosamOtherTreatment', help_text="Select previously created treatment")
     biosample_type =  models.ForeignKey('organization.JsonObjField',on_delete=models.CASCADE, related_name='biotype', null=False, default="", verbose_name="BiosampleCellCulture Details",help_text="JsonObjField")
     biosample_fields = JSONField(  null=True, blank=True)
-    imageObjects = models.ManyToManyField( 'dryLab.ImageObjects', related_name='bioImg', blank=True, help_text="Cell growth images, morphology_image.")
+    imageObjects = models.ManyToManyField( 'dryLab.ImageObjects', related_name='bioImg', blank=True, help_text="Cell growth images, Morphology image, Microscopy files.")
     authentication_protocols = models.ManyToManyField(Protocol, blank=True, related_name='bioProtoimg', 
-                                                      help_text="One or more Protocol objects that are linked to authentication images or documents, e.ge. karyotype_image.")
+                                                      help_text="One or more Protocol objects that are linked to authentication images or documents, e.g. Karyotype image.")
     protocols_additional =  models.ManyToManyField(Protocol,blank=True, related_name='bioAddProto', 
-                                                   help_text="Protocols describing deviations from 4DN SOPs, including additional culture manipulations eg. stem cell differentiation or cell cycle synchronization if they do not follow recommended 4DN SOPs"
+                                                   help_text="Protocols describing deviations from 4DN SOPs, including additional culture manipulations e.g. stem cell differentiation or cell cycle synchronization if they do not follow recommended 4DN SOPs"
                                                    )
     biosample_description = models.CharField(max_length=200,  null=True, blank=True, help_text="A plain text for catalog description.")
     dcic_alias = models.CharField(max_length=500, null=False, default="", unique=True, db_index=True, help_text="Provide an alias name for the object for DCIC submission.")
