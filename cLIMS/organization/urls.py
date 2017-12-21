@@ -130,5 +130,6 @@ urlpatterns = [
     url(r'^cloneExperiment/(?P<pk>[0-9]+)/$', CloneExperiment.as_view(), name='cloneExperiment'),
     url(r'^importSequencingFiles/(?P<pk>[0-9]+)/$', ImportSequencingFiles.as_view(), name='importSequencingFiles'),
     url(r'^createSequencingFiles/(?P<pk>[0-9]+)/$', CreateSequencingFiles.as_view(), name='createSequencingFiles'),
+    url(r'^downloadFile/$', views.downloadFile, name='downloadFile'),
     
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 

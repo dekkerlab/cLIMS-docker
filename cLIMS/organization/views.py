@@ -19,7 +19,7 @@ from django.apps.registry import apps
 from _collections import defaultdict, OrderedDict
 import tarfile
 import os
-from cLIMS.base import WORKSPACEPATH, LABNAME
+from cLIMS.base import *
 from organization.extractAnalysis import extractHiCAnalysis, extract5CAnalysis
 import itertools
 import re
@@ -1637,8 +1637,16 @@ class CreateSequencingFiles(View):
     
 
 
-
-
+@login_required 
+def downloadFile(request):
+    path= ROOTFOLDER+'/organization/static/siteWide/importSeqFiles.csv'
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404
 
 
 
