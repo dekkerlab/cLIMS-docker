@@ -1629,6 +1629,8 @@ class CreateSequencingFiles(View):
                 notExist.append(expName)
         if(len(notExist)>0):
             messages.error(request,",".join(set(notExist))+' does not exists in this project. Files not added for these.')
+        else:
+            messages.info(request,"You have added your files successfully!")
         return HttpResponseRedirect('/detailProject/'+pk)
     
     @method_decorator(view_only)

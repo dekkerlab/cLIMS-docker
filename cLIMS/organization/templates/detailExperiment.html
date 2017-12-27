@@ -51,7 +51,7 @@
 <span class="rowHead">Enzyme: </span>{{ experiment.experiment_enzyme }}<br/>
 <span class="rowHead">Needs DCIC Update: </span>{{ experiment.update_dcic }}<br/>
 <span class="rowHead">DCIC Submitted: </span>{{ experiment.finalize_dcic_submission }}<br/>
-
+<span class="rowHead">Experiment URL: </span><a target="_blank" href="{{experiment.url}}">{{experiment.url}}</a><br/>
 {% if experiment.authentication_docs.all%}
 <span class="rowHead">Authentication Docs: </span><br/>
 {% for values in experiment.authentication_docs.all %}
@@ -106,7 +106,7 @@
 </a>
 <span class="rowHead">Individual Name: </span>{{individual.individual_name}}<br/>
 <span class="rowHead">Individual Vendor: </span>{{individual.individual_vendor}}<br/>
-<span class="rowHead">Individual URL: </span>{{individual.url}}<br/>
+<span class="rowHead">Individual URL: </span><a target="_blank" href="{{individual.url}}">{{individual.url}}</a><br/>
 {% if not individual.document  == None %}
 <span class="rowHead">Individual Documents: </span><a href="/detailDocument/{{individual.document.id}}">{{individual.document}}</a><br/>
 {% endif %}
@@ -158,7 +158,7 @@
 <span class="rowHead">Biosource Individual: </span>{{ biosource.biosource_individual }}<br/>
 <span class="rowHead">Biosource Tissue: </span>{{ biosource.biosource_tissue }}<br/>
 <span class="rowHead">Biosource Description: </span>{{ biosource.biosource_description }}<br/>
-<span class="rowHead">Biosource URL: </span>{{biosource.url}}<br/>
+<span class="rowHead">Biosource URL: </span><a target="_blank" href="{{biosource.url}}">{{biosource.url}}</a><br/>
 {% if not biosource.document  == None %}
 <span class="rowHead">Biosource Documents: </span>
 <a href="/detailDocument/{{biosource.document.id}}">{{biosource.document}}</a><br/>
@@ -202,7 +202,7 @@
 		<span class="rowHead">Modification Genomic Regions: </span><a href="/detailGenomicRegions/{{modification.modification_genomicRegions.id}}">{{modification.modification_genomicRegions}}</a><br/>
 		<span class="rowHead">Modification Target: </span><a href="/detailTarget/{{modification.target.id}}">{{modification.target}}</a><br/>
 		<span class="rowHead">Modification Description: </span>{{modification.modification_description}}<br/>
-		<span class="rowHead">Modification URL: </span>{{modification.url}}<br/>
+		<span class="rowHead">Modification URL: </span><a target="_blank" href="{{modification.url}}">{{modification.url}}</a><br/>
 		
 		{% if not modification.document  == None %}
 		<span class="rowHead">Modification Documents: </span><a href="/detailDocument/{{modification.document.id}}">{{modification.document}}</a><br/>
@@ -276,7 +276,7 @@
 {% endfor %}
 {% endif %}
 
-<span class="rowHead">Biosample URL: </span>{{biosample.url}}<br/>
+<span class="rowHead">Biosample URL: </span><a target="_blank" href="{{biosample.url}}">{{biosample.url}}</a><br/>
 {% if not biosample.document  == None %}
 <span class="rowHead">Biosample Documents: </span><a href="/detailDocument/{{biosample.document.id}}">{{biosample.document}}</a><br/>
 {% endif %}
@@ -345,7 +345,7 @@
 			
 			
 			
-			<span class="rowHead">Treatment URL: </span>{{treatment.url}}<br/>
+			<span class="rowHead">Treatment URL: </span><a target="_blank" href="{{treatment.url}}">{{treatment.url}}</a><br/>
 			{% if not treatment.documents  == None %}
 			<span class="rowHead">Treatment Documents: </span><a href="/detailDocument/{{treatment.document.id}}">{{treatment.document}}</a><br/>
 			{% endif %}
@@ -420,7 +420,7 @@
 			
 			<span class="rowHead">Treatment Description: </span>{{treatment.description}}<br/>
 			
-			<span class="rowHead">Treatment URL: </span>{{treatment.url}}<br/>
+			<span class="rowHead">Treatment URL: </span><a target="_blank" href="{{treatment.url}}">{{treatment.url}}</a><br/>
 			{% if not treatment.document  == None %}
 			<span class="rowHead">Treatment Documents: </span><a href="/detailDocument/{{treatment.document.id}}">{{treatment.document}}</a><br/>
 			{% endif %}
