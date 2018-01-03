@@ -1594,6 +1594,7 @@ class CreateSequencingFiles(View):
             paired_end=filenameSplit[-2][1]
             expName=values[0]
             seqRunName=values[1]
+            exp_project=None
             try:
                 if (Experiment.objects.get(experiment_name=expName)):
                     exp=Experiment.objects.get(experiment_name=expName)
@@ -1601,14 +1602,12 @@ class CreateSequencingFiles(View):
                 if (SequencingRun.objects.get(run_name=seqRunName)):
                     run=SequencingRun.objects.get(run_name=seqRunName)
                 if(Experiment.objects.get(experiment_name=expName) and SequencingRun.objects.get(run_name=seqRunName) and exp_project==int(pk)):
-                    print(fileName)
                     f=SeqencingFile(sequencingFile_name=fileName, project = Project.objects.get(pk=pk))
                     f.file_format= Choice.objects.get(pk=126)
                     f.paired_end= paired_end
                     if(paired_end=='2'):
                         filenameSplit[-2]="R1"
                         pairedFile="_".join(filenameSplit)
-                        print(pairedFile)
                         f.relationship_type= Choice.objects.get(pk=141)
                         f.related_files=SeqencingFile.objects.get(sequencingFile_name=pairedFile)
                     f.flowcell_details_lane=filenameSplit[-3]
