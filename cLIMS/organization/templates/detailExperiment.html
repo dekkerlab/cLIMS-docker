@@ -185,13 +185,12 @@
 <a style="cursor: pointer;"><i class="fa fa-plus-square-o expand" aria-hidden="true"></i></a>
 <a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
 <span class="tableHead">Associated Biosource Modification</span><br/>
-{% for modification in modificationBio.all %}
-	
 <div class="divData hidden">
-<a href="/deleteModification/{{ modificationBio.id }}">
+{% for modification in modificationBio.all %}
+<a href="/deleteModification/{{modification.id}}">
 	<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
 </a>
-<a href="/editModification/{{modificationBio.id}}">
+<a href="/editModification/{{modification.id}}">
 	<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
 </a>
 		<span class="rowHead">Modification Name: </span>{{modification.modification_name}}<br/>
