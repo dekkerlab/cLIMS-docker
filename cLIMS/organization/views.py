@@ -179,10 +179,10 @@ class DetailProject(View):
     #     units = Lane.objects.filter(project=pk)
     #     files = DeepSeqFile.objects.filter(project=pk)
         experiments = Experiment.objects.filter(project=pk).order_by('-pk')
-        sequencingRuns = SequencingRun.objects.filter(project=pk)
-        experimentSets = ExperimentSet.objects.filter(project=pk)
-        fileSets = FileSet.objects.filter(project=pk)
-        tags = Tag.objects.filter(project=pk)
+        sequencingRuns = SequencingRun.objects.filter(project=pk).order_by('-pk')
+        experimentSets = ExperimentSet.objects.filter(project=pk).order_by('-pk')
+        fileSets = FileSet.objects.filter(project=pk).order_by('-pk')
+        tags = Tag.objects.filter(project=pk).order_by('-pk')
         
 #         for run in sequencingRuns:
 #             run.run_Add_Barcode = run.get_run_Add_Barcode_display()
@@ -1018,7 +1018,7 @@ class AddSequencingRun(View):
     def get(self,request):
        
         form = self.form_class()
-        form.fields["run_Experiment"].queryset = Experiment.objects.filter(project=request.session['projectId'])
+        form.fields["run_Experiment"].queryset = Experiment.objects.filter(project=request.session['projectId']).order_by('-pk')
         form.fields["run_sequencing_center"].queryset = Choice.objects.filter(choice_type="run_sequencing_center")
         form.fields["run_sequencing_machine"].queryset = Choice.objects.filter(choice_type="run_sequencing_machine")
         form.fields["run_sequencing_instrument"].queryset = Choice.objects.filter(choice_type="run_sequencing_instrument")
@@ -1037,7 +1037,7 @@ class AddSequencingRun(View):
             request.session['runId'] = form.pk
             return HttpResponseRedirect('/detailProject/'+request.session['projectId'])
         else:
-            form.fields["run_Experiment"].queryset = Experiment.objects.filter(project=request.session['projectId'])
+            form.fields["run_Experiment"].queryset = Experiment.objects.filter(project=request.session['projectId']).order_by('-pk')
             form.fields["run_sequencing_center"].queryset = Choice.objects.filter(choice_type="run_sequencing_center")
             form.fields["run_sequencing_machine"].queryset = Choice.objects.filter(choice_type="run_sequencing_machine")
             form.fields["run_sequencing_instrument"].queryset = Choice.objects.filter(choice_type="run_sequencing_instrument")

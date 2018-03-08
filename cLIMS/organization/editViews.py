@@ -507,7 +507,7 @@ class EditSequencingRun(UpdateView):
     
     def get_context_data(self, **kwargs):
         context = super(EditSequencingRun , self).get_context_data(**kwargs)
-        context['form'].fields["run_Experiment"].queryset = Experiment.objects.filter(project=self.request.session['projectId'])
+        context['form'].fields["run_Experiment"].queryset = Experiment.objects.filter(project=self.request.session['projectId']).order_by('-pk')
         context['form'].fields["run_sequencing_center"].queryset = Choice.objects.filter(choice_type="run_sequencing_center")
         context['form'].fields["run_sequencing_machine"].queryset = Choice.objects.filter(choice_type="run_sequencing_machine")
         context['form'].fields["run_sequencing_instrument"].queryset = Choice.objects.filter(choice_type="run_sequencing_instrument")
