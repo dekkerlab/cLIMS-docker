@@ -32,7 +32,12 @@
 	  	{% endfor %}
     	<span class="rowHead">Publication Categories:</span>{{ publication.publication_categories }}<br/>
     	<span class="rowHead">Publication Published By:</span>{{ publication.publication_published_by }}<br/>
-    	
+    	{% if publication.contributing_labs.all%}
+		<span class="rowHead">Contributing Labs:</span><br/>
+		{% for values in publication.contributing_labs.all %}
+			    	({{ forloop.counter }}) {{values}}<br/>
+		{% endfor %}
+		{% endif %}
 {% else %}
     <p>No data available.</p>
 {% endif %}

@@ -66,6 +66,14 @@
 <span class="rowHead">Experiment Images: </span><br/>
 {% for images in experiment.imageObjects.all %}
 <a href="/media/{{images.imageObjects_images}}" target="_blank">{{images.imageObjects_name}}</a><br/>
+
+{% if experiment.contributing_labs.all%}
+<span class="rowHead">Contributing Labs:</span><br/>
+{% for values in experiment.contributing_labs.all %}
+	    	({{ forloop.counter }}) {{values}}<br/>
+{% endfor %}
+{% endif %}
+
 <div class="paddingSpace  hidden show">
 <a href="/deleteImageObjects/{{images.id }}">
 <button type="button" class="btn btn-danger pull-right">Delete Image </button>
@@ -117,6 +125,14 @@
 
 <span class="rowHead">Individual DBxrefs: </span>{{individual.dbxrefs}}<br/>
 <span class="rowHead">Individual Type: </span>{{ individual.individual_type }}<br/>
+
+{% if individual.contributing_labs.all%}
+<span class="rowHead">Contributing Labs:</span><br/>
+{% for values in individual.contributing_labs.all %}
+	    	({{ forloop.counter }}) {{values}}<br/>
+{% endfor %}
+{% endif %}
+
 <span class="rowHead">Individual Details: </span><br/>
 <table class="table table-bordered table-hover table-responsive">
 <th><span class="rowHead">Field</span></th>
@@ -174,6 +190,14 @@
 	  	{% endfor %}
 {% endif %}
 
+
+{% if biosource.contributing_labs.all%}
+<span class="rowHead">Contributing Labs:</span><br/>
+{% for values in biosource.contributing_labs.all %}
+	    	({{ forloop.counter }}) {{values}}<br/>
+{% endfor %}
+{% endif %}
+
 </div>
 </div>
 {% endif %}
@@ -212,6 +236,14 @@
 		{% endif %}
 		
 		<span class="rowHead">Modification DBxrefs: </span>{{modification.dbxrefs}}<br/>
+		
+		{% if modification.contributing_labs.all%}
+		<span class="rowHead">Contributing Labs:</span><br/>
+		{% for values in modification.contributing_labs.all %}
+			    	({{ forloop.counter }}) {{values}}<br/>
+		{% endfor %}
+		{% endif %}
+				
 		<hr/>
 {% endfor %}
 </div></div>
@@ -275,6 +307,14 @@
 {% endfor %}
 {% endif %}
 
+
+{% if biosample.contributing_labs.all%}
+<span class="rowHead">Contributing Labs:</span><br/>
+{% for values in biosample.contributing_labs.all %}
+	    	({{ forloop.counter }}) {{values}}<br/>
+{% endfor %}
+{% endif %}
+			
 <span class="rowHead">Biosample URL: </span><a target="_blank" href="{{biosample.url}}">{{biosample.url}}</a><br/>
 {% if not biosample.document  == None %}
 <span class="rowHead">Biosample Documents: </span><a href="/detailDocument/{{biosample.document.id}}">{{biosample.document}}</a><br/>
@@ -343,6 +383,12 @@
 			<span class="rowHead">TreatmentRnai Description: </span>{{treatment.treatmentRnai_description}}<br/>
 			
 			
+			{% if treatment.contributing_labs.all%}
+			<span class="rowHead">Contributing Labs:</span><br/>
+			{% for values in treatment.contributing_labs.all %}
+				    	({{ forloop.counter }}) {{values}}<br/>
+			{% endfor %}
+			{% endif %}
 			
 			<span class="rowHead">Treatment URL: </span><a target="_blank" href="{{treatment.url}}">{{treatment.url}}</a><br/>
 			{% if not treatment.documents  == None %}
@@ -381,6 +427,12 @@
 			<span class="rowHead">TreatmentChemical Temperature: </span>{{treatment.treatmentChemical_temperature}} &#8451;<br/>
 			<span class="rowHead">TreatmentChemical Description: </span>{{treatment.treatmentChemical_description}}<br/>
 		
+			{% if treatment.contributing_labs.all%}
+			<span class="rowHead">Contributing Labs:</span><br/>
+			{% for values in treatment.contributing_labs.all %}
+				    	({{ forloop.counter }}) {{values}}<br/>
+			{% endfor %}
+			{% endif %}
 			
 			<span class="rowHead">Treatment URL: </span>{{treatment.url}}<br/>
 			{% if not treatment.documents  == None %}
@@ -450,6 +502,7 @@
 <a href="/editModification/{{mod.id}}">
 	<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
 </a>
+Modification:<br/>
 		<span class="rowHead">Modification Name: </span>{{mod.modification_name}}<br/>
 		<span class="rowHead">Modification Type: </span>{{mod.modification_type}}<br/>
 		<span class="rowHead">Modification Constructs:</span><a href="/detailConstruct/{{mod.constructs.id}}">{{mod.constructs}}</a><br/>
@@ -458,6 +511,14 @@
 		<span class="rowHead">Modification Genomic Regions: </span><a href="/detailGenomicRegions/{{mod.modification_genomicRegions.id}}">{{mod.modification_genomicRegions}}</a><br/>
 		<span class="rowHead">Modification Target: </span><a href="/detailTarget/{{mod.target.id}}">{{mod.target}}</a><br/>
 		<span class="rowHead">Modification Description: </span>{{mod.modification_description}}<br/>
+		
+		{% if mod.contributing_labs.all%}
+		<span class="rowHead">Contributing Labs:</span><br/>
+		{% for values in mod.contributing_labs.all %}
+			    	({{ forloop.counter }}) {{values}}<br/>
+		{% endfor %}
+		{% endif %}
+		
 		<span class="rowHead">Modification URL: </span>{{mod.url}}<br/>
 		
 		{% if not modification.document  == None %}
@@ -469,6 +530,7 @@
 		{% endif %}
 		
 		<span class="rowHead">Modification DBxrefs: </span>{{mod.dbxrefs}}<br/>
+<hr/>
 {% endfor %}
 </div></div>
 {% endif %}
@@ -484,7 +546,7 @@
 <div class="infoBlock">
 <a style="cursor: pointer;"><i class="fa fa-plus-square-o expand" aria-hidden="true"></i></a>
 <a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
-<span class="tableHead">Associated Seqencing Files</span><br/>
+<span class="tableHead">Associated Sequencing Files</span><br/>
 {% for file in seqencingFiles %}
  ({{ forloop.counter }}) {{file.sequencingFile_mainPath}} <br/><br/>
 {% endfor %}
@@ -523,6 +585,12 @@
 	{#	<span class="rowHead">Sequencing File md5sum: </span>{{file.sequencingFile_md5sum}}<br/> #}
 		<span class="rowHead">Sequencing File Run: </span>{{file.sequencingFile_run}}<br/>
 		<span class="rowHead">Sequencing File Exp: </span>{{file.sequencingFile_exp}}<br/>
+		{% if file.contributing_labs.all%}
+		<span class="rowHead">Contributing Labs:</span><br/>
+		{% for values in file.contributing_labs.all %}
+			    	({{ forloop.counter }}) {{values}}<br/>
+		{% endfor %}
+		{% endif %}
 		<span class="rowHead">Sequencing dbxrefs: </span>{{file.dbxrefs}}<br/>
 		<hr/>
 		{% endfor %}
@@ -550,6 +618,14 @@
 		{% for values in analysis.analysis_file.all %}
 	    			({{ forloop.counter }}) {{values}}<br/>
 	  	{% endfor %}
+	  	
+	  	{% if analysis.contributing_labs.all%}
+		<span class="rowHead">Contributing Labs:</span><br/>
+		{% for values in analysis.contributing_labs.all %}
+			    	({{ forloop.counter }}) {{values}}<br/>
+		{% endfor %}
+		{% endif %}
+		
 	  	{% if analysis.analysis_hiGlass %}
 	  	<span class="rowHead">HiGlass File: </span>{{analysis.analysis_hiGlass}}
 			<a href="http://higlass.gehlenborglab.org/" target="_blank">

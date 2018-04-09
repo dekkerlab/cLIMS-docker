@@ -13,6 +13,7 @@ import json
 from organization.decorators import *
 from django.utils.decorators import method_decorator
 from cLIMS.base import *
+from django.db.models import Q
 
 def createJSON(request, fieldTypePk):
     json_object = JsonObjField.objects.get(pk=fieldTypePk).field_set
@@ -84,6 +85,7 @@ class EditExperiment(UpdateView):
         if(obj.experiment_fields):
             context['jsonObj']= json.loads(obj.experiment_fields)
         context['form'].fields["type"].queryset = JsonObjField.objects.filter(field_type="Experiment")
+        context['form'].fields["imageObjects"].queryset = ImageObjects.objects.filter(project=self.request.session['projectId'])
         context['form'].fields["authentication_docs"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
         context['action'] = reverse('editProject',
                                 kwargs={'pk': self.get_object().id})
@@ -166,6 +168,7 @@ class EditBiosource(UpdateView):
         context = super(EditBiosource , self).get_context_data(**kwargs)
         context['form'].fields["biosource_type"].queryset = Choice.objects.filter(choice_type="biosource_type")
         context['form'].fields["biosource_cell_line_tier"].queryset = Choice.objects.filter(choice_type="biosource_cell_line_tier")
+        context['form'].fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         context['form'].fields["modifications"].queryset = Modification.objects.filter(userOwner=self.request.user.pk)
         context['action'] = reverse('detailExperiment',
                                 kwargs={'pk': self.get_object().id})
@@ -217,6 +220,8 @@ class EditBiosample(UpdateView):
         context['form'].fields["biosample_OtherTreatment"].queryset = OtherTreatment.objects.filter(userOwner=self.request.user.pk)
         context['form'].fields["biosample_type"].queryset = JsonObjField.objects.filter(field_type="Biosample")
         context['form'].fields["imageObjects"].queryset = ImageObjects.objects.filter(project=self.request.session['projectId'])
+        context['form'].fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
+        context['form'].fields["protocols_additional"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         context['form'].fields["modifications"].queryset = Modification.objects.filter(userOwner=self.request.user.pk)
         context['action'] = reverse('detailExperiment',
                                 kwargs={'pk': self.get_object().id})
@@ -429,7 +434,7 @@ class EditGenomicRegions(UpdateView):
     def get_success_url(self):
         experimentId = self.request.session['experimentId']
         gen=GenomicRegions.objects.get(pk=self.get_object().id)
-        aliasList=["GenomicRegion",gen.name]
+        aliasList=["GenomicRegion",gen.genomicRegions_name]
         gen.dcic_alias = LABNAME +"_".join(aliasList)
         gen.save()
         return reverse('detailExperiment', kwargs={'pk': experimentId})

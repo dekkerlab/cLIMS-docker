@@ -28,6 +28,14 @@
     	<span class="rowHead">GenomicRegions Location Description:</span>{{ region.genomicRegions_location_description }}<br/>
     	<span class="rowHead">GenomicRegions Start Location:</span>{{ region.genomicRegions_start_location }}<br/>
     	<span class="rowHead">GenomicRegions End Location:</span>{{ region.genomicRegions_end_location }}<br/>
+    	
+    	{% if region.contributing_labs.all%}
+		<span class="rowHead">Contributing Labs:</span><br/>
+		{% for values in region.contributing_labs.all %}
+			    	({{ forloop.counter }}) {{values}}<br/>
+		{% endfor %}
+		{% endif %}
+		
 		{% else %}
     <p>No data available.</p>
 {% endif %}

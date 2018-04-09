@@ -449,6 +449,7 @@ class AddBiosource(View):
         form.fields["biosource_type"].queryset = Choice.objects.filter(choice_type="biosource_type")
         form.fields["biosource_cell_line_tier"].queryset = Choice.objects.filter(choice_type="biosource_cell_line_tier")
         form.fields["modifications"].queryset = Modification.objects.filter(userOwner=request.user.pk)
+        form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         return render(request, self.template_name,{'form':form, 'form_class':"Biosource", 'existing':existing,'isExisting':isExisting})
     
     def post(self,request):
@@ -478,6 +479,7 @@ class AddBiosource(View):
                 existing = selectForm['Biosource']
                 form.fields["biosource_type"].queryset = Choice.objects.filter(choice_type="biosource_type")
                 form.fields["biosource_cell_line_tier"].queryset = Choice.objects.filter(choice_type="biosource_cell_line_tier")
+                form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
                 form.fields["modifications"].queryset = Modification.objects.filter(userOwner=request.user.pk)
                 return render(request, self.template_name,{'form':form, 'form_class':"Biosource", 'existing':existing,'isExisting':isExisting})
     
@@ -504,6 +506,9 @@ class AddBiosample(View):
         form.fields["biosample_OtherTreatment"].queryset = OtherTreatment.objects.filter(userOwner=request.user.pk)
         form.fields["biosample_type"].queryset = JsonObjField.objects.filter(field_type="Biosample")
         form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=request.session['projectId'])
+        form.fields["authentication_protocols"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
+        form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
+        form.fields["protocols_additional"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         form.fields["modifications"].queryset = Modification.objects.filter(userOwner=request.user.pk)
         return render(request, self.template_name,{'form':form, 'form_class':"Biosample", 'existing':existing,'isExisting':isExisting})
     
@@ -567,6 +572,9 @@ class AddBiosample(View):
                 form.fields["biosample_OtherTreatment"].queryset = OtherTreatment.objects.filter(userOwner=request.user.pk)
                 form.fields["biosample_type"].queryset = JsonObjField.objects.filter(field_type="Biosample")
                 form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=request.session['projectId'])
+                form.fields["authentication_protocols"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
+                form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
+                form.fields["protocols_additional"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
                 form.fields["modifications"].queryset = Modification.objects.filter(userOwner=request.user.pk)
                 return render(request, self.template_name,{'form':form, 'form_class':"Biosample", 'existing':existing,'isExisting':isExisting})
     
@@ -585,6 +593,8 @@ class AddExperiment(View):
         form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=request.session['projectId'])
         form.fields["type"].queryset = JsonObjField.objects.filter(field_type="Experiment")
         form.fields["authentication_docs"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
+        form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
+        form.fields["variation"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         return render(request, self.template_name,{'form':form, 'form_class':"Experiment"})
     
     def post(self,request):
@@ -612,7 +622,10 @@ class AddExperiment(View):
         else:
             form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=request.session['projectId'])
             form.fields["type"].queryset = JsonObjField.objects.filter(field_type="Experiment")
+            form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
+            form.fields["variation"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
             form.fields["authentication_docs"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
+            
             return render(request, self.template_name,{'form':form, 'form_class':"Experiment"})
     @method_decorator(view_only)
     def dispatch(self, request, *args, **kwargs):

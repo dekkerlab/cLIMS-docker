@@ -40,6 +40,15 @@
   <tr>
     <td><span class="rowHead">Description:</span>{{ project.project_notes }}</td>
   </tr>
+   	{% if project.contributing_labs.all%}
+   	<tr><td>
+	<span class="rowHead">Contributing Labs:</span><br/>
+	{% for values in project.contributing_labs.all %}
+		    	({{ forloop.counter }}) {{values}}<br/>
+	{% endfor %}
+	</td>
+	</tr>
+	{% endif %}
   <tr>
     <td><span class="rowHead">Active:</span>{{ project.project_active }}
     <a href="/deleteProject/{{ project.id }}">
@@ -259,6 +268,13 @@
 	    			({{ forloop.counter }}) {{values}}<br/>
 	  	{% endfor %}
 	  	<span class="rowHead">Experiment Set Description</span>{{expSet.description | linebreaks}}
+	  	{% if expSet.contributing_labs.all%}
+		<span class="rowHead">Contributing Labs:</span><br/>
+		{% for values in expSet.contributing_labs.all %}
+			    	({{ forloop.counter }}) {{values}}<br/>
+		{% endfor %}
+		{% endif %}
+	  	
         </div>
       {% endfor %}
   		
@@ -280,6 +296,12 @@
 	    			({{ forloop.counter }}) {{values}}<br/>
 	  	{% endfor %}
 	  	<span class="rowHead">File Set Description</span>{{fileSet.fileset_description | linebreaks}}
+	  	{% if fileSet.contributing_labs.all%}
+		<span class="rowHead">Contributing Labs:</span><br/>
+		{% for values in fileSet.contributing_labs.all %}
+			    	({{ forloop.counter }}) {{values}}<br/>
+		{% endfor %}
+		{% endif %}
         </div>
       {% endfor %}
   		

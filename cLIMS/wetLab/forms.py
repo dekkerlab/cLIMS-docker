@@ -25,7 +25,7 @@ class ModificationForm(ModelForm):
     class Meta:
         model = Modification
         exclude = ('userOwner','constructs','modification_genomicRegions','target','dcic_alias','update_dcic',)
-        fields = ['modification_name','modification_type','modification_vendor','modification_gRNA','references','document','url','dbxrefs','modification_description']
+        fields = ['modification_name','modification_type','modification_vendor','modification_gRNA','references','contributing_labs','document','url','dbxrefs','modification_description']
     
     def save (self, *args, **kwargs):
         if(self.changed_data != None):
@@ -67,7 +67,7 @@ class TargetForm(ModelForm):
     class Meta:
         model = Target
         exclude = ('dcic_alias','update_dcic',)
-        fields = ['target_name','targeted_genes','targeted_region','targeted_proteins','targeted_rnas','targeted_structure','references','document','url','dbxrefs']
+        fields = ['target_name','targeted_genes','targeted_region','targeted_proteins','targeted_rnas','targeted_structure','references','document','contributing_labs','url','dbxrefs']
     
     def save (self, *args, **kwargs):
         if(self.changed_data != None):
@@ -86,7 +86,7 @@ class IndividualForm(ModelForm):
     class Meta:
         model = Individual
         exclude = ('individual_fields','userOwner','dcic_alias','update_dcic',)
-        fields = ['individual_name','individual_vendor','individual_type','references','document','url','dbxrefs']
+        fields = ['individual_name','individual_vendor','individual_type','references','document','contributing_labs','url','dbxrefs']
     
     def save (self, *args, **kwargs):
         if(self.instance.pk):
@@ -106,6 +106,7 @@ class SelectForm(forms.Form):
 
 class DocumentForm(ModelForm):
     use_required_attribute = False
+    references = forms.ModelChoiceField(Publication.objects.all(), widget=SelectWithPop, required=False, label_suffix='addPublication')
     class Meta:
         model = Document
         exclude = ('dcic_alias','update_dcic',)
@@ -144,7 +145,7 @@ class BiosourceForm(ModelForm):
         model = Biosource
         exclude = ('biosource_individual','dcic_alias','update_dcic',)
         fields = ['biosource_name','biosource_type','biosource_cell_line','biosource_cell_line_tier','protocol','biosource_vendor',
-                  'cell_line_termid', 'modifications', 'biosource_tissue','references','document','url','dbxrefs','biosource_description']
+                  'cell_line_termid', 'modifications', 'biosource_tissue','references','document','contributing_labs','url','dbxrefs','biosource_description']
     
     def save (self, *args, **kwargs):
         if(self.changed_data != None):
@@ -184,7 +185,7 @@ class BiosampleForm(ModelForm):
         exclude = ('biosample_fields','userOwner','biosample_biosource', 'biosample_individual','dcic_alias','update_dcic',)
         fields = ['biosample_name','modifications','protocol','biosample_TreatmentRnai',
                   'biosample_TreatmentChemical','biosample_OtherTreatment','imageObjects','authentication_protocols','protocols_additional','biosample_type',
-                  'references','document','url','dbxrefs','biosample_description']
+                  'references','document','contributing_labs','url','dbxrefs','biosample_description']
     
     def save (self, *args, **kwargs):
         if(self.instance.pk):
@@ -208,7 +209,7 @@ class TreatmentRnaiForm(ModelForm):
         model = TreatmentRnai
         exclude = ('userOwner','dcic_alias','update_dcic',)
         fields = ['treatmentRnai_name','treatmentRnai_type','constructs','treatmentRnai_vendor','treatmentRnai_target','treatmentRnai_nucleotide_seq',
-                  'references','document','url','dbxrefs','treatmentRnai_description']
+                  'references','document','contributing_labs','url','dbxrefs','treatmentRnai_description']
     
     def save (self, *args, **kwargs):
         if(self.changed_data != None):
@@ -225,7 +226,7 @@ class TreatmentChemicalForm(ModelForm):
         model = TreatmentChemical
         exclude = ('userOwner','dcic_alias','update_dcic',)
         fields = ['treatmentChemical_name','treatmentChemical_chemical','treatmentChemical_concentration','treatmentChemical_concentration_units','treatmentChemical_duration','treatmentChemical_duration_units',
-                  'treatmentChemical_temperature','references','document','url','dbxrefs','treatmentChemical_description']
+                  'treatmentChemical_temperature','references','document','contributing_labs','url','dbxrefs','treatmentChemical_description']
     
     def save (self, *args, **kwargs):
         if(self.changed_data != None):
