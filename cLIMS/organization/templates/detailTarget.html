@@ -35,7 +35,13 @@
 		{% if not target.references  == None %}
 			<a href="/detailPublication/{{target.references.id}}">{{target.references}}</a>
 		{% endif %}<br/>
-			<span class="rowHead">Target DBxrefs: </span>{{target.dbxrefs}}<br/>			
+			<span class="rowHead">Target DBxrefs: </span>{{target.dbxrefs}}<br/>	
+		{% if target.contributing_labs.all%}
+		<span class="rowHead">Contributing Labs:</span><br/>
+		{% for values in target.contributing_labs.all %}
+			    	({{ forloop.counter }}) {{values}}<br/>
+		{% endfor %}
+		{% endif %}		
 		{% else %}
     <p>No data available.</p>
 {% endif %}

@@ -46,7 +46,8 @@ class ExperimentForm(ModelForm):
     document = forms.ModelChoiceField(Document.objects.all(), widget=SelectWithPop, required=False, label_suffix='addDocumens')
     references = forms.ModelChoiceField(Publication.objects.all(), widget=SelectWithPop,required=False, label_suffix='addPublication')
     protocol = forms.ModelChoiceField(Protocol.objects.all(), widget=SelectWithPop, label_suffix='addProtocol', label="Experiment protocol")
-    imageObjects = forms.ModelMultipleChoiceField (ImageObjects.objects.all(), widget=MultipleSelectWithPop, required=False, label_suffix='addImageObjects')
+    imageObjects = forms.ModelMultipleChoiceField (ImageObjects.objects.all(), widget=MultipleSelectWithPop, required=False, label_suffix='addImageObjects',
+                                                   help_text="Any additional image related to this experiment.")
     authentication_docs = forms.ModelMultipleChoiceField (Protocol.objects.all(), widget=MultipleSelectWithPop, required=False,
                                                            label_suffix='addProtocol',
                                                            help_text="Images or Documents that authenticate the experiment e.g. Fragment Analyzer document, Gel images.")
@@ -56,7 +57,7 @@ class ExperimentForm(ModelForm):
         model = Experiment
         exclude = ('project','experiment_biosample','experiment_fields','dcic_alias','update_dcic','finalize_dcic_submission',)
         fields = ['experiment_name','bio_rep_no','tec_rep_no','biosample_quantity','biosample_quantity_units','protocol','type','variation','experiment_enzyme',
-                  'authentication_docs','imageObjects','references','document','url','dbxrefs','experiment_description']
+                  'authentication_docs','imageObjects','references','document','contributing_labs','url','dbxrefs','experiment_description']
     
     def save (self, *args, **kwargs):
         if(self.instance.pk):

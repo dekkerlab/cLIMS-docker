@@ -28,6 +28,12 @@
     	{% endif %}
     	<br/>
     	<span class="rowHead">Protocol protocol_description:</span>{{ protocol.description }}<br/>
+    	{% if protocol.contributing_labs.all%}
+		<span class="rowHead">Contributing Labs:</span><br/>
+		{% for values in protocol.contributing_labs.all %}
+			    	({{ forloop.counter }}) {{values}}<br/>
+		{% endfor %}
+		{% endif %}
     	
 {% else %}
     <p>No data available.</p>

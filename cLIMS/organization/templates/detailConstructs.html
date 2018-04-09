@@ -34,7 +34,14 @@
 		{% if not construct.references  == None %}
 			<span class="rowHead">Construct References: </span><a href="/detailPublication/{{ construct.references.id }}">{{construct.references}}</a><br/>
 		{% endif %}
-		<span class="rowHead">Construct URL: </span>{{construct.url}}<br/>		
+		<span class="rowHead">Construct URL: </span>{{construct.url}}<br/>
+		{% if construct.contributing_labs.all%}
+		<span class="rowHead">Contributing Labs:</span><br/>
+		{% for values in construct.contributing_labs.all %}
+			    	({{ forloop.counter }}) {{values}}<br/>
+		{% endfor %}
+		{% endif %}
+		
 		{% else %}
     <p>No data available.</p>
 {% endif %}

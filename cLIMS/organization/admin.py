@@ -10,4 +10,6 @@ admin.site.register(Award)
 admin.site.register(JsonObjField)
 admin.site.register(Choice)
 admin.site.register(Experiment)
+admin.site.register(ContributingLabs)
+
 
