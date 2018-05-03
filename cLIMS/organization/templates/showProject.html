@@ -17,6 +17,7 @@
     </th>
     <th>Owner</th>
     <th>Members</th>
+    <th>Project Creation DateTime</th>
     <th>Active</th>
   </tr>
   {% for fields in object %}
@@ -34,6 +35,7 @@
 	{% endif %}
     </td>
     <!-- <td><a href="#" data-toggle="tooltip" data-placement="bottom" title="{{ fields.notes }}">Notes</a></td> -->
+    <td>{{ fields.created_at }}</td>
     <td>{{ fields.project_active }}</td>
   </tr>
   {% endfor %}

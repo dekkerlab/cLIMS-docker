@@ -991,7 +991,7 @@ def populateDict(request, experimentList):
                         appendFilterdcic(dcicExcelSheet,'ExperimentSet',ExpSet)
                         experiment_set.append(eSet.dcic_alias)
             
-            appendingFunc(columnNamesDict,singleExp,"ExperimentAtacseq","replicate_set",(",".join(replicate_set)))
+            appendingFunc(dcicExcelSheet["ExperimentAtacseq"][0],singleExp,"replicate_set",(",".join(replicate_set)))
             #appendBioRep(exp.pk,singleExp)
             #appendTechRep(exp.pk,singleExp)
             appendingFunc(dcicExcelSheet["ExperimentAtacseq"][0],singleExp,"bio_rep_no",(exp.bio_rep_no))

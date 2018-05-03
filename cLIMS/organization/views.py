@@ -48,8 +48,8 @@ def sig_user_logged_in(sender, user, request, **kwargs):
             request.session['view_only_user'] = False
     if('Member' in map(str, request.user.groups.all())):
         request.session['currentGroup'] = "member"
-    elif('Collaborator' in map(str, request.user.groups.all())):
-        request.session['currentGroup'] = "collaborator"
+    elif('MemberWithEditAccess' in map(str, request.user.groups.all())):
+        request.session['currentGroup'] = "memberWithEditAccess"
     elif ('Admin' in map(str, request.user.groups.all()) or 'Principal Investigator' in map(str, request.user.groups.all())):
         request.session['currentGroup'] = "admin"
 
@@ -80,9 +80,9 @@ class HomeView(View):
             prj = Project.objects.filter((Q(project_owner=request.user.id) | Q(project_contributor=request.user.id)) , project_active="True").distinct().order_by('-pk')
             context['projects']= prj
             return render(request, self.template_name, context)
-        elif('Collaborator' in map(str, request.user.groups.all())):
-            request.session['currentGroup'] = "collaborator"
-            prj = Project.objects.filter((Q(project_contributor=request.user.id)) , project_active="True").order_by('-pk') 
+        elif('MemberWithEditAccess' in map(str, request.user.groups.all())):
+            request.session['currentGroup'] = "memberWithEditAccess"
+            prj = Project.objects.filter((Q(project_owner=request.user.id) | Q(project_contributor=request.user.id)) , project_active="True").distinct().order_by('-pk')
             context['projects']= prj
             return render(request, self.template_name, context)
         elif ('Admin' in map(str, request.user.groups.all()) or 'Principal Investigator' in map(str, request.user.groups.all())):
@@ -151,8 +151,8 @@ class ShowProject(View):
         userId = request.user.id
         if (userType == "member"):
             obj = Project.objects.filter(Q(project_owner=userId) |  Q(project_contributor=userId)).distinct().order_by('-pk')
-        elif (userType == "collaborator"):
-            obj = Project.objects.filter(Q(project_contributor=userId)).order_by('-pk')
+        elif (userType == "memberWithEditAccess"):
+            obj = Project.objects.filter(Q(project_owner=userId) |  Q(project_contributor=userId)).distinct().order_by('-pk')
         elif (userType == "admin"):
             obj = Project.objects.all().order_by('-pk')
         else:
@@ -420,6 +420,10 @@ class AddIndividual(View):
                 aliasList=["Individual",individual.individual_name]
                 individual.dcic_alias = LABNAME +"_".join(aliasList)
                 individual.save()
+                labs = request.POST.getlist('contributing_labs')
+                for l in labs:
+                    iLab = ContributingLabs.objects.get(pk=l)
+                    individual.contributing_labs.add(iLab)
                 request.session['individualPK'] = individual.pk
                 return HttpResponseRedirect('/addBiosource/')
             else:
@@ -430,6 +434,10 @@ class AddIndividual(View):
                 return render(request, self.template_name,{'form':form, 'form_class':"Individual", 'existing':existing,'isExisting':isExisting})
     
     @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,  *args, **kwargs)
 
@@ -448,8 +456,14 @@ class AddBiosource(View):
         form = self.form_class()
         form.fields["biosource_type"].queryset = Choice.objects.filter(choice_type="biosource_type")
         form.fields["biosource_cell_line_tier"].queryset = Choice.objects.filter(choice_type="biosource_cell_line_tier")
-        form.fields["modifications"].queryset = Modification.objects.filter(userOwner=request.user.pk)
+        form.fields["modifications"].queryset = Modification.objects.all()
         form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
+        
+        formAttr=["modifications"]
+        if(self.request.session['currentGroup'] != "admin"):
+            for f in formAttr:
+                form.fields[f].queryset = (form.fields[f].queryset).filter(userOwner=self.request.user.pk)
+        
         return render(request, self.template_name,{'form':form, 'form_class':"Biosource", 'existing':existing,'isExisting':isExisting})
     
     def post(self,request):
@@ -471,6 +485,10 @@ class AddBiosource(View):
                 for m in modifications:
                     mod = Modification.objects.get(pk=m)
                     biosource.modifications.add(mod)
+                labs = request.POST.getlist('contributing_labs')
+                for l in labs:
+                    iLab = ContributingLabs.objects.get(pk=l)
+                    biosource.contributing_labs.add(iLab)
                 request.session['biosourcePK'] = biosource.pk
                 return HttpResponseRedirect('/addBiosample/')
             else:
@@ -480,10 +498,18 @@ class AddBiosource(View):
                 form.fields["biosource_type"].queryset = Choice.objects.filter(choice_type="biosource_type")
                 form.fields["biosource_cell_line_tier"].queryset = Choice.objects.filter(choice_type="biosource_cell_line_tier")
                 form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
-                form.fields["modifications"].queryset = Modification.objects.filter(userOwner=request.user.pk)
+                form.fields["modifications"].queryset = Modification.objects.all()
+                formAttr=["modifications"]
+                if(self.request.session['currentGroup'] != "admin"):
+                    for f in formAttr:
+                        form.fields[f].queryset = (form.fields[f].queryset).filter(userOwner=self.request.user.pk)
                 return render(request, self.template_name,{'form':form, 'form_class':"Biosource", 'existing':existing,'isExisting':isExisting})
     
     @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,  *args, **kwargs)
 
@@ -501,15 +527,21 @@ class AddBiosample(View):
         existing = selectForm['Biosample']
         form = self.form_class()
         
-        form.fields["biosample_TreatmentRnai"].queryset = TreatmentRnai.objects.filter(userOwner=request.user.pk)
-        form.fields["biosample_TreatmentChemical"].queryset = TreatmentChemical.objects.filter(userOwner=request.user.pk)
-        form.fields["biosample_OtherTreatment"].queryset = OtherTreatment.objects.filter(userOwner=request.user.pk)
+        form.fields["biosample_TreatmentRnai"].queryset = TreatmentRnai.objects.all()
+        form.fields["biosample_TreatmentChemical"].queryset = TreatmentChemical.objects.all()
+        form.fields["biosample_OtherTreatment"].queryset = OtherTreatment.objects.all()
         form.fields["biosample_type"].queryset = JsonObjField.objects.filter(field_type="Biosample")
         form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=request.session['projectId'])
         form.fields["authentication_protocols"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
         form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         form.fields["protocols_additional"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
-        form.fields["modifications"].queryset = Modification.objects.filter(userOwner=request.user.pk)
+        form.fields["modifications"].queryset = Modification.objects.all()
+        
+        formAttr=["biosample_TreatmentRnai","biosample_TreatmentChemical","biosample_OtherTreatment","protocol","authentication_protocols","protocols_additional","modifications"]
+        if(self.request.session['currentGroup'] != "admin"):
+            for f in formAttr:
+                form.fields[f].queryset = (form.fields[f].queryset).filter(userOwner=self.request.user.pk)
+
         return render(request, self.template_name,{'form':form, 'form_class':"Biosample", 'existing':existing,'isExisting':isExisting})
     
     def post(self,request):
@@ -561,24 +593,38 @@ class AddBiosample(View):
                 for pro in proAdd:
                     p = Protocol.objects.get(pk=pro)
                     biosample.protocols_additional.add(p)
+                labs = request.POST.getlist('contributing_labs')
+                for l in labs:
+                    iLab = ContributingLabs.objects.get(pk=l)
+                    biosample.contributing_labs.add(iLab)
                 request.session['biosamplePK'] = biosample.pk
                 return HttpResponseRedirect('/addExperiment/')
             else:
                 selectForm.fields["Biosample"].queryset = Biosample.objects.filter(biosample_biosource=request.session['biosourcePK'])
                 isExisting = (selectForm.fields["Biosample"].queryset.count() > 0)
                 existing = selectForm['Biosample']
-                form.fields["biosample_TreatmentRnai"].queryset = TreatmentRnai.objects.filter(userOwner=request.user.pk)
-                form.fields["biosample_TreatmentChemical"].queryset = TreatmentChemical.objects.filter(userOwner=request.user.pk)
-                form.fields["biosample_OtherTreatment"].queryset = OtherTreatment.objects.filter(userOwner=request.user.pk)
+                form.fields["biosample_TreatmentRnai"].queryset = TreatmentRnai.objects.all()
+                form.fields["biosample_TreatmentChemical"].queryset = TreatmentChemical.objects.all()
+                form.fields["biosample_OtherTreatment"].queryset = OtherTreatment.objects.all()
                 form.fields["biosample_type"].queryset = JsonObjField.objects.filter(field_type="Biosample")
                 form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=request.session['projectId'])
                 form.fields["authentication_protocols"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
                 form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
                 form.fields["protocols_additional"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
-                form.fields["modifications"].queryset = Modification.objects.filter(userOwner=request.user.pk)
+                form.fields["modifications"].queryset = Modification.objects.all()
+                
+                formAttr=["biosample_TreatmentRnai","biosample_TreatmentChemical","biosample_OtherTreatment","protocol","authentication_protocols","protocols_additional","modifications"]
+                if(self.request.session['currentGroup'] != "admin"):
+                    for f in formAttr:
+                        form.fields[f].queryset = (form.fields[f].queryset).filter(userOwner=self.request.user.pk)
+                        
                 return render(request, self.template_name,{'form':form, 'form_class':"Biosample", 'existing':existing,'isExisting':isExisting})
     
     @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,  *args, **kwargs)
 
@@ -595,6 +641,12 @@ class AddExperiment(View):
         form.fields["authentication_docs"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
         form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         form.fields["variation"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
+        
+        formAttr=["authentication_docs"]
+        if(self.request.session['currentGroup'] != "admin"):
+            for f in formAttr:
+                form.fields[f].queryset = (form.fields[f].queryset).filter(userOwner=self.request.user.pk)
+
         return render(request, self.template_name,{'form':form, 'form_class':"Experiment"})
     
     def post(self,request):
@@ -618,6 +670,11 @@ class AddExperiment(View):
             for i in img:
                 iDoc = ImageObjects.objects.get(pk=i)
                 exp.imageObjects.add(iDoc)
+            labs = request.POST.getlist('contributing_labs')
+            for l in labs:
+                iLab = ContributingLabs.objects.get(pk=l)
+                exp.contributing_labs.add(iLab)
+            
             return HttpResponseRedirect('/detailProject/'+request.session['projectId'])
         else:
             form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=request.session['projectId'])
@@ -626,8 +683,18 @@ class AddExperiment(View):
             form.fields["variation"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
             form.fields["authentication_docs"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
             
+            formAttr=["authentication_docs"]
+            if(self.request.session['currentGroup'] != "admin"):
+                for f in formAttr:
+                    form.fields[f].queryset = (form.fields[f].queryset).filter(userOwner=self.request.user.pk)
+
+            
             return render(request, self.template_name,{'form':form, 'form_class':"Experiment"})
     @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,  *args, **kwargs)
 
@@ -665,12 +732,20 @@ class AddModification(View):
                 aliasList=["Construct",construct.construct_name]
                 construct.dcic_alias = LABNAME +"_".join(aliasList)
                 construct.save()
+                labs = request.POST.getlist('contributing_labs')
+                for l in labs:
+                    iLab = ContributingLabs.objects.get(pk=l)
+                    construct.contributing_labs.add(iLab)
                 modification.constructs = construct
             if(regions_form['genomicRegions_name'].value() != ""):
                 regions = regions_form.save(commit= False)
                 aliasList=["GenomicRegion",regions.genomicRegions_name]
                 regions.dcic_alias = LABNAME +"_".join(aliasList)
                 regions.save()
+                labs = request.POST.getlist('contributing_labs')
+                for l in labs:
+                    iLab = ContributingLabs.objects.get(pk=l)
+                    regions.contributing_labs.add(iLab)
                 modification.modification_genomicRegions = regions
             if(target_form['target_name'].value() != ""):
                 target = target_form.save(commit= False)
@@ -678,11 +753,19 @@ class AddModification(View):
                 aliasList=["Target",target.target_name]
                 target.dcic_alias = LABNAME +"_".join(aliasList)
                 target.save()
+                labs = request.POST.getlist('contributing_labs')
+                for l in labs:
+                    iLab = ContributingLabs.objects.get(pk=l)
+                    target.contributing_labs.add(iLab)
                 modification.target = target
             modification.userOwner = User.objects.get(pk=request.user.pk)
             aliasList=["Modification",modification.modification_name]
             modification.dcic_alias = LABNAME +"_".join(aliasList)
             modification.save()
+            labs = request.POST.getlist('contributing_labs')
+            for l in labs:
+                iLab = ContributingLabs.objects.get(pk=l)
+                modification.contributing_labs.add(iLab)
             return HttpResponse('<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script>' %(escape(modification._get_pk_val()), escape(modification)))
         else:
             form.fields["modification_type"].queryset = Choice.objects.filter(choice_type="modification_type")
@@ -715,7 +798,10 @@ class AddConstruct(View):
                 aliasList=["Construct",newObject.construct_name]
                 newObject.dcic_alias = LABNAME +"_".join(aliasList)
                 newObject.save()
-            
+                labs = request.POST.getlist('contributing_labs')
+                for l in labs:
+                    iLab = ContributingLabs.objects.get(pk=l)
+                    newObject.contributing_labs.add(iLab)
             except(forms.ValidationError):
                 newObject = None
                 
@@ -750,7 +836,10 @@ class AddTarget(View):
                 aliasList=["Target",newObject.target_name]
                 newObject.dcic_alias = LABNAME +"_".join(aliasList)
                 newObject.save()
-            
+                labs = request.POST.getlist('contributing_labs')
+                for l in labs:
+                    iLab = ContributingLabs.objects.get(pk=l)
+                    newObject.contributing_labs.add(iLab)
             except(forms.ValidationError):
                 newObject = None
                 
@@ -785,7 +874,10 @@ class AddGenomicRegions(View):
                 aliasList=["GenomicRegion",newObject.genomicRegions_name]
                 newObject.dcic_alias = LABNAME +"_".join(aliasList)
                 newObject.save()
-            
+                labs = request.POST.getlist('contributing_labs')
+                for l in labs:
+                    iLab = ContributingLabs.objects.get(pk=l)
+                    newObject.contributing_labs.add(iLab)
             except(forms.ValidationError):
                 newObject = None
                 
@@ -823,7 +915,10 @@ class AddProtocol(View):
                 aliasList=["Protocol",newObject.name]
                 newObject.dcic_alias = LABNAME +"_".join(aliasList)
                 newObject.save()
-           
+                labs = request.POST.getlist('contributing_labs')
+                for l in labs:
+                    iLab = ContributingLabs.objects.get(pk=l)
+                    newObject.contributing_labs.add(iLab)
             except(forms.ValidationError):
                 newObject = None
                 
@@ -860,7 +955,10 @@ class AddTreatmentRnai(View):
                 newObject.dcic_alias = LABNAME +"_".join(aliasList)
                 newObject.save()
                 #modifications = request.POST.getlist('modifications')
-           
+                labs = request.POST.getlist('contributing_labs')
+                for l in labs:
+                    iLab = ContributingLabs.objects.get(pk=l)
+                    newObject.contributing_labs.add(iLab)
             except(forms.ValidationError):
                 newObject = None
                 
@@ -898,7 +996,10 @@ class AddTreatmentChemical(View):
                 aliasList=["TreatmentChemical",newObject.treatmentChemical_name]
                 newObject.dcic_alias = LABNAME +"_".join(aliasList)
                 newObject.save()
-            
+                labs = request.POST.getlist('contributing_labs')
+                for l in labs:
+                    iLab = ContributingLabs.objects.get(pk=l)
+                    newObject.contributing_labs.add(iLab)
             except(forms.ValidationError):
                 newObject = None
                 
@@ -965,7 +1066,10 @@ class AddDocument(View):
                 aliasList=["Document",newObject.name]
                 newObject.dcic_alias = LABNAME +"_".join(aliasList)
                 newObject.save()
-                
+                labs = request.POST.getlist('contributing_labs')
+                for l in labs:
+                    iLab = ContributingLabs.objects.get(pk=l)
+                    newObject.contributing_labs.add(iLab)
             except(forms.ValidationError):
                 newObject = None
                 
@@ -1003,7 +1107,10 @@ class AddPublication(View):
                 aliasList=["Publication",newObject.name]
                 newObject.dcic_alias = LABNAME +"_".join(aliasList)
                 newObject.save()
-                
+                labs = request.POST.getlist('contributing_labs')
+                for l in labs:
+                    iLab = ContributingLabs.objects.get(pk=l)
+                    newObject.contributing_labs.add(iLab)
             except(forms.ValidationError):
                 newObject = None
                 
@@ -1057,6 +1164,10 @@ class AddSequencingRun(View):
             return render(request, self.template_name,{'form':form, 'form_class':"SequencingRun"})
 
     @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,  *args, **kwargs)
 
@@ -1147,6 +1258,10 @@ class AddSeqencingFile(View):
             aliasList=["SeqencingFile",file.project.project_name,file.sequencingFile_exp.experiment_name,file.sequencingFile_name]
             file.dcic_alias = LABNAME +"_".join(aliasList)
             file.save()
+            labs = request.POST.getlist('contributing_labs')
+            for l in labs:
+                iLab = ContributingLabs.objects.get(pk=l)
+                file.contributing_labs.add(iLab)
             return HttpResponseRedirect('/detailExperiment/'+self.request.session['experimentId'])
         else:
             form.fields["sequencingFile_run"].queryset = SequencingRun.objects.filter(project=request.session['projectId'])
@@ -1155,6 +1270,10 @@ class AddSeqencingFile(View):
             return render(request, self.template_name,{'form':form, 'form_class':"SeqencingFile"})
 
     @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,  *args, **kwargs)
 
@@ -1180,6 +1299,10 @@ class AddFileSet(View):
             for file in fileSetFile:
                 f = SeqencingFile.objects.get(pk=file)
                 fileset.fileSet_file.add(f)
+            labs = request.POST.getlist('contributing_labs')
+            for l in labs:
+                iLab = ContributingLabs.objects.get(pk=l)
+                fileset.contributing_labs.add(iLab)
             return HttpResponseRedirect('/detailProject/'+request.session['projectId'])
         else:
             form.fields["fileset_type"].queryset = Choice.objects.filter(choice_type="fileset_type")
@@ -1187,6 +1310,10 @@ class AddFileSet(View):
             return render(request, self.template_name,{'form':form, 'form_class':"FileSet"})
 
     @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,  *args, **kwargs)
 
@@ -1214,7 +1341,10 @@ class AddExperimentSet(View):
             for exp in expSetExp:
                 e = Experiment.objects.get(pk=exp)
                 expSet.experimentSet_exp.add(e)
-                
+            labs = request.POST.getlist('contributing_labs')
+            for l in labs:
+                iLab = ContributingLabs.objects.get(pk=l)
+                expSet.contributing_labs.add(iLab)
             return HttpResponseRedirect('/detailProject/'+request.session['projectId'])
         else:
             form.fields["experimentSet_type"].queryset = Choice.objects.filter(choice_type="experimentSet_type")
@@ -1222,6 +1352,10 @@ class AddExperimentSet(View):
             return render(request, self.template_name,{'form':form, 'form_class':"ExperimentSet"})
 
     @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,  *args, **kwargs)
     
@@ -1257,6 +1391,10 @@ class AddTag(View):
     @method_decorator(view_only)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
 
 @class_login_required
 class AddImageObjects(View): 
@@ -1278,6 +1416,10 @@ class AddImageObjects(View):
                 aliasList=["Image",newObject.project.project_name,newObject.imageObjects_name]
                 newObject.dcic_alias = LABNAME +"_".join(aliasList)
                 newObject.save()
+                labs = request.POST.getlist('contributing_labs')
+                for l in labs:
+                    iLab = ContributingLabs.objects.get(pk=l)
+                    newObject.contributing_labs.add(iLab)
             except(forms.ValidationError):
                 newObject = None
                 
@@ -1350,7 +1492,10 @@ class AddAnalysis(View):
             analysis.analysis_import.delete()
             analysis.analysis_fields = json_data
             analysis.save()
-            
+            labs = request.POST.getlist('contributing_labs')
+            for l in labs:
+                iLab = ContributingLabs.objects.get(pk=l)
+                analysis.contributing_labs.add(iLab)
             #analysis.analysis_fields = createJSON(request, analysis_type)
             return HttpResponseRedirect('/detailExperiment/'+self.request.session['experimentId'])
         else:
@@ -1359,6 +1504,10 @@ class AddAnalysis(View):
             return render(request, self.template_name,{'form':form, 'form_class':"Analysis"})
 
     @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,  *args, **kwargs)
 
@@ -1378,7 +1527,7 @@ def constructForm(request):
 def submitSequencingRun(request,pk):
     check= False
     projectId = request.session['projectId']
-    if('Member' in map(str, request.user.groups.all())):
+    if('Member' in map(str, request.user.groups.all()) or 'MemberWithEditAccess' in map(str, request.user.groups.all())):
         user=User.objects.get(pk=request.user.id)
         projectObj = Project.objects.get(pk=projectId)
         prjOwner = projectObj.project_owner
@@ -1421,6 +1570,11 @@ class SequencingRunView(View):
             'sequencingRuns': OrderedDict(d),
         }
         return render(request, self.template_name, context)
+    
+    @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+      
     
 
 @login_required
@@ -1468,6 +1622,14 @@ class DcicFinalizeSubmission(View):
         exportDCIC(request)
         request.session['finalizeOnly'] = False
         return HttpResponseRedirect('/detailProject/'+request.session['projectId'])
+    
+    @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
 
 
 @class_login_required
@@ -1487,6 +1649,9 @@ class CloneExperimentList(View):
         return HttpResponseRedirect('/cloneExperiment/'+selectedExpPK)
     
     @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,  *args, **kwargs)
 
@@ -1515,6 +1680,7 @@ class CloneExperiment(View):
                 clonedBiosampleobj.biosample_description = biosample_description
                 aliasList=["Biosample",clonedBiosampleobj.biosample_biosource.biosource_name,clonedBiosampleobj.biosample_name]
                 clonedBiosampleobj.dcic_alias = LABNAME +"_".join(aliasList)
+                clonedBiosampleobj.update_dcic = True
                 clonedBiosampleobj.save()
                 modifications = Biosample.objects.get(expBio__pk=pk).modifications.all()
                 for m in modifications:
@@ -1547,6 +1713,8 @@ class CloneExperiment(View):
             clonedExpobj.pk = None
             clonedExpobj.experiment_name = experiment_name
             clonedExpobj.experiment_description = experiment_description
+            clonedExpobj.finalize_dcic_submission = False
+            clonedExpobj.update_dcic = True
             clonedExpobj.experiment_biosample = Biosample.objects.get(pk=biosamplePk)
             aliasList=["Experiment",clonedExpobj.project.project_name,clonedExpobj.experiment_name]
             clonedExpobj.dcic_alias = LABNAME +"_".join(aliasList)
@@ -1563,6 +1731,10 @@ class CloneExperiment(View):
             return render(request, self.template_name,{'form':form, 'form_class':"Experiment Clone"})
         
     @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,  *args, **kwargs)
 
@@ -1585,6 +1757,10 @@ class ImportSequencingFiles(View):
             return render(request, self.template_name,{'form':form, 'form_class':"Import Sequencing Files"})
     
     @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,  *args, **kwargs)
 

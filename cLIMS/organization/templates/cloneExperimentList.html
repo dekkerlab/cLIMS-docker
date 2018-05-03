@@ -13,6 +13,7 @@
 <span class="tableHead">
 	Experiment Details
 </span>
+
 {% if messages %}
         {% for message in messages %}
             <p class="alert alert-danger">{{message}}</p>
@@ -20,14 +21,18 @@
 {% endif %}
 <table class="table table-bordered table-hover table-responsive">
       <tr>
-          
           <td class="col-xs-6"><span class="rowHead">Clone an Experiment</span><br/>
           </td>
         <td><span class="rowHead">Experiment Name</span></td>
       </tr>
       <form method="POST">
     {% csrf_token %}
-    
+    <span class="pull-right">
+    <a href="/detailProject/{{ project.id }}">
+		<button type="button" class="btn btn-info">Back to project</button>
+	</a>
+    <button type="submit" class="btn btn-success" formaction="/cloneExperimentList/">Clone Selected Experiment</button><br/><br/>
+    </span>
     {% for exp in experiments %}
 		<tr>
 			<td><input type="radio" name="clone" value="{{exp.id}}"><br></td>
@@ -35,7 +40,7 @@
   		</tr>
     {% endfor %}
  </table>
- 	<button type="submit" class="btn btn-success" formaction="/cloneExperimentList/">Clone Selected Experiment</button>
+ 	
 </form>
 {% else %}
     <p>No data available.</p>
