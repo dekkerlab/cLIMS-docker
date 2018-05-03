@@ -28,7 +28,10 @@
 </thead>
 <tbody>
   <tr>
-    <td><span class="rowHead">Project Owner:</span>{{ project.project_owner }}</td>
+    <td><span class="rowHead">Project Owner: </span>{{ project.project_owner }}</td>
+   </tr>
+   <tr>
+    <td><span class="rowHead">Project Creation DateTime: </span>{{ project.created_at }}</td>
    </tr>
    <tr>
     <td><span class="rowHead">Project Members:</span><br/>
@@ -38,11 +41,11 @@
 		</td>
   </tr>
   <tr>
-    <td><span class="rowHead">Description:</span>{{ project.project_notes }}</td>
+    <td><span class="rowHead">Description: </span>{{ project.project_notes }}</td>
   </tr>
    	{% if project.contributing_labs.all%}
    	<tr><td>
-	<span class="rowHead">Contributing Labs:</span><br/>
+	<span class="rowHead">Contributing Labs: </span><br/>
 	{% for values in project.contributing_labs.all %}
 		    	({{ forloop.counter }}) {{values}}<br/>
 	{% endfor %}
@@ -50,7 +53,7 @@
 	</tr>
 	{% endif %}
   <tr>
-    <td><span class="rowHead">Active:</span>{{ project.project_active }}
+    <td><span class="rowHead">Active: </span>{{ project.project_active }}
     <a href="/deleteProject/{{ project.id }}">
 		<button type="button" class="btn btn-danger pull-right hidden show">Delete Project</button>
 	</a>
@@ -79,21 +82,23 @@
   		<th><span class="rowHead">Biosample</span></th>
   		<th><span class="rowHead">Protocol</span></th>
   		<th><span class="rowHead">Enzyme</span></th>
-  		<th><span class="rowHead">Needs DCIC Update</span></th>
-  		<th><span class="rowHead">DCIC Submitted</span></th>
+  		<th><span class="rowHead">Creation DateTime</span></th>
   		<th></th>
   	</tr>
   	</thead>
   	<tbody>
   		{% for exp in experiments %}
+  		{% if exp.finalize_dcic_submission %}
+  		<tr class="success">
+  		{% else %}
 		<tr>
+		{% endif %}
 			<td><a href="/detailExperiment/{{exp.id}}">{{exp.experiment_name}}</a></td>
 			<td>{{exp.experiment_biosample.biosample_biosource}}</td>
 			<td>{{exp.experiment_biosample}}</td>
 			<td>{{exp.protocol}}</td>
 			<td>{{exp.experiment_enzyme}}</td>
-			<td>{{exp.update_dcic}}</td>
-			<td>{{exp.finalize_dcic_submission}}</td>
+			<td>{{exp.created_at}}</td>
 			<td>
 			<a href="/deleteExperiment/{{ exp.id }}">
 				<button type="button" class="btn btn-danger pull-right hidden show">Delete Experiment</button>

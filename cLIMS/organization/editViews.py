@@ -87,8 +87,15 @@ class EditExperiment(UpdateView):
         context['form'].fields["type"].queryset = JsonObjField.objects.filter(field_type="Experiment")
         context['form'].fields["imageObjects"].queryset = ImageObjects.objects.filter(project=self.request.session['projectId'])
         context['form'].fields["authentication_docs"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
+        context['form'].fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         context['action'] = reverse('editProject',
                                 kwargs={'pk': self.get_object().id})
+        
+        formFields=["authentication_docs"]
+        if(self.request.session['currentGroup'] != "admin"):
+            for f in formFields:
+                context['form'].fields[f].queryset = (context['form'].fields[f].queryset).filter(userOwner=self.request.user.pk)
+        
         return context
     
     @method_decorator(require_permission)
@@ -169,9 +176,15 @@ class EditBiosource(UpdateView):
         context['form'].fields["biosource_type"].queryset = Choice.objects.filter(choice_type="biosource_type")
         context['form'].fields["biosource_cell_line_tier"].queryset = Choice.objects.filter(choice_type="biosource_cell_line_tier")
         context['form'].fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
-        context['form'].fields["modifications"].queryset = Modification.objects.filter(userOwner=self.request.user.pk)
+        context['form'].fields["modifications"].queryset = Modification.objects.all()
         context['action'] = reverse('detailExperiment',
                                 kwargs={'pk': self.get_object().id})
+        
+        formFields=["modifications"]
+        if(self.request.session['currentGroup'] != "admin"):
+            for f in formFields:
+                context['form'].fields[f].queryset = (context['form'].fields[f].queryset).filter(userOwner=self.request.user.pk)
+                
         return context
     
     @method_decorator(require_permission)
@@ -215,17 +228,25 @@ class EditBiosample(UpdateView):
         if(obj.biosample_fields):
             context['jsonObj']= json.loads(obj.biosample_fields)
             
-        context['form'].fields["biosample_TreatmentRnai"].queryset = TreatmentRnai.objects.filter(userOwner=self.request.user.pk)
-        context['form'].fields["biosample_TreatmentChemical"].queryset = TreatmentChemical.objects.filter(userOwner=self.request.user.pk)
-        context['form'].fields["biosample_OtherTreatment"].queryset = OtherTreatment.objects.filter(userOwner=self.request.user.pk)
+        context['form'].fields["biosample_TreatmentRnai"].queryset = TreatmentRnai.objects.all()
+        context['form'].fields["biosample_TreatmentChemical"].queryset = TreatmentChemical.objects.all()
+        context['form'].fields["biosample_OtherTreatment"].queryset = OtherTreatment.objects.all()
         context['form'].fields["biosample_type"].queryset = JsonObjField.objects.filter(field_type="Biosample")
         context['form'].fields["imageObjects"].queryset = ImageObjects.objects.filter(project=self.request.session['projectId'])
         context['form'].fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         context['form'].fields["protocols_additional"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
-        context['form'].fields["modifications"].queryset = Modification.objects.filter(userOwner=self.request.user.pk)
+        context['form'].fields["modifications"].queryset = Modification.objects.all()
         context['action'] = reverse('detailExperiment',
                                 kwargs={'pk': self.get_object().id})
+        
+        formFields=["biosample_TreatmentRnai","biosample_TreatmentChemical","biosample_OtherTreatment","protocol","authentication_protocols","protocols_additional","modifications"]
+        if(self.request.session['currentGroup'] != "admin"):
+            for f in formFields:
+                context['form'].fields[f].queryset = (context['form'].fields[f].queryset).filter(userOwner=self.request.user.pk)
+        
         return context
+
+        
     
     @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
@@ -263,6 +284,8 @@ class EditTreatmentRnai(UpdateView):
         context['form'].fields["treatmentRnai_type"].queryset = Choice.objects.filter(choice_type="treatmentRnai_type")
         context['action'] = reverse('detailExperiment',
                                 kwargs={'pk': self.get_object().id})
+        
+        
         return context
     
     @method_decorator(require_permission)

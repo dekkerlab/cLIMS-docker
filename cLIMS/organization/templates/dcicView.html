@@ -28,7 +28,14 @@
       </tr>
       <form method="POST">
     {% csrf_token %}
-    
+    <span class="pull-right">
+    <a href="/detailProject/{{ project.id }}">
+		<button type="button" class="btn btn-info">Back to project</button>
+	</a>
+    <button type="submit" class="btn btn-success" formaction="/exportDCIC/">Export- DCIC</button>
+ 	<button type="submit" class="btn btn-success view_only" formaction="/dcicFinalizeSubmission/">Finalize DCIC Submission</button>
+ 	<button type="button" class="btn btn-danger" id="unselect">Unselect All</button>
+ 	</span><br/><br/>
     {% for exp in experiments %}
 		<tr>
 			<td><input type="checkbox" name="dcic" value="{{exp.id}}" checked><br></td>
@@ -36,9 +43,6 @@
   		</tr>
     {% endfor %}
  </table>
- 	<button type="submit" class="btn btn-success" formaction="/exportDCIC/">Export- DCIC</button>
- 	<button type="submit" class="btn btn-success view_only" formaction="/dcicFinalizeSubmission/">Finalize DCIC Submission</button>
- 	<button type="button" class="btn btn-danger" id="unselect">Unselect All</button>
 </form>
 {% else %}
     <p>No data available.</p>

@@ -333,3 +333,13 @@ p.copyright {
 @-moz-document url-prefix() {
   fieldset { display: table-cell; }
 }
+
+
+table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled{
+    background-position: 5px center;
+    background-color: #669999;
+    color: #870e1f;
+}
+table.dataTable thead th, table.dataTable thead td {
+    padding: 10px 18px 10px 28px;           
+}

@@ -171,7 +171,7 @@ class BaseSearchForm(forms.Form):
                     userType = self.request.session['currentGroup']
                     ##Either project relationship or construct another query
                     for q in text_q:
-                        if (userType == "member" or userType == "collaborator"):
+                        if (userType == "member" or userType == "memberWithEditAccess"):
                             if (self.formName == 'ProjectSearchForm'):
                                 qs = qs.filter(q, Q(project_owner=userId) |  Q(project_contributor=userId))
                             else:

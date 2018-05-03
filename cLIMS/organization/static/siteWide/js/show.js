@@ -2,7 +2,7 @@
 $(document).ready(function(){
 	
 	 $('.paginationTable').dataTable({
-		 "ordering": false
+		 "order": [],
 	 });
 	
     $(".divison").hover(function(){

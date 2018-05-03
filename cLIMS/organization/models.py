@@ -4,7 +4,6 @@ from django.contrib.postgres.fields import JSONField
 from wetLab.models import References
 from organization.validators import alphanumeric
 
-
 # Create your models here.
 
 class JsonObjField(models.Model):
@@ -42,7 +41,7 @@ class Project(models.Model):
     project_notes = models.TextField( null=True, blank=True, help_text="Notes for the project.")
     project_active = models.BooleanField(default=True, help_text="Is project currently in progress?")
     dcic_alias = models.CharField(max_length=500, null=False, unique=True, db_index=True, default="", help_text="Provide an alias name for the object for DCIC submission.")
-    
+    created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.project_name
     class Meta:
@@ -82,6 +81,7 @@ class Experiment(References):
     update_dcic = models.BooleanField(default=False, help_text="This object needs to be updated at DCIC.")
     finalize_dcic_submission = models.BooleanField(default=False, help_text="This object and related entries have been submitted to DCIC")
     contributing_labs = models.ManyToManyField(ContributingLabs, blank=True, help_text="Contributing labs for this experiment.")
+    created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
         return self.experiment_name

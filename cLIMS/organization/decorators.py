@@ -23,10 +23,12 @@ from django.contrib.contenttypes.models import ContentType
 
 def require_permission(view):
     def new_view(request, *args, **kwargs):
-        #user = get_user(request)
-        #ownerID = request.session['project_ownerId']
+        userID = get_user(request).id
+        ownerID = request.session['project_ownerId']
         ownertype=request.session['currentGroup']
         if (ownertype == "admin"):
+            return view(request, *args, **kwargs)
+        elif(ownerID==userID):
             return view(request, *args, **kwargs)
         else:
             url = '{}?next={}'.format(

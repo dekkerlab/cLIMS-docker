@@ -3,4 +3,8 @@
 	if(sessionValue=="True"){
 		$(".view_only").hide();
 	}
+	 $('#projectTable').dataTable({
+		 "paging": false,
+		 "order": []
+	 });
 });
