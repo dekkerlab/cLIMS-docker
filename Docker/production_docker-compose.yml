@@ -11,7 +11,7 @@ services:
     restart: always
     build: .
     environment:
-       - LOCAL_PRODUCTION=1
+       - PRODUCTION=1
     env_file:
        - ./config/db_variables.env
     command: bash /code/start_django_server.sh
