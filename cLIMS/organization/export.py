@@ -919,7 +919,7 @@ def populateDict(request, experimentList):
             if (str(exp.type) == "Hi-C Exp Protocol"):
                 appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"tagging_method",(expFields["tagging_method"]))
                 if(SeqencingFile.objects.filter(sequencingFile_exp=exp.pk)):
-                    files = SeqencingFile.objects.filter(sequencingFile_exp=exp.pk)
+                    files = SeqencingFile.objects.filter(sequencingFile_exp=exp.pk).order_by('sequencingFile_name')
                     if(files.all()):
                         fileList = []
                         for f in files:
@@ -943,7 +943,7 @@ def populateDict(request, experimentList):
                 appendingFunc(dcicExcelSheet["ExperimentCaptureC"][0],singleExp,"rna_tag",(expFields["rna_tag"]))
                 appendingFunc(dcicExcelSheet["ExperimentCaptureC"][0],singleExp,"tagging_method",(expFields["tagging_method"]))
                 if(SeqencingFile.objects.filter(sequencingFile_exp=exp.pk)):
-                    files = SeqencingFile.objects.filter(sequencingFile_exp=exp.pk)
+                    files = SeqencingFile.objects.filter(sequencingFile_exp=exp.pk).order_by('sequencingFile_name')
                     if(files.all()):
                         fileList = []
                         for f in files:
@@ -1033,7 +1033,7 @@ def populateDict(request, experimentList):
                 appendEnzyme(exp.experiment_enzyme.pk, dcicExcelSheet,finalizeOnly)
             
             if(SeqencingFile.objects.filter(sequencingFile_exp=exp.pk)):
-                files = SeqencingFile.objects.filter(sequencingFile_exp=exp.pk)
+                files = SeqencingFile.objects.filter(sequencingFile_exp=exp.pk).order_by('sequencingFile_name')
                 if(files.all()):
                     fileList = []
                     for f in files:
