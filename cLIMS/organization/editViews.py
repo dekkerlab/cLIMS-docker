@@ -176,7 +176,6 @@ class EditBiosource(UpdateView):
         context['form'].fields["biosource_type"].queryset = Choice.objects.filter(choice_type="biosource_type")
         context['form'].fields["biosource_cell_line_tier"].queryset = Choice.objects.filter(choice_type="biosource_cell_line_tier")
         context['form'].fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
-        context['form'].fields["modifications"].queryset = Modification.objects.all()
         context['action'] = reverse('detailExperiment',
                                 kwargs={'pk': self.get_object().id})
         
@@ -228,14 +227,10 @@ class EditBiosample(UpdateView):
         if(obj.biosample_fields):
             context['jsonObj']= json.loads(obj.biosample_fields)
             
-        context['form'].fields["biosample_TreatmentRnai"].queryset = TreatmentRnai.objects.all()
-        context['form'].fields["biosample_TreatmentChemical"].queryset = TreatmentChemical.objects.all()
-        context['form'].fields["biosample_OtherTreatment"].queryset = OtherTreatment.objects.all()
         context['form'].fields["biosample_type"].queryset = JsonObjField.objects.filter(field_type="Biosample")
         context['form'].fields["imageObjects"].queryset = ImageObjects.objects.filter(project=self.request.session['projectId'])
         context['form'].fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         context['form'].fields["protocols_additional"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
-        context['form'].fields["modifications"].queryset = Modification.objects.all()
         context['action'] = reverse('detailExperiment',
                                 kwargs={'pk': self.get_object().id})
         

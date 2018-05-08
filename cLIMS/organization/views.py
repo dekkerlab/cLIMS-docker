@@ -456,7 +456,6 @@ class AddBiosource(View):
         form = self.form_class()
         form.fields["biosource_type"].queryset = Choice.objects.filter(choice_type="biosource_type")
         form.fields["biosource_cell_line_tier"].queryset = Choice.objects.filter(choice_type="biosource_cell_line_tier")
-        form.fields["modifications"].queryset = Modification.objects.all()
         form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         
         formAttr=["modifications"]
@@ -498,7 +497,6 @@ class AddBiosource(View):
                 form.fields["biosource_type"].queryset = Choice.objects.filter(choice_type="biosource_type")
                 form.fields["biosource_cell_line_tier"].queryset = Choice.objects.filter(choice_type="biosource_cell_line_tier")
                 form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
-                form.fields["modifications"].queryset = Modification.objects.all()
                 formAttr=["modifications"]
                 if(self.request.session['currentGroup'] != "admin"):
                     for f in formAttr:
@@ -526,16 +524,11 @@ class AddBiosample(View):
         isExisting = (selectForm.fields["Biosample"].queryset.count() > 0)
         existing = selectForm['Biosample']
         form = self.form_class()
-        
-        form.fields["biosample_TreatmentRnai"].queryset = TreatmentRnai.objects.all()
-        form.fields["biosample_TreatmentChemical"].queryset = TreatmentChemical.objects.all()
-        form.fields["biosample_OtherTreatment"].queryset = OtherTreatment.objects.all()
         form.fields["biosample_type"].queryset = JsonObjField.objects.filter(field_type="Biosample")
         form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=request.session['projectId'])
         form.fields["authentication_protocols"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
         form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         form.fields["protocols_additional"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
-        form.fields["modifications"].queryset = Modification.objects.all()
         
         formAttr=["biosample_TreatmentRnai","biosample_TreatmentChemical","biosample_OtherTreatment","protocol","authentication_protocols","protocols_additional","modifications"]
         if(self.request.session['currentGroup'] != "admin"):
@@ -603,15 +596,11 @@ class AddBiosample(View):
                 selectForm.fields["Biosample"].queryset = Biosample.objects.filter(biosample_biosource=request.session['biosourcePK'])
                 isExisting = (selectForm.fields["Biosample"].queryset.count() > 0)
                 existing = selectForm['Biosample']
-                form.fields["biosample_TreatmentRnai"].queryset = TreatmentRnai.objects.all()
-                form.fields["biosample_TreatmentChemical"].queryset = TreatmentChemical.objects.all()
-                form.fields["biosample_OtherTreatment"].queryset = OtherTreatment.objects.all()
                 form.fields["biosample_type"].queryset = JsonObjField.objects.filter(field_type="Biosample")
                 form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=request.session['projectId'])
                 form.fields["authentication_protocols"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
                 form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
                 form.fields["protocols_additional"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
-                form.fields["modifications"].queryset = Modification.objects.all()
                 
                 formAttr=["biosample_TreatmentRnai","biosample_TreatmentChemical","biosample_OtherTreatment","protocol","authentication_protocols","protocols_additional","modifications"]
                 if(self.request.session['currentGroup'] != "admin"):

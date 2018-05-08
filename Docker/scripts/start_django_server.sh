@@ -54,12 +54,12 @@ elif [ $LOCAL_PRODUCTION ];
 then
    echo Running local production...
    python3 manage.py collectstatic --noinput
-   gunicorn cLIMS.wsgi -b 0.0.0.0:${LOCAL_PRODUCTION_PORT}
+   gunicorn cLIMS.wsgi -t 60 -b 0.0.0.0:${LOCAL_PRODUCTION_PORT}
 elif [ $PRODUCTION ];
 then
    echo Running production...
    python3 manage.py collectstatic --noinput
-   gunicorn cLIMS.wsgi -b 0.0.0.0:${PRODUCTION_PORT}
+   gunicorn cLIMS.wsgi -t 60 -b 0.0.0.0:${PRODUCTION_PORT}
 elif [ $TEST ];
 then
    echo Running tests...
