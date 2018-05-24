@@ -535,7 +535,7 @@ def appendBioRep(expPk,singleExp):
         #bioReplicates=list(set(biosamPk))
         sameFieldsBiosample=json.loads(e.experiment_biosample.biosample_fields)
         #if((sorted(expSameFields.items()) == sorted(expFields.items()))):
-        if(exp.type.field_name in ["Hi-C Exp Protocol","CaptureC Exp Protocol","ATAC-seq Protocol"]):
+        if(exp.type.field_name in ["Hi-C Exp Protocol","CaptureC Exp Protocol","ATAC-seq Protocol", "3C Exp Protocol"]):
             if( all(biosampleFields[x] == sameFieldsBiosample[x] for x in fieldsToCheckBiosample) 
                 and set(e.experiment_biosample.modifications.all())==set(exp.experiment_biosample.modifications.all()) 
                 and e.experiment_biosample.protocol==exp.experiment_biosample.protocol
@@ -835,8 +835,8 @@ def populateDict(request, experimentList):
         if(finalizeOnly):
             update_dcic(exp)
         expSet = ExperimentSet.objects.filter(experimentSet_exp=exp)
-        if (str(exp.type) == "Hi-C Exp Protocol") or (str(exp.type) == "CaptureC Exp Protocol"):
-            if (str(exp.type) == "Hi-C Exp Protocol"):
+        if (str(exp.type) == "Hi-C Exp Protocol") or (str(exp.type) == "CaptureC Exp Protocol") or (str(exp.type) =="3C Exp Protocol"):
+            if (str(exp.type) == "Hi-C Exp Protocol" or (str(exp.type) =="3C Exp Protocol")):
                 singleExp = [""] * len(dcicExcelSheet["ExperimentHiC"][0])
             else:
                 singleExp = [""] * len(dcicExcelSheet["ExperimentCaptureC"][0])
@@ -885,7 +885,8 @@ def populateDict(request, experimentList):
             
             appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"biosample_quantity",(exp.biosample_quantity))
             appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"biosample_quantity_units",(exp.biosample_quantity_units))
-            appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"biotin_removed",(expFields["biotin_removed"]))
+            if("biotin_removed" in expFields):
+                appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"biotin_removed",(expFields["biotin_removed"]))
             appendLab(exp,"ExperimentHiC",singleExp,dcicExcelSheet) 
             appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"crosslinking_method",(expFields["crosslinking_method"]))
             appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"crosslinking_temperature",(expFields["crosslinking_temperature"]))
@@ -897,11 +898,13 @@ def populateDict(request, experimentList):
             appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"digestion_temperature",(expFields["digestion_temperature"]))
             appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"digestion_time",(expFields["digestion_time"]))
             appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"enzyme_lot_number",(expFields["enzyme_lot_number"]))
-            appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"follows_sop",(expFields["follows_sop"]))
+            if("follows_sop" in expFields):
+                appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"follows_sop",(expFields["follows_sop"]))
             appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"average_fragment_size",(expFields["average_fragment_size"]))
             appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"fragment_size_range",(expFields["fragment_size_range"]))
             appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"fragment_size_selection_method",(expFields["fragment_size_selection_method"]))
-            appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"fragmentation_method",(expFields["fragmentation_method"]))
+            if("fragmentation_method" in expFields):
+                appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"fragmentation_method",(expFields["fragmentation_method"]))
             appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"library_preparation_date",(expFields["library_preparation_date"]))
             appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"ligation_temperature",(expFields["ligation_temperature"]))
             appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"ligation_time",(expFields["ligation_time"]))
@@ -916,8 +919,9 @@ def populateDict(request, experimentList):
                 appendProtocol(exp.protocol.pk, dcicExcelSheet, finalizeOnly)
             
             
-            if (str(exp.type) == "Hi-C Exp Protocol"):
-                appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"tagging_method",(expFields["tagging_method"]))
+            if (str(exp.type) == "Hi-C Exp Protocol") or (str(exp.type) =="3C Exp Protocol"):
+                if("tagging_method" in expFields):
+                    appendingFunc(dcicExcelSheet["ExperimentHiC"][0],singleExp,"tagging_method",(expFields["tagging_method"]))
                 if(SeqencingFile.objects.filter(sequencingFile_exp=exp.pk)):
                     files = SeqencingFile.objects.filter(sequencingFile_exp=exp.pk).order_by('sequencingFile_name')
                     if(files.all()):
