@@ -179,10 +179,10 @@ class EditBiosource(UpdateView):
         context['action'] = reverse('detailExperiment',
                                 kwargs={'pk': self.get_object().id})
         
-        formFields=["modifications"]
-        if(self.request.session['currentGroup'] != "admin"):
-            for f in formFields:
-                context['form'].fields[f].queryset = (context['form'].fields[f].queryset).filter(userOwner=self.request.user.pk)
+#         formFields=["modifications"]
+#         if(self.request.session['currentGroup'] != "admin"):
+#             for f in formFields:
+#                 context['form'].fields[f].queryset = (context['form'].fields[f].queryset).filter(userOwner=self.request.user.pk)
                 
         return context
     
@@ -234,7 +234,7 @@ class EditBiosample(UpdateView):
         context['action'] = reverse('detailExperiment',
                                 kwargs={'pk': self.get_object().id})
         
-        formFields=["biosample_TreatmentRnai","biosample_TreatmentChemical","biosample_OtherTreatment","protocol","authentication_protocols","protocols_additional","modifications"]
+        formAttr=["authentication_protocols"]
         if(self.request.session['currentGroup'] != "admin"):
             for f in formFields:
                 context['form'].fields[f].queryset = (context['form'].fields[f].queryset).filter(userOwner=self.request.user.pk)
