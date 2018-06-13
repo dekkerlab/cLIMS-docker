@@ -397,7 +397,7 @@ class AddIndividual(View):
     
     def get(self,request):
         selectForm = self.selectForm_class()
-        selectForm.fields["Individual"].queryset = Individual.objects.filter(userOwner=request.user.pk)
+        selectForm.fields["Individual"].queryset = Individual.objects.all()
         isExisting = (selectForm.fields["Individual"].queryset.count() > 0)
         existing = selectForm['Individual']
         form = self.form_class()
@@ -428,7 +428,7 @@ class AddIndividual(View):
                 return HttpResponseRedirect('/addBiosource/')
             else:
                 existing = selectForm['Individual']
-                selectForm.fields["Individual"].queryset = Individual.objects.filter(userOwner=request.user.pk)
+                selectForm.fields["Individual"].queryset = Individual.objects.all()
                 isExisting = (selectForm.fields["Individual"].queryset.count() > 0)
                 form.fields["individual_type"].queryset = JsonObjField.objects.filter(field_type="Individual")
                 return render(request, self.template_name,{'form':form, 'form_class':"Individual", 'existing':existing,'isExisting':isExisting})
@@ -458,10 +458,10 @@ class AddBiosource(View):
         form.fields["biosource_cell_line_tier"].queryset = Choice.objects.filter(choice_type="biosource_cell_line_tier")
         form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         
-        formAttr=["modifications"]
-        if(self.request.session['currentGroup'] != "admin"):
-            for f in formAttr:
-                form.fields[f].queryset = (form.fields[f].queryset).filter(userOwner=self.request.user.pk)
+#         formAttr=["modifications"]
+#         if(self.request.session['currentGroup'] != "admin"):
+#             for f in formAttr:
+#                 form.fields[f].queryset = (form.fields[f].queryset).filter(userOwner=self.request.user.pk)
         
         return render(request, self.template_name,{'form':form, 'form_class':"Biosource", 'existing':existing,'isExisting':isExisting})
     
@@ -497,10 +497,10 @@ class AddBiosource(View):
                 form.fields["biosource_type"].queryset = Choice.objects.filter(choice_type="biosource_type")
                 form.fields["biosource_cell_line_tier"].queryset = Choice.objects.filter(choice_type="biosource_cell_line_tier")
                 form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
-                formAttr=["modifications"]
-                if(self.request.session['currentGroup'] != "admin"):
-                    for f in formAttr:
-                        form.fields[f].queryset = (form.fields[f].queryset).filter(userOwner=self.request.user.pk)
+#                 formAttr=["modifications"]
+#                 if(self.request.session['currentGroup'] != "admin"):
+#                     for f in formAttr:
+#                         form.fields[f].queryset = (form.fields[f].queryset).filter(userOwner=self.request.user.pk)
                 return render(request, self.template_name,{'form':form, 'form_class':"Biosource", 'existing':existing,'isExisting':isExisting})
     
     @method_decorator(view_only)
@@ -530,7 +530,7 @@ class AddBiosample(View):
         form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         form.fields["protocols_additional"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         
-        formAttr=["biosample_TreatmentRnai","biosample_TreatmentChemical","biosample_OtherTreatment","protocol","authentication_protocols","protocols_additional","modifications"]
+        formAttr=["authentication_protocols"]
         if(self.request.session['currentGroup'] != "admin"):
             for f in formAttr:
                 form.fields[f].queryset = (form.fields[f].queryset).filter(userOwner=self.request.user.pk)
@@ -602,7 +602,7 @@ class AddBiosample(View):
                 form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
                 form.fields["protocols_additional"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
                 
-                formAttr=["biosample_TreatmentRnai","biosample_TreatmentChemical","biosample_OtherTreatment","protocol","authentication_protocols","protocols_additional","modifications"]
+                formAttr=["authentication_protocols"]
                 if(self.request.session['currentGroup'] != "admin"):
                     for f in formAttr:
                         form.fields[f].queryset = (form.fields[f].queryset).filter(userOwner=self.request.user.pk)
