@@ -234,7 +234,7 @@ class EditBiosample(UpdateView):
         context['action'] = reverse('detailExperiment',
                                 kwargs={'pk': self.get_object().id})
         
-        formAttr=["authentication_protocols"]
+        formFields=["authentication_protocols"]
         if(self.request.session['currentGroup'] != "admin"):
             for f in formFields:
                 context['form'].fields[f].queryset = (context['form'].fields[f].queryset).filter(userOwner=self.request.user.pk)
