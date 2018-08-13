@@ -101,8 +101,8 @@ $(function() {
 		$('[name=crosslinking_time]').val("10");
 		$('[name=digestion_temperature]').val("37");
 		$('[name=digestion_time]').val("960");
-		$('[name=average_fragment_size]').val("350");
-		$('[name=fragment_size_range]').val("250-450");
+		$('[name=average_fragment_size]').val("200");
+		$('[name=fragment_size_range]').val("180-300");
 		$('[name=fragment_size_selection_method]').val("SPRI beads");
 		$('[name=fragmentation_method]').val("sonication");
 		$('[name=ligation_temperature]').val("16");
