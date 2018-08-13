@@ -71,7 +71,8 @@ class Experiment(References):
     type = models.ForeignKey('organization.JsonObjField', on_delete=models.CASCADE, related_name='expType', help_text="JsonObjField")
     experiment_fields = JSONField(null=True, blank=True)
     variation = models.ForeignKey('wetLab.Protocol',related_name='expProVar', verbose_name="protocol_variations", blank=True, null=True)
-    experiment_enzyme = models.ForeignKey('wetLab.Enzyme',related_name='expEnz', on_delete=models.CASCADE,help_text="The enzyme used for digestion of the DNA.")
+    experiment_enzyme = models.ForeignKey('wetLab.Enzyme',null=True, blank=True, related_name='expEnz',help_text="The enzyme used for digestion of the DNA.")
+    antibody = models.ForeignKey('wetLab.Antibody',null=True, blank=True, related_name='expAntibody', help_text="For Cut&Run experiments reference to a antibody object")
     experiment_description = models.TextField(max_length=500,  null=True, blank=True, help_text="A short description of the experiment")
     authentication_docs =  models.ManyToManyField('wetLab.Protocol',blank=True, related_name='expAddProto', 
                                                    help_text="Attach any authentication document for your biosample here. e.g. Fragment Analyzer document, Gel images."
@@ -100,6 +101,7 @@ class ExperimentSet(models.Model):
     dcic_alias = models.CharField(max_length=500, null=False,  default="", unique=True, db_index=True, help_text="Provide an alias name for the object for DCIC submission.")
     update_dcic = models.BooleanField(default=False, help_text="This object needs to be updated at DCIC.")
     contributing_labs = models.ManyToManyField(ContributingLabs, blank=True, help_text="Contributing labs for this set.")
+    
     
     def __str__(self):
         return self.experimentSet_name

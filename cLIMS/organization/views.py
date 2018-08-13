@@ -1692,6 +1692,9 @@ class CloneExperiment(View):
                 proAdd = Biosample.objects.get(expBio__pk=pk).protocols_additional.all()
                 for p in proAdd:
                     clonedBiosampleobj.protocols_additional.add(p)
+                contri_labs=Biosample.objects.get(expBio__pk=pk).contributing_labs.all()
+                for c in contri_labs:
+                    clonedBiosampleobj.contributing_labs.add(c)
                 
                 biosamplePk = clonedBiosampleobj.pk
             
@@ -1714,6 +1717,9 @@ class CloneExperiment(View):
             img = Experiment.objects.get(pk=pk).imageObjects.all()
             for i in img:
                 clonedExpobj.imageObjects.add(i)
+            contri_labs=Experiment.objects.get(pk=pk).contributing_labs.all()
+            for c in contri_labs:
+                clonedExpobj.contributing_labs.add(c)
             
             return HttpResponseRedirect('/detailProject/'+request.session['projectId'])
         else:
