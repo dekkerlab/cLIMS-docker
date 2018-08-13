@@ -344,6 +344,28 @@ def appendEnzyme(pKey,dcicExcelSheet,finalizeOnly):
     appendingFunc(dcicExcelSheet["Enzyme"][0],singleEnzyme,"url",(enz.url))
     appendFilterdcic(dcicExcelSheet,'Enzyme',singleEnzyme)
 
+def appendAntibody(pKey,dcicExcelSheet,finalizeOnly):
+    anti=Antibody.objects.get(pk=pKey)
+    if(finalizeOnly):
+        update_dcic(anti)
+    singleAntibody = [""] * len(dcicExcelSheet["Antibody"][0])
+    appendingFunc(dcicExcelSheet["Antibody"][0],singleAntibody,"aliases",(anti.dcic_alias))
+    appendingFunc(dcicExcelSheet["Antibody"][0],singleAntibody,"antibody_name",(anti.antibody_name))
+    appendingFunc(dcicExcelSheet["Antibody"][0],singleAntibody,"antibody_product_no",(anti.antibody_product_no))
+    appendingFunc(dcicExcelSheet["Antibody"][0],singleAntibody,"description",(anti.description))
+    
+    if(anti.antibody_target):
+        appendingFunc(dcicExcelSheet["Antibody"][0],singleAntibody,"antibody_target",(anti.antibody_target.dcic_alias))
+        appendTarget(anti.antibody_target.pk, dcicExcelSheet,finalizeOnly)
+    
+    if(anti.antibody_vendor):
+        appendingFunc(dcicExcelSheet["Antibody"][0],singleAntibody,"antibody_vendor",(anti.antibody_vendor.dcic_alias))
+        appendVendor(anti.antibody_vendor.pk, dcicExcelSheet,finalizeOnly)
+    
+    appendingFunc(dcicExcelSheet["Antibody"][0],singleAntibody,"antibody_vendor",(anti.antibody_vendor))
+    appendingFunc(dcicExcelSheet["Antibody"][0],singleAntibody,"antibody_encode_accession",(anti.antibody_encode_accession))
+    
+
 def appendImageObjects(pKey,dcicExcelSheet,finalizeOnly):
     img=ImageObjects.objects.get(pk=pKey)
     if(finalizeOnly):
@@ -574,9 +596,9 @@ def populateDict(request, experimentList):
     bioSample = Biosample.objects.filter(expBio__pk__in=experimentList)
     dcicExcelSheet=defaultdict(list)
 
-    tabNames = ("Document","Protocol","Publication","IndividualMouse","IndividualHuman","Vendor","Enzyme","Biosource","Construct","TreatmentRnai",
+    tabNames = ("Document","Protocol","Publication","IndividualMouse","IndividualHuman","Vendor","Enzyme","Antibody","Biosource","Construct","TreatmentRnai",
                 "TreatmentChemical","GenomicRegion","Target","Modification","Image","BiosampleCellCulture","Biosample","FileFastq","FileFasta",
-                "ExperimentHiC","ExperimentCaptureC","ExperimentAtacseq","ExperimentSetReplicate","ExperimentSet")
+                "ExperimentHiC","ExperimentCaptureC","ExperimentAtacseq","ExperimentSeq","ExperimentSetReplicate","ExperimentSet")
     
     for tab in tabNames:
         dcicExcelSheet[tab] = initialize(tab, dcicExcelSheet[tab])
@@ -1057,6 +1079,106 @@ def populateDict(request, experimentList):
             
             appendingFunc(dcicExcelSheet["ExperimentAtacseq"][0],singleExp,"documents",(exp.dbxrefs))
             appendFilterdcic(dcicExcelSheet,'ExperimentAtacseq',singleExp)
+            
+            
+             #   ----------
+        elif str(exp.type) == "ExperimentSeq Protocol":
+            singleExp = [""] * len(dcicExcelSheet["ExperimentSeq"][0])
+            
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"aliases",(exp.dcic_alias))
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"description",(exp.experiment_description))
+            if(expSet):
+                experiment_set = []
+                replicate_set = []
+                for eSet in expSet:
+                    if(finalizeOnly):
+                        update_dcic(eSet)
+                    ExpSet = [""] * len(dcicExcelSheet["ExperimentSet"][0])
+                    appendingFunc(dcicExcelSheet["ExperimentSet"][0],ExpSet,"aliases",(eSet.dcic_alias))
+                    appendingFunc(dcicExcelSheet["ExperimentSet"][0],ExpSet,"description",(eSet.description))
+                    appendLab(eSet,"ExperimentSet",ExpSet,dcicExcelSheet)
+                    if(eSet.document):
+                        appendingFunc(dcicExcelSheet["ExperimentSet"][0],ExpSet,"documents",(eSet.document.dcic_alias))
+                        appendDocument(eSet.document.pk, dcicExcelSheet,finalizeOnly)
+                    if("replicates" in str(eSet.experimentSet_type)):
+                        appendFilterdcic(dcicExcelSheet,'ExperimentSetReplicate',ExpSet)
+                        replicate_set.append(eSet.dcic_alias)
+                    else:
+                        appendFilterdcic(dcicExcelSheet,'ExperimentSet',ExpSet)
+                        experiment_set.append(eSet.dcic_alias)
+            
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"replicate_set",(",".join(replicate_set)))
+            #appendBioRep(exp.pk,singleExp)
+            #appendTechRep(exp.pk,singleExp)
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"bio_rep_no",(exp.bio_rep_no))
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"tec_rep_no",(exp.tec_rep_no))
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"experiment_set",(",".join(experiment_set)))
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"biosample",(exp.experiment_biosample.dcic_alias))
+            
+            expFields=json.loads(exp.experiment_fields)
+            
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"experiment_type",(expFields["experiment_type"]))
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"3p_adenylation_temperature",(expFields["3p_adenylation_temperature"]))
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"3p_adenylation_time",(expFields["3p_adenylation_time"]))
+            
+            if(exp.antibody):
+                appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"antibody",(exp.antibody.dcic_alias))
+                appendAntibody(exp.antibody.pk, dcicExcelSheet,finalizeOnly)
+            
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"antibody_dilution",(expFields["antibody_dilution"]))
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"antibody_lot_id",(expFields["antibody_lot_id"]))
+            
+            if(exp.authentication_docs.all()):
+                for authDoc in exp.authentication_docs.all():
+                    if(finalizeOnly):
+                        update_dcic(authDoc)
+                    authDocs.append(authDoc.dcic_alias)
+                    appendProtocol(authDoc.pk,dcicExcelSheet,finalizeOnly)
+                appendingFunc(dcicExcelSheet["ExperimentAtacseq"][0],singleExp,"authentication_docs",(",".join(authDocs)))
+            
+                      
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"biosample_quantity",(exp.biosample_quantity))
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"biosample_quantity_units",(exp.biosample_quantity_units))
+            appendLab(exp,"ExperimentSeq",singleExp,dcicExcelSheet)
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"follows_sop",(expFields["follows_sop"]))
+            
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"average_fragment_size",(expFields["average_fragment_size"]))
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"fragment_size_range",(expFields["fragment_size_range"]))
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"fragment_size_selection_method",(expFields["fragment_size_selection_method"]))
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"fragmentation_method",(expFields["fragmentation_method"]))
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"library_preparation_date",(expFields["library_preparation_date"]))
+            
+            if(exp.protocol):
+                appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"protocol",(exp.protocol.dcic_alias))
+                appendProtocol(exp.protocol.pk, dcicExcelSheet, finalizeOnly)
+            if(exp.variation):
+                appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"protocol_variation",(exp.variation.dcic_alias))
+                appendProtocol(exp.variation.pk,dcicExcelSheet,finalizeOnly)
+            
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"reaction_time",(expFields["reaction_time"]))
+            
+            if(SeqencingFile.objects.filter(sequencingFile_exp=exp.pk)):
+                files = SeqencingFile.objects.filter(sequencingFile_exp=exp.pk).order_by('sequencingFile_name')
+                if(files.all()):
+                    fileList = []
+                    for f in files:
+                        if(finalizeOnly):
+                            update_dcic(f)
+                        fileList.append(f.dcic_alias)
+                        appendFiles(f.pk,dcicExcelSheet,finalizeOnly)
+                    appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"files",(",".join(fileList)))
+            
+            if(exp.document):
+                appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"documents",(exp.document.dcic_alias))
+                appendDocument(exp.document.pk, dcicExcelSheet,finalizeOnly)
+            
+            if(exp.references):
+                appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"documents",(exp.references.dcic_alias))
+                appendPublication(exp.references.pk, dcicExcelSheet,finalizeOnly)
+            
+            appendingFunc(dcicExcelSheet["ExperimentSeq"][0],singleExp,"documents",(exp.dbxrefs))
+            appendFilterdcic(dcicExcelSheet,'ExperimentSeq',singleExp)
+            
         # -------
     return(dcicExcelSheet)
 

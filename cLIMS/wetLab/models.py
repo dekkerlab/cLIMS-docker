@@ -268,5 +268,20 @@ class Barcode(models.Model):
         return (str(self.barcode_name))
     class Meta:
         ordering = ['barcode_name']
+
+class Antibody(models.Model):
+    antibody_name = models.CharField(max_length=100, null=False, default="", validators=[alphanumeric], help_text="A short name of the antibody.")
+    antibody_product_no = models.CharField(max_length=200,  null=True, blank=True, help_text="The catalog number for commercially obtained antibody")
+    description = models.TextField(max_length=500,  null=True, blank=True, help_text="A plain text description of the antibody.")
+    antibody_target = models.ForeignKey(Target,related_name='antibodyTarget', null=True, blank=True,)
+    antibody_vendor = models.ForeignKey(Vendor,related_name='antibodyVendor',null=True, blank=True, help_text="The company or lab that is the source of the antibody.")
+    antibody_encode_accession = models.TextField(max_length=500,  null=True, blank=True, help_text="If the antibody exists in ENCODE enter it's accession.")
+    dcic_alias = models.CharField(max_length=500, null=False, default="", unique=True, db_index=True, help_text="Provide an alias name for the object for DCIC submission.")
+    update_dcic = models.BooleanField(default=False, help_text="This object needs to be updated at DCIC.")
+    def __str__(self):
+        return (str(self.antibody_name))
+    class Meta:
+        ordering = ['antibody_name']
+        verbose_name_plural = 'Antibodies'
     
     

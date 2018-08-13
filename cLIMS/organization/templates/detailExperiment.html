@@ -54,7 +54,12 @@
 
 
 <span class="rowHead">Type: </span>{{ experiment.type }}<br/>
+{% if not experiment.experiment_enzyme  == None %}
 <span class="rowHead">Enzyme: </span>{{ experiment.experiment_enzyme }}<br/>
+{% endif %}
+{% if not experiment.antibody  == None %}
+<span class="rowHead">Antibody: </span>{{ experiment.antibody }}<br/>
+{% endif %}
 <span class="rowHead">Needs DCIC Update: </span>{{ experiment.update_dcic }}<br/>
 <span class="rowHead">DCIC Submitted: </span>{{ experiment.finalize_dcic_submission }}<br/>
 <span class="rowHead">Experiment URL: </span><a target="_blank" href="{{experiment.url}}">{{experiment.url}}</a><br/>
