@@ -105,6 +105,7 @@ def get_bins():
 
 def exportYML(f,o,a,g,p="",no_suffix=False):
     _setup_yaml()
+    genome_dict = OrderedDict()
     genome_dict = get_genome(a, g)
     
     if no_suffix:
