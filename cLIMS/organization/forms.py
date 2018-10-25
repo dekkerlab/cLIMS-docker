@@ -14,6 +14,7 @@ from wetLab.wrapper import SelectWithPop, MultipleSelectWithPop
 from dryLab.models import ImageObjects
 import json
 from organization.validators import *
+from django.forms import formset_factory
 
 class ProjectForm(ModelForm):
     use_required_attribute = False
@@ -144,14 +145,31 @@ class ImportSequencingFilesForm(forms.Form):
     excel_file=forms.FileField(help_text="Upload the excel sheet in correct format here")
     
     
+class MoveExperimentsForm(forms.Form):
+    use_required_attribute = False
+    experiments_in_current_project = forms.ModelMultipleChoiceField (Experiment.objects.all(), widget=MultipleSelectWithPop, required=True,
+                                                   help_text="Select experiments to be moved.")
+    move_to_which_project=forms.ModelChoiceField(Project.objects.all(), widget=SelectWithPop,required=True, help_text="Select project where the experiments will be moved.")    
     
     
-    
-     
-    
-    
-    
-    
+class ExportDistillerForm(forms.Form):
+    use_required_attribute = False
+    experiments = forms.ModelMultipleChoiceField (Experiment.objects.all(), widget=MultipleSelectWithPop, required=True,
+                                                   help_text="Select experiments in one group.")
+  
+    group = forms.CharField(
+        label='Group Name',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter Group Name here'
+        })
+    ) 
+    def __init__(self, *arg, **kwarg):
+        super(ExportDistillerForm, self).__init__(*arg, **kwarg)
+        self.empty_permitted = False
+        
+ExportDistillerFormSet = formset_factory(ExportDistillerForm, extra=1)
+
     
 
 

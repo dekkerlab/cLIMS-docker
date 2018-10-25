@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'dryLab',
     'wetLab',
     'crispy_forms',
+    'tools',
 ]
 
 MIDDLEWARE_CLASSES = [

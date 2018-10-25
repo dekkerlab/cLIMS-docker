@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% block content %}
+<script type="text/javascript" src="{% static '/static/siteWide/js/jquery.init.js' %}"></script> 
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/fonts.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/widgets.css"/>
+<link href="/static/siteWide/css/formSteps.css" rel="stylesheet">
+<script type="text/javascript" src="{% static '/static/siteWide/js/distillerForm.js' %}"></script>
+
+<div class="bodyContent container">
+{% if messages %}
+        {% for message in messages %}
+            <p class="alert alert-danger">{{message}}</p>
+        {% endfor %}
+    {% endif %}
+	<form class="form-horizontal" method="POST" action="">
+{% csrf_token %}
+<h1>{{form_class}}</h1>
+<hr>
+<h4>Select genome:</h4>
+<select name="genome">
+  <option value="hg19">hg19</option>
+  <option value="hg38">hg38</option>
+  <option value="mm10">mm10</option>
+  <option value="mm10">mm9</option>
+  <option value="galGal5">galGal5</option>
+  <option value="dino-v1.0">dino-v1.0</option>
+</select>
+<hr>
+<h5>**Only selected experiments will be exported.</h5>
+<hr>
+{{ formset.management_form }}
+{% for form in formset %}
+<div class="row form-row spacer">
+{% for field in form %}
+ <div class="col-xs-6">
+			{{field.label}}{% if field.field.required %} * {% endif %}
+			{{field}}
+</div>
+         
+{% endfor %}
+
+ <button class="btn btn-danger pull-right remove-form-row" name="id_form-0-delete">Delete Group</button>
+</div>
+  
+{% endfor %}
+<div class="row spacer">
+<div class="input-group-append">
+                <button class="btn btn-success add-form-row center-block">Add More Groups</button>
+            </div><br/><br/>
+    <div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</div>
+</form>
+</div>
+{% endblock %} 
+
