@@ -37,6 +37,8 @@ from django.contrib.auth.models import Permission
 from organization.importSeqFiles import *
 import ast
 from django.core.exceptions import ObjectDoesNotExist
+from tools.distillerTools.prepare_project_file import exportYML 
+import yaml
 # Create your views here.
 
 @receiver(user_logged_in)
@@ -1834,7 +1836,174 @@ def downloadFile(request):
     raise Http404
 
 
-
-
-
+@class_login_required        
+class MoveExperiments(View): 
+    template_name = 'customForm.html'
+    error_page = 'error.html' 
+    form_class = MoveExperimentsForm
     
+    def get(self,request,pk):
+        form = self.form_class()
+        form.fields["experiments_in_current_project"].queryset = Experiment.objects.filter(project_id=pk)
+        form.fields["move_to_which_project"].queryset = Project.objects.all().order_by('-pk')
+        return render(request, self.template_name,{'form':form, 'form_class':"Move Experiments"})
+    
+    def post(self,request,pk):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            selected_experiments=request.POST.getlist("experiments_in_current_project")
+            selected_project=request.POST.get("move_to_which_project")
+            for expPk in selected_experiments:
+                sProject=Project.objects.get(pk=selected_project)
+                exp=Experiment.objects.get(pk=expPk)
+                aliasList=["Experiment",sProject.project_name,exp.experiment_name]
+                exp.dcic_alias = LABNAME +"_".join(aliasList)
+                exp.project=sProject
+                exp.save()
+                
+                expSets=ExperimentSet.objects.filter(experimentSet_exp__id__in=[expPk])
+                for expSet in expSets:
+                    e=expSet.experimentSet_exp.all()
+                    if(len(e)==1):
+                        expSet.delete()
+                    else:
+                        expSet.experimentSet_exp.remove(exp)
+                
+                
+                expTags=Tag.objects.filter(tag_exp__id__in=[expPk])
+                for expTag in expTags:
+                    e=expTag.tag_exp.all()
+                    if(len(e)==1):
+                        expTag.delete()
+                    else:
+                        expTag.tag_exp.remove(exp)
+                        
+                expRuns=SequencingRun.objects.filter(run_Experiment__id__in=[expPk])
+                for expRun in expRuns:
+                    e=expRun.run_Experiment.all()
+                    unq=SequencingRun.objects.filter(run_name=expRun.run_name, project=sProject)
+                    if(len(e)==1 and len(unq)==0):
+                        expRun.project=sProject
+                        expRun.save()
+                    else:
+                        expRun.run_Experiment.remove(exp)
+                        F=False
+                        files=SeqencingFile.objects.filter(sequencingFile_run=expRun)
+                        if(len(unq)==0):
+                            clonedRunobj = expRun
+                            clonedRunobj.pk = None
+                            clonedRunobj.project=sProject
+                            clonedRunobj.save()
+                            clonedRunobj.run_Experiment.add(exp)
+                            clonedRunobjPk=clonedRunobj.pk
+                        else:
+                            if(len(e)==1):
+                                F=True
+                            unq[0].run_Experiment.add(exp)
+                            clonedRunobjPk=unq[0].pk
+                          
+                    for f in files:
+                        f.project=sProject
+                        f.sequencingFile_run=SequencingRun.objects.get(pk=clonedRunobjPk)
+                        aliasList=["SeqencingFile",sProject.project_name,exp.experiment_name,f.sequencingFile_name]
+                        f.dcic_alias = LABNAME +"_".join(aliasList)
+                        f.save()
+                        fileSets=FileSet.objects.filter(fileSet_file__id__in=[f.pk])
+                        for fileSet in fileSets:
+                            n=fileSet.fileSet_file.all()
+                            if(len(n)==1):
+                                fileSet.delete()
+                            else:
+                                fileSet.fileSet_file.remove(f)
+                    
+                    if(F==True):
+                        expRun.delete()
+                    
+                imgs=ImageObjects.objects.filter(expImg__id__in=[exp.pk])
+                for i in imgs:
+                    imgExps=i.expImg.all()
+                    unq=ImageObjects.objects.filter(imageObjects_name=i.imageObjects_name, project=sProject)
+                    if(len(imgExps)==1 and len(unq)==0):
+                        i.project=sProject
+                        aliasList=["Image",sProject.project_name,i.imageObjects_name]
+                        i.dcic_alias = LABNAME +"_".join(aliasList)
+                        i.save()
+                    else:
+                        i.expImg.remove(exp)
+                        if(len(unq)==0):
+                            clonedImgobj = i
+                            clonedImgobj.pk = None
+                            aliasList=["Image",sProject.project_name,i.imageObjects_name]
+                            clonedImgobj.dcic_alias = LABNAME +"_".join(aliasList)
+                            clonedImgobj.project=sProject
+                            clonedImgobj.save()
+                            clonedImgobj.expImg.add(exp)
+                        else:
+                            if(len(imgExps)==1):
+                                i.delete()
+                            unq[0].expImg.add(exp)
+
+            return HttpResponseRedirect('/detailProject/'+pk)
+        else:
+            form.fields["experiments_in_current_project"].queryset = Experiment.objects.filter(project_id=pk)
+            form.fields["move_to_which_project"].queryset = Project.objects.all().order_by('-pk')
+            return render(request, self.template_name,{'form':form, 'form_class':"Move Experiments"})
+    
+    @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    
+
+
+@class_login_required        
+class ExportDistiller(View): 
+    template_name = 'exportDistillerForm.html'
+    error_page = 'error.html' 
+    form_class = ExportDistillerFormSet
+    
+    def get(self,request,pk):
+        formset = self.form_class()
+        for form in formset:
+            form.fields["experiments"].queryset = Experiment.objects.filter(project_id=pk)
+        return render(request, self.template_name,{'formset':formset, 'form_class':"Export Distiller project.yml"})
+    
+    def post(self,request,pk):
+        formset = self.form_class(request.POST)
+        if formset.is_valid():
+            genome=request.POST.get("genome")
+            group_dict=OrderedDict()
+            for form in formset:
+                cd = form.cleaned_data
+                selected_experiments=cd.get("experiments")
+                group=cd.get("group")
+                exp_list=[]
+                for exp in selected_experiments:
+                    ePk=str(exp.pk)
+                    exp_list.append(ePk)
+                group_dict[group]=exp_list
+                
+            group_dict_json=json.dumps(json.dumps(group_dict))
+
+            yaml_string = exportYML(group_dict,'distiller-project.yml',genome,'tools/distillerTools/sample_genomes.yaml')
+            
+            response = HttpResponse(yaml_string, content_type='application/text')
+            response['Content-Disposition'] = 'attachment; filename=distiller-project.yml'
+            return response
+        else:
+            for form in formset:
+                form.fields["experiments"].queryset = Experiment.objects.filter(project_id=pk)
+            return render(request, self.template_name,{'formset':formset, 'form_class':"Export Distiller project.yml"})
+        
+    @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+     

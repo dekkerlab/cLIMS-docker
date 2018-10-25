@@ -19,6 +19,11 @@
      <a href="/addSequencingRun">
 		<button type="button" class="btn btn-success view_only">Sequencing Run Wizard</button>
 	</a>
+	{% if request.session.currentGroup  ==  "admin"%}
+         <a href="/moveExperiments/{{ project.id }}">
+			<button type="button" class="btn btn-success view_only">Move Experiments</button>
+		</a>
+   {% endif %}
 	<a href="#">
 		<button  type="button" class="btn btn-warning edit view_only">Edit</button>
 	</a>
@@ -128,6 +133,9 @@
 	</a>
 	<a href="/importSequencingFiles/{{ project.id }}">
 		<button type="button" class="btn btn-success view_only">Import Sequencing Files</button>
+	</a>
+	<a href="/exportDistiller/{{ project.id }}">
+		<button type="button" class="btn btn-success view_only">Export Distiller file</button>
 	</a>
 {% endif %}
  

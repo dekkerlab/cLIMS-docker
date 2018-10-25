@@ -6,7 +6,7 @@ from organization.validators import alphanumeric
 # Create your models here.
 
 class SequencingRun(models.Model):
-    run_name = models.CharField(max_length=300, null=False, default="", unique=True, db_index=True, validators=[alphanumeric])
+    run_name = models.CharField(max_length=300, null=False, default="", validators=[alphanumeric])
     project = models.ForeignKey('organization.Project', related_name='runProject', on_delete=models.CASCADE,)
     run_Experiment = models.ManyToManyField('organization.Experiment', related_name='runExp')
     run_sequencing_center = models.ForeignKey('organization.Choice', null=True, blank=True, on_delete=models.CASCADE, related_name='runCenterChoice', help_text="Where the sequencing has been done.")
@@ -19,7 +19,10 @@ class SequencingRun(models.Model):
     update_dcic = models.BooleanField(default=False, help_text="This object needs to be updated at DCIC.")
     
     def __str__(self):
-        return self.run_name  
+        return self.run_name
+    
+    class Meta:
+        unique_together = ('project', 'run_name',)
  
 class SeqencingFile(models.Model):
     PAIR_CHOICES = (
@@ -60,7 +63,7 @@ class SeqencingFile(models.Model):
     sequencingFile_backupPath = models.CharField(max_length=500, null=False, default="")
     sequencingFile_sha256sum = models.CharField(max_length=64, null=False, default="")
     sequencingFile_md5sum = models.CharField(max_length=32, null=False, default="")
-    sequencingFile_run = models.ForeignKey(SequencingRun, related_name='fileRun', on_delete=models.CASCADE,)
+    sequencingFile_run = models.ForeignKey(SequencingRun, related_name='fileRun')
     sequencingFile_exp = models.ForeignKey('organization.Experiment', related_name='fileExp', on_delete=models.CASCADE,)
     dbxrefs = models.CharField(max_length=500, null=True, blank=True, default="", help_text="Unique identifiers from external resources, enter as a database name:identifier eg. HGNC:PARK2")
     dcic_alias = models.CharField(max_length=500, null=False, default="", unique=True, db_index=True, help_text="Provide an alias name for the object for DCIC submission.")
@@ -104,7 +107,7 @@ class Images(models.Model):
         verbose_name_plural = 'Images'
 
 class ImageObjects(models.Model):
-    imageObjects_name = models.CharField(max_length=300, null=False, default="", unique=True, db_index=True, validators=[alphanumeric])
+    imageObjects_name = models.CharField(max_length=300, null=False, default="",db_index=True, validators=[alphanumeric])
     imageObjects_images = models.FileField(upload_to='uploads/', help_text="Import image file", max_length=200)
     imageObjects_type = models.ForeignKey('organization.Choice', null=False, on_delete=models.CASCADE, related_name='imgChoice', help_text="The categorization of the images.")
     contributing_labs = models.ManyToManyField('organization.ContributingLabs', blank=True, help_text="Contributing labs for this image.")
@@ -117,5 +120,6 @@ class ImageObjects(models.Model):
     class Meta:
         verbose_name_plural = 'ImageObjects'
         ordering = ['imageObjects_name']
+        unique_together = ('project', 'imageObjects_name',)
         
         
