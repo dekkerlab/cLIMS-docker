@@ -24,6 +24,9 @@
       	  <td class="col-xs-1"><span class="rowHead">Number</span></td>
           <td class="col-xs-2"><span class="rowHead">Experiment Name</span></td>
           <td class="col-xs-2"><span class="rowHead">Sequencing run</span></td>
+          {% if md5sum %}
+          <td class="col-xs-2"><span class="rowHead">md5sum</span></td>
+          {% endif %}
           <td class="col-xs-7"><span class="rowHead">File Name</span></td>
       </tr>
 	 {% for key, values in runDict %}

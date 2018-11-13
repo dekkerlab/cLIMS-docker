@@ -47,7 +47,7 @@ class SeqencingFileForm(ModelForm):
     
     class Meta:
         model = SeqencingFile
-        exclude = ('sequencingFile_backupPath','sequencingFile_sha256sum','sequencingFile_md5sum','sequencingFile_exp','project','dcic_alias','update_dcic',)
+        exclude = ('sequencingFile_backupPath','sequencingFile_sha256sum','sequencingFile_exp','project','dcic_alias','update_dcic',)
     
     def save (self, *args, **kwargs):
         if(self.changed_data != None):
