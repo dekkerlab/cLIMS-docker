@@ -62,7 +62,7 @@ class SeqencingFile(models.Model):
     sequencingFile_mainPath = models.CharField(max_length=500, null=False, default="")
     sequencingFile_backupPath = models.CharField(max_length=500, null=False, default="")
     sequencingFile_sha256sum = models.CharField(max_length=64, null=False, default="")
-    sequencingFile_md5sum = models.CharField(max_length=32, null=False, default="")
+    sequencingFile_md5sum = models.CharField(max_length=32, null=True, blank=True, default="")
     sequencingFile_run = models.ForeignKey(SequencingRun, related_name='fileRun')
     sequencingFile_exp = models.ForeignKey('organization.Experiment', related_name='fileExp', on_delete=models.CASCADE,)
     dbxrefs = models.CharField(max_length=500, null=True, blank=True, default="", help_text="Unique identifiers from external resources, enter as a database name:identifier eg. HGNC:PARK2")

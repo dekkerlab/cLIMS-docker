@@ -11,7 +11,7 @@ def importSeqFiles(request,pk):
     excel_file_content=excel_file.read().decode("utf-8")
     lines = excel_file_content.split("\n")
     runDict=OrderedDict()
-    
+    context = {}
     count=1
     for line in lines:
         line=line.rstrip("\r")
@@ -20,15 +20,22 @@ def importSeqFiles(request,pk):
             runName=v[1]
         if(v[0]!=""):
             expName=v[0]
-        runDict[v[2]]=[expName,runName]
+        if(len(v)>3 and v[3]!=""):
+            md5Sum=v[3]
+            runDict[v[2]]=[expName,runName,md5Sum]
+            context['md5sum']=True
+        else:
+            runDict[v[2]]=[expName,runName]
+            context['md5sum']=False
         count+=1
     if "File Path" in runDict:
         del runDict["File Path"]
     if " " in runDict:
         del runDict[" "]
-    context = {}
+    
     runDictSorted=sorted(runDict.items())
     context['runDict'] = runDictSorted
     project=Project.objects.get(pk=pk)
     context['project']=project
+    
     return (request, template_name, context)

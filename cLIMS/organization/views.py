@@ -1780,14 +1780,17 @@ class CreateSequencingFiles(View):
             paired_end=filenameSplit[-2][1]
             expName=values[0]
             seqRunName=values[1]
+            md5sum=""
+            if(len(values)>2):
+                md5sum=values[2]
             exp_project=None
             try:
                 if (Experiment.objects.get(experiment_name=expName)):
                     exp=Experiment.objects.get(experiment_name=expName)
                     exp_project=exp.project.pk
-                if (SequencingRun.objects.get(run_name=seqRunName)):
-                    run=SequencingRun.objects.get(run_name=seqRunName)
-                if(Experiment.objects.get(experiment_name=expName) and SequencingRun.objects.get(run_name=seqRunName) and exp_project==int(pk)):
+                if (SequencingRun.objects.get(run_name=seqRunName, project=Project.objects.get(pk=pk))):
+                    run=SequencingRun.objects.get(run_name=seqRunName, project=Project.objects.get(pk=pk))
+                if(Experiment.objects.get(experiment_name=expName) and SequencingRun.objects.get(run_name=seqRunName, project=Project.objects.get(pk=pk)) and exp_project==int(pk)):
                     f=SeqencingFile(sequencingFile_name=fileName, project = Project.objects.get(pk=pk))
                     f.file_format= Choice.objects.get(pk=126)
                     f.paired_end= paired_end
@@ -1801,6 +1804,7 @@ class CreateSequencingFiles(View):
                     f.sequencingFile_mainPath=filePath
                     f.sequencingFile_run=run
                     f.sequencingFile_exp=exp
+                    f.sequencingFile_md5sum=md5sum
                     aliasList=["SeqencingFile",f.project.project_name,f.sequencingFile_exp.experiment_name,f.sequencingFile_name]
                     f.dcic_alias = LABNAME +"_".join(aliasList)
                     f.update_dcic = True
