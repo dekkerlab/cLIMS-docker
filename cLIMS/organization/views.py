@@ -2003,11 +2003,3 @@ class ExportDistiller(View):
                 form.fields["experiments"].queryset = Experiment.objects.filter(project_id=pk)
             return render(request, self.template_name,{'formset':formset, 'form_class':"Export Distiller project.yml"})
         
-    @method_decorator(view_only)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request,  *args, **kwargs)
-    
-    @method_decorator(require_permission)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request,  *args, **kwargs)
-     
