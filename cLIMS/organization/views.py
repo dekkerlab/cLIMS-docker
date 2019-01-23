@@ -1767,6 +1767,20 @@ class ImportSequencingFiles(View):
 class CreateSequencingFiles(View):
     def post(self,request,pk):
         runDict=request.POST.get('runDict')
+        orderList=request.POST.get('orderList')
+        orderListb=ast.literal_eval(orderList)
+        
+        exNameIndx=runIndx=md5sumIndx=sha256sumIndx=None
+        
+        if("Experiment" in orderListb):
+            exNameIndx=orderListb.index("Experiment")
+        if("Run" in orderListb):
+            runIndx=orderListb.index("Run")
+        if("md5sum" in orderListb):
+            md5sumIndx=orderListb.index("md5sum")
+        if("sha256sum" in orderListb):
+            sha256sumIndx=orderListb.index("sha256sum")
+        
         c=ast.literal_eval(runDict)
         notExist=[]
         for keys, values in c:
@@ -1778,11 +1792,15 @@ class CreateSequencingFiles(View):
             fileName=name[0]
             filenameSplit=fileName.split("_")
             paired_end=filenameSplit[-2][1]
-            expName=values[0]
-            seqRunName=values[1]
+            expName=values[exNameIndx]
+            seqRunName=values[runIndx]
             md5sum=""
-            if(len(values)>2):
-                md5sum=values[2]
+            sha256sum=""
+            if(md5sumIndx):
+                md5sum=values[md5sumIndx]
+            if(sha256sumIndx):
+                sha256sum=values[sha256sumIndx]
+            
             exp_project=None
             try:
                 if (Experiment.objects.get(experiment_name=expName)):
@@ -1805,6 +1823,7 @@ class CreateSequencingFiles(View):
                     f.sequencingFile_run=run
                     f.sequencingFile_exp=exp
                     f.sequencingFile_md5sum=md5sum
+                    f.sequencingFile_sha256sum=sha256sum
                     aliasList=["SeqencingFile",f.project.project_name,f.sequencingFile_exp.experiment_name,f.sequencingFile_name]
                     f.dcic_alias = LABNAME +"_".join(aliasList)
                     f.update_dcic = True
