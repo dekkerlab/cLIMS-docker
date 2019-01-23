@@ -10,15 +10,17 @@
 </span>
  {% endif %}
  <br/> <br/>
- {% if runDict %}
-<span class="tableHead">
-	Importing following files:
-</span>
-{% if messages %}
+ {% if messages %}
         {% for message in messages %}
             <p class="alert alert-danger">{{message}}</p>
         {% endfor %}
 {% endif %}
+ 
+ {% if runDict %}
+<span class="tableHead">
+	Importing following files:
+</span>
+
 <table class="table table-bordered table-hover table-responsive">
       <tr>
       	  <td class="col-xs-1"><span class="rowHead">Number</span></td>
@@ -26,6 +28,9 @@
           <td class="col-xs-2"><span class="rowHead">Sequencing run</span></td>
           {% if md5sum %}
           <td class="col-xs-2"><span class="rowHead">md5sum</span></td>
+          {% endif %}
+          {% if sha256sum %}
+          <td class="col-xs-2"><span class="rowHead">sha256sum</span></td>
           {% endif %}
           <td class="col-xs-7"><span class="rowHead">File Name</span></td>
       </tr>
@@ -42,6 +47,7 @@
   <form method="POST">
     {% csrf_token %}
     <input type="hidden" id="runDictionary" name="runDict" value="{{runDict}}">
+    <input type="hidden" id="order" name="orderList" value="{{orderList}}">
  	<button type="submit" id="import" class="btn btn-success" formaction="/createSequencingFiles/{{ project.id }}/">Yes! That's correct</button>
  	<a href="/detailProject/{{project.id}}/">
 		<button type="button" class="btn btn-success">No! cancel</button>
