@@ -1,18 +1,18 @@
 hg19:
-  bwa_index_wildcard: '/nl/umw_job_dekker/cshare/reference/bwa/hg19/hg19.fa*'
+  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/hg19/hg19.fa*'
   chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/hg19.reduced.chrom.sizes'
 hg38:
-  bwa_index_wildcard: '/nl/umw_job_dekker/cshare/reference/bwa/hg38/hg38*'
+  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/hg38/hg38*'
   chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/hg38.reduced.chrom.sizes'
 mm10:
-  bwa_index_wildcard: '/nl/umw_job_dekker/cshare/reference/bwa/mm10/mm10*'
+  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/mm10/mm10*'
   chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/mm10.reduced.chrom.sizes'
 mm9:
-  bwa_index_wildcard: '/nl/umw_job_dekker/cshare/reference/bwa/mm9/mm9*'
+  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/mm9/mm9*'
   chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/mm9.reduced.chrom.sizes'
 galGal5:
-  bwa_index_wildcard: '/nl/umw_job_dekker/cshare/reference/bwa/galGal5/galGal5.fa*'
+  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/galGal5/galGal5.fa*'
   chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/galGal5.reduced.chrom.sizes'
 dino-v1.0:
-  bwa_index_wildcard: '/nl/umw_job_dekker/cshare/reference/bwa/dino-v1.0/dino-v1.0.fa*'
+  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/dino-v1.0/dino-v1.0.fa*'
   chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/dino-v1.0.reduced.chrom.sizes'

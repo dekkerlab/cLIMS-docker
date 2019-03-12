@@ -58,6 +58,7 @@ class Experiment(References):
     )
     experiment_name = models.CharField(max_length=300, null=False, unique=True, default="", db_index=True, validators=[alphanumeric])
     project = models.ForeignKey(Project,related_name='expProject', on_delete=models.CASCADE,)
+    biocore_name = models.CharField(max_length=500, null=True, blank=True, default="",help_text="short/biocore name")
     bio_rep_no = models.IntegerField(null=True, blank=True, help_text="Biological Replicate number")
     tec_rep_no = models.IntegerField(null=True, blank=True, help_text="Technical Replicate number")
     experiment_biosample = models.ForeignKey('wetLab.Biosample',related_name='expBio', on_delete=models.CASCADE,help_text="Starting biological material.")
