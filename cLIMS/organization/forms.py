@@ -57,7 +57,7 @@ class ExperimentForm(ModelForm):
     class Meta:
         model = Experiment
         exclude = ('project','experiment_biosample','experiment_fields','dcic_alias','update_dcic','finalize_dcic_submission',)
-        fields = ['experiment_name','bio_rep_no','tec_rep_no','biosample_quantity','biosample_quantity_units','protocol','type','variation','experiment_enzyme',
+        fields = ['experiment_name','biocore_name','bio_rep_no','tec_rep_no','biosample_quantity','biosample_quantity_units','protocol','type','variation','experiment_enzyme',
                   'antibody','authentication_docs','imageObjects','references','document','contributing_labs','url','dbxrefs','experiment_description']
          
        
