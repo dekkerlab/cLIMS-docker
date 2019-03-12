@@ -31,60 +31,6 @@ SEPARATOR = "__"
 
 ################################################################
 
-def get_arguments():
-    parser = argparse.ArgumentParser(description="""
-    This script generates a project file in yaml format
-    for the distiller pipeline.
-    The user needs to specify
-    i) a folder for fastq files
-    ii) a yaml file containing genome indices and chrom sizes.
-       See the example in the github repository
-
-    Optional Input:
-    i)   A Prefix for the output folder
-    ii)  PCR Duplicate threshold
-    iii) gnome assembly: hg19, mm10,...
-
-    Fastq Directory Structure:
-    libname
-     -lane_1
-         - file1 file2
-     - lane_2
-          - file1 file 2
-    .......       
-
-    File Naming Convention:
-    """)
-    parser.add_argument("-f" ,
-                        help = """Group of the experiments.
-                                  Passing as dictionary.""" ,
-                        required = True ,
-                        type = str)
-    parser.add_argument("-o" ,
-                        help = """Output yaml file""" ,
-                        required = True ,
-                        type = str)
-    parser.add_argument("-a" ,
-                        help = """Genome Assembly Name.
-                                  This must match the name in the yaml file""" ,
-                        required = True ,
-                        type = str)
-    parser.add_argument("-g" ,
-                        help = "Genome File" ,
-                        required = False ,
-                        type = str)
-    parser.add_argument("-p" ,
-                        help = "Output Prefix" ,
-                        required = False ,
-                        default  = "",
-                        type     = str)
-    parser.add_argument('--no-suffix', dest='no_suffix', action='store_true',
-                        help = """the genome name is not appended at the end 
-                                   of library group or library names""")
-
-
-    arguments = parser.parse_args()
-    return arguments
 
 def get_bins():
     bin_dict = OrderedDict()
@@ -92,10 +38,7 @@ def get_bins():
     bins_string = False
     if not bins_string:
         bin_dict["resolutions"] = DEFAULT_BIN_SIZES
-    else:
-        pre_bins = bins_string.split(",")
-        bins = [int(this_bin) for this_bin in pre_bins]
-        bin_dict["resolutions"] = bins
+    
 
     bin_dict["balance"] = True
     bin_dict["filters"] = fILTERS_DICT
