@@ -39,6 +39,7 @@ import ast
 from django.core.exceptions import ObjectDoesNotExist
 from tools.distillerTools.prepare_project_file import exportYML 
 import yaml
+from django.db import IntegrityError
 # Create your views here.
 
 @receiver(user_logged_in)
@@ -1788,19 +1789,19 @@ class CreateSequencingFiles(View):
             run=None
             filePath=keys
             n=filePath.split("/")
-            name=n[-1].split(".")
+            name=n[-1].split(".fastq")
             fileName=name[0]
             filenameSplit=fileName.split("_")
             paired_end=filenameSplit[-2][1]
             expName=values[exNameIndx]
             seqRunName=values[runIndx]
+            runNameDate=seqRunName.split("-")[0]
             md5sum=""
             sha256sum=""
             if(md5sumIndx):
                 md5sum=values[md5sumIndx]
             if(sha256sumIndx):
                 sha256sum=values[sha256sumIndx]
-            
             exp_project=None
             try:
                 if (Experiment.objects.get(experiment_name=expName)):
@@ -1825,9 +1826,16 @@ class CreateSequencingFiles(View):
                     f.sequencingFile_md5sum=md5sum
                     f.sequencingFile_sha256sum=sha256sum
                     aliasList=["SeqencingFile",f.project.project_name,f.sequencingFile_exp.experiment_name,f.sequencingFile_name]
-                    f.dcic_alias = LABNAME +"_".join(aliasList)
-                    f.update_dcic = True
-                    f.save()
+                    try:
+                        f.dcic_alias = LABNAME +"_".join(aliasList)
+                        f.update_dcic = True
+                        f.save()
+                    except IntegrityError:
+                        f.sequencingFile_name = runNameDate+"-"+fileName
+                        aliasList=["SeqencingFile",f.project.project_name,f.sequencingFile_exp.experiment_name,runNameDate+"-"+fileName]
+                        f.dcic_alias = LABNAME +"_".join(aliasList)
+                        f.update_dcic = True
+                        f.save()
             except ObjectDoesNotExist:
                 if(exp is None):
                     notExist.append(expName)
