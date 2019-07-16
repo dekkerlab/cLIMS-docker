@@ -212,7 +212,7 @@ def exportGEO(request):
         insert_rows(ws, row_idx= rawFilesRowNo, cnt = 1, above=True, copy_style=False)
         ws.cell(row=rawFilesRowNo, column=1).value = str(file.sequencingFile_name)
         ws.cell(row=rawFilesRowNo, column=2).value = str(file.file_format)
-        ws.cell(row=rawFilesRowNo, column=3).value = str(file.sequencingFile_sha256sum)
+        ws.cell(row=rawFilesRowNo, column=3).value = str(file.sequencingFile_md5sum)
         ws.cell(row=rawFilesRowNo, column=4).value = str(file.sequencingFile_run.run_sequencing_instrument.choice_name)
         ws.cell(row=rawFilesRowNo, column=5).value = str(file.read_length)
         ws.cell(row=rawFilesRowNo, column=6).value = "paired-end"
