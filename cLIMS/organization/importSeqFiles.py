@@ -10,7 +10,7 @@ def importSeqFiles(request,pk):
     template_name = 'importFiles.html'
     excel_file = request.FILES['excel_file']
     excel_file_content=excel_file.read().decode("utf-8")
-    lines = excel_file_content.split("\n")
+    lines = excel_file_content.rstrip().split("\n")
     runDict=OrderedDict()
     orderList=[]
     context = {}
