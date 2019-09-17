@@ -4,6 +4,7 @@ from organization.models import *
 from django.shortcuts import render, redirect, render_to_response,\
     get_object_or_404
 from django.contrib import messages
+from dryLab.models import *
     
 @login_required 
 def importSeqFiles(request,pk):
@@ -11,6 +12,8 @@ def importSeqFiles(request,pk):
     excel_file = request.FILES['excel_file']
     excel_file_content=excel_file.read().decode("utf-8")
     lines = excel_file_content.rstrip().split("\n")
+    project=Project.objects.get(pk=pk)
+    exsisting_files=SeqencingFile.objects.filter(project=project).values_list('sequencingFile_mainPath',flat=True)
     runDict=OrderedDict()
     orderList=[]
     context = {}
@@ -49,7 +52,7 @@ def importSeqFiles(request,pk):
             if(filePath==True and v[filePathIndx]!=""):
                 path=v[filePathIndx]
             
-            if(expName!= "" and path!= ""):
+            if(expName!= "" and path!= ""):   
                 runDict[v[filePathIndx]]=[expName,runName]
             
             else:
@@ -70,7 +73,9 @@ def importSeqFiles(request,pk):
                 context['sha256sum']=True
             else:
                 context['sha256sum']=False
-        
+            
+            if(path in exsisting_files):
+                 del runDict[path]
         count+=1
     
     if " " in runDict:
@@ -79,7 +84,7 @@ def importSeqFiles(request,pk):
     runDictSorted=sorted(runDict.items())
     context['runDict'] = runDictSorted
     context['orderList'] = orderList
-    project=Project.objects.get(pk=pk)
+
     context['project']=project
     
     return (request, template_name, context)
