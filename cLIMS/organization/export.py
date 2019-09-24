@@ -22,7 +22,6 @@ from openpyxl.utils.cell import get_column_letter
 from django.contrib import messages
 import re
 
-
 @login_required 
 def exportExperiment(request):
     # Create the HttpResponse object with the appropriate CSV header.

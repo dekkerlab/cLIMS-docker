@@ -15,6 +15,7 @@ def importSeqFiles(request,pk):
     project=Project.objects.get(pk=pk)
     exsisting_files=SeqencingFile.objects.filter(project=project).values_list('sequencingFile_mainPath',flat=True)
     runDict=OrderedDict()
+    dupDict=OrderedDict()
     orderList=[]
     context = {}
     count=1
@@ -75,16 +76,27 @@ def importSeqFiles(request,pk):
                 context['sha256sum']=False
             
             if(path in exsisting_files):
-                 del runDict[path]
+               dupDict[path]=runDict[path]
+               del runDict[path]
         count+=1
     
     if " " in runDict:
         del runDict[" "]
     
     runDictSorted=sorted(runDict.items())
+    dupDictSorted=sorted(dupDict.items())
     context['runDict'] = runDictSorted
+    context['dupDict'] = dupDictSorted
     context['orderList'] = orderList
 
     context['project']=project
     
     return (request, template_name, context)
+
+
+
+
+
+
+
+
