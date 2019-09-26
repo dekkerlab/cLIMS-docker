@@ -53,7 +53,7 @@ def importSeqFiles(request,pk):
             if(filePath==True and v[filePathIndx]!=""):
                 path=v[filePathIndx]
             
-            if(expName!= "" and path!= ""):   
+            if(expName!= "" and path!= ""):
                 runDict[v[filePathIndx]]=[expName,runName]
             
             else:
@@ -88,15 +88,6 @@ def importSeqFiles(request,pk):
     context['runDict'] = runDictSorted
     context['dupDict'] = dupDictSorted
     context['orderList'] = orderList
-
     context['project']=project
     
     return (request, template_name, context)
-
-
-
-
-
-
-
-
