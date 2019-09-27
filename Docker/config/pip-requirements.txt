@@ -3,6 +3,6 @@ django-crispy-forms==1.6.0
 openpyxl==2.4.0
 xlutils==2.0.0
 xlwt==1.1.2
-psycopg2==2.6.2
+psycopg2==2.7.7
 gunicorn==19.6.0
 pyyaml==3.13
