@@ -15,6 +15,45 @@
             <p class="alert alert-danger">{{message}}</p>
         {% endfor %}
 {% endif %}
+
+
+ {% if dupDict %}
+<span class="tableHead">
+	Following entries already exists:
+</span>
+
+<table class="table table-bordered table-hover table-responsive">
+      <tr>
+      	  <td class="col-xs-1"><span class="rowHead">Number</span></td>
+          <td class="col-xs-2"><span class="rowHead">Experiment Name</span></td>
+          <td class="col-xs-2"><span class="rowHead">Sequencing run</span></td>
+          {% if md5sum %}
+          <td class="col-xs-2"><span class="rowHead">md5sum</span></td>
+          {% endif %}
+          {% if sha256sum %}
+          <td class="col-xs-2"><span class="rowHead">sha256sum</span></td>
+          {% endif %}
+          <td class="col-xs-7"><span class="rowHead">File Name</span></td>
+      </tr>
+	 {% for key, values in dupDict %}
+	 <tr>
+		  <td class="col-xs-1">{{ forloop.counter }}</td>
+		  {% for v in  values%}
+		  <td class="col-xs-2">{{v}}</td>
+          {% endfor %}
+          <td class="col-xs-7">{{key}}</td>
+  		</tr>
+    {% endfor %}
+ </table>
+{% endif %}
+ 
+
+
+
+
+
+
+
  
  {% if runDict %}
 <span class="tableHead">
@@ -55,7 +94,7 @@
 </form>
 	
 {% else %}
-    <p>No data available.</p>
+    <p>No data available to add</p>
 {% endif %}
 <br/><br/>
 </div>
