@@ -39,11 +39,11 @@ urlpatterns = [
 #     url(r'^addIndividual/$', AddIndividual.as_view(), name='addIndividual'),
 #     url(r'^addIndividual/constructForm/$',  views.constructForm, name='constructIndividual'), 
 #     
-    url(r'^addIndividual/$', AddIndividual.as_view(), name='addIndividual'),
+    url(r'^addIndividual/(?P<pk>[0-9]+)/$', AddIndividual.as_view(), name='addIndividual'),
     url(r'^constructForm/$', views.constructForm, name='constructForm'),
     
-    url(r'^addBiosource/$', AddBiosource.as_view(), name='addBiosource'),
-    url(r'^addBiosample/$', AddBiosample.as_view(), name='addBiosample'),
+    url(r'^addBiosource/(?P<pk>[0-9]+)/(?P<ind_pk>[0-9]+)/$', AddBiosource.as_view(), name='addBiosource'),
+    url(r'^addBiosample/(?P<pk>[0-9]+)/(?P<biosrc_pk>[0-9]+)/$', AddBiosample.as_view(), name='addBiosample'),
     url(r'^addModification/$', AddModification.as_view(), name='addModification'),
     url(r'^addTarget/$', AddTarget.as_view(), name='addTarget'),
     url(r'^addConstruct/$', AddConstruct.as_view(), name='addConstruct'),
@@ -54,7 +54,7 @@ urlpatterns = [
     url(r'^addTreatmentChemical/$', AddTreatmentChemical.as_view(), name='addTreatmentChemical'),
     url(r'^addOther/$', AddOther.as_view(), name='addOther'),
     url(r'^addPublication/$', AddPublication.as_view(), name='addPublication'),
-    url(r'^addExperiment/$', AddExperiment.as_view(), name='addExperiment'),
+    url(r'^addExperiment/(?P<pk>[0-9]+)/(?P<biosm_pk>[0-9]+)/$', AddExperiment.as_view(), name='addExperiment'),
     url(r'^addSequencingRun/$', AddSequencingRun.as_view(), name='addSequencingRun'),   
     url(r'^addBarcode/$', AddBarcode.as_view(), name='addBarcode'),
     url(r'^addSeqencingFile/$', AddSeqencingFile.as_view(), name='addSeqencingFile'),   

@@ -398,7 +398,7 @@ class AddIndividual(View):
     form_class = IndividualForm
     selectForm_class = SelectForm
     
-    def get(self,request):
+    def get(self,request,pk):
         selectForm = self.selectForm_class()
         selectForm.fields["Individual"].queryset = Individual.objects.all()
         isExisting = (selectForm.fields["Individual"].queryset.count() > 0)
@@ -407,13 +407,13 @@ class AddIndividual(View):
         form.fields["individual_type"].queryset = JsonObjField.objects.filter(field_type="Individual")
         return render(request, self.template_name,{'form':form, 'form_class':"Individual", 'existing':existing,'isExisting':isExisting})
     
-    def post(self,request):
+    def post(self,request,pk):
         form = self.form_class(request.POST)
         selectForm = self.selectForm_class(request.POST)
         existingSelect = request.POST.get('selectForm')
         if existingSelect == "old":
-            request.session['individualPK'] = selectForm['Individual'].value()
-            return HttpResponseRedirect('/addBiosource/')
+            individualPK= selectForm['Individual'].value()
+            return HttpResponseRedirect('/addBiosource/'+pk+'/'+str(individualPK))
         else:   
             if form.is_valid():
                 individual = form.save(commit= False)
@@ -427,8 +427,8 @@ class AddIndividual(View):
                 for l in labs:
                     iLab = ContributingLabs.objects.get(pk=l)
                     individual.contributing_labs.add(iLab)
-                request.session['individualPK'] = individual.pk
-                return HttpResponseRedirect('/addBiosource/')
+                individualPK = individual.pk
+                return HttpResponseRedirect('/addBiosource/'+pk+'/'+str(individualPK))
             else:
                 existing = selectForm['Individual']
                 selectForm.fields["Individual"].queryset = Individual.objects.all()
@@ -451,9 +451,9 @@ class AddBiosource(View):
     form_class = BiosourceForm
     selectForm_class = SelectForm
     
-    def get(self,request):
+    def get(self,request,pk,ind_pk):
         selectForm = self.selectForm_class()
-        selectForm.fields["Biosource"].queryset = Biosource.objects.filter(biosource_individual=request.session['individualPK'])
+        selectForm.fields["Biosource"].queryset = Biosource.objects.filter(biosource_individual=ind_pk)
         isExisting = (selectForm.fields["Biosource"].queryset.count() > 0)
         existing = selectForm['Biosource']
         form = self.form_class()
@@ -468,18 +468,18 @@ class AddBiosource(View):
         
         return render(request, self.template_name,{'form':form, 'form_class':"Biosource", 'existing':existing,'isExisting':isExisting})
     
-    def post(self,request):
+    def post(self,request,pk,ind_pk):
         form = self.form_class(request.POST)
         selectForm = self.selectForm_class(request.POST)
         existingSelect = request.POST.get('selectForm')
         if existingSelect == "old":
-            request.session['biosourcePK'] =  selectForm['Biosource'].value()
-            return HttpResponseRedirect('/addBiosample/')
+            biosourcePK=  selectForm['Biosource'].value()
+            return HttpResponseRedirect('/addBiosample/'+pk+'/'+str(biosourcePK))
         else:
             if form.is_valid():
                 biosource = form.save(commit=False)
-                individualPK = request.session['individualPK']
-                biosource.biosource_individual = Individual.objects.get(pk=individualPK)
+                individualPK = ind_pk
+                biosource.biosource_individual = Individual.objects.get(pk=ind_pk)
                 aliasList=["Biosource",biosource.biosource_name]
                 biosource.dcic_alias = LABNAME +"_".join(aliasList)
                 biosource.save()
@@ -491,10 +491,10 @@ class AddBiosource(View):
                 for l in labs:
                     iLab = ContributingLabs.objects.get(pk=l)
                     biosource.contributing_labs.add(iLab)
-                request.session['biosourcePK'] = biosource.pk
-                return HttpResponseRedirect('/addBiosample/')
+                biosourcePK= biosource.pk
+                return HttpResponseRedirect('/addBiosample/'+pk+'/'+str(biosourcePK))
             else:
-                selectForm.fields["Biosource"].queryset = Biosource.objects.filter(biosource_individual=request.session['individualPK'])
+                selectForm.fields["Biosource"].queryset = Biosource.objects.filter(biosource_individual=ind_pk)
                 isExisting = (selectForm.fields["Biosource"].queryset.count() > 0)
                 existing = selectForm['Biosource']
                 form.fields["biosource_type"].queryset = Choice.objects.filter(choice_type="biosource_type")
@@ -521,14 +521,14 @@ class AddBiosample(View):
     form_class = BiosampleForm
     selectForm_class = SelectForm
     
-    def get(self,request):
+    def get(self,request,pk,biosrc_pk):
         selectForm = self.selectForm_class()
-        selectForm.fields["Biosample"].queryset = Biosample.objects.filter(biosample_biosource=request.session['biosourcePK'])
+        selectForm.fields["Biosample"].queryset = Biosample.objects.filter(biosample_biosource=biosrc_pk)
         isExisting = (selectForm.fields["Biosample"].queryset.count() > 0)
         existing = selectForm['Biosample']
         form = self.form_class()
         form.fields["biosample_type"].queryset = JsonObjField.objects.filter(field_type="Biosample")
-        form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=request.session['projectId'])
+        form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=pk)
         form.fields["authentication_protocols"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
         form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         form.fields["protocols_additional"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
@@ -540,19 +540,19 @@ class AddBiosample(View):
 
         return render(request, self.template_name,{'form':form, 'form_class':"Biosample", 'existing':existing,'isExisting':isExisting})
     
-    def post(self,request):
+    def post(self,request,pk,biosrc_pk):
         form = self.form_class(request.POST)
         selectForm = self.selectForm_class(request.POST)
         existingSelect = request.POST.get('selectForm')
         if existingSelect == "old":
-            request.session['biosamplePK'] =  selectForm['Biosample'].value()
-            return HttpResponseRedirect('/addExperiment/')
+            biosamplePK =  selectForm['Biosample'].value()
+            return HttpResponseRedirect('/addExperiment/'+pk+'/'+str(biosamplePK))
         else:
             if form.is_valid():
                 biosample = form.save(commit= False)
                 biosample.userOwner = User.objects.get(pk=request.user.pk)
-                individualPK = request.session['individualPK']
-                biosourcePK = request.session['biosourcePK']
+                individualPK = (Individual.objects.get(sourceInd__pk=biosrc_pk)).pk
+                biosourcePK = biosrc_pk
                 biosample.biosample_biosource = Biosource.objects.get(pk=biosourcePK)
                 biosample.biosample_individual = Individual.objects.get(pk=individualPK)
                 if(request.POST.get('biosample_type')):
@@ -593,14 +593,14 @@ class AddBiosample(View):
                 for l in labs:
                     iLab = ContributingLabs.objects.get(pk=l)
                     biosample.contributing_labs.add(iLab)
-                request.session['biosamplePK'] = biosample.pk
-                return HttpResponseRedirect('/addExperiment/')
+                biosamplePK= biosample.pk
+                return HttpResponseRedirect('/addExperiment/'+pk+'/'+str(biosamplePK))
             else:
-                selectForm.fields["Biosample"].queryset = Biosample.objects.filter(biosample_biosource=request.session['biosourcePK'])
+                selectForm.fields["Biosample"].queryset = Biosample.objects.filter(biosample_biosource=biosrc_pk)
                 isExisting = (selectForm.fields["Biosample"].queryset.count() > 0)
                 existing = selectForm['Biosample']
                 form.fields["biosample_type"].queryset = JsonObjField.objects.filter(field_type="Biosample")
-                form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=request.session['projectId'])
+                form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=pk)
                 form.fields["authentication_protocols"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
                 form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
                 form.fields["protocols_additional"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
@@ -626,9 +626,9 @@ class AddExperiment(View):
     error_page = 'error.html'
     form_class = ExperimentForm
     
-    def get(self,request):
+    def get(self,request,pk,biosm_pk):
         form = self.form_class()
-        form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=request.session['projectId'])
+        form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=pk)
         form.fields["type"].queryset = JsonObjField.objects.filter(field_type="Experiment")
         form.fields["authentication_docs"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
         form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
@@ -641,12 +641,12 @@ class AddExperiment(View):
 
         return render(request, self.template_name,{'form':form, 'form_class':"Experiment"})
     
-    def post(self,request):
+    def post(self,request,pk,biosm_pk):
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
             exp = form.save(commit=False)
-            exp.project = Project.objects.get(pk=request.session['projectId'])
-            exp.experiment_biosample = Biosample.objects.get(pk=request.session['biosamplePK'])
+            exp.project = Project.objects.get(pk=pk)
+            exp.experiment_biosample = Biosample.objects.get(pk=biosm_pk)
             
             if(request.POST.get('type')):
                 exp_type = request.POST.get('type')
@@ -667,9 +667,9 @@ class AddExperiment(View):
                 iLab = ContributingLabs.objects.get(pk=l)
                 exp.contributing_labs.add(iLab)
             
-            return HttpResponseRedirect('/detailProject/'+request.session['projectId'])
+            return HttpResponseRedirect('/detailProject/'+pk)
         else:
-            form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=request.session['projectId'])
+            form.fields["imageObjects"].queryset = ImageObjects.objects.filter(project=pk)
             form.fields["type"].queryset = JsonObjField.objects.filter(field_type="Experiment")
             form.fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
             form.fields["variation"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
