@@ -48,7 +48,7 @@ function makeReq() {
 					  {{field.label}} {% if field.field.required %} * {% endif %}
 					  
 					  {% if 'add' in field.label_tag %}
-					   <a href="{% url field.label_tag|cut:field.label|striptags %}" class="add-another" id="add_{{field.auto_id}}" onclick="return showAddAnotherPopup(this);"></a>
+					   <a href="{% url field.label_tag|cut:field.label|striptags prj_pk=ProjectId %}" class="add-another" id="add_{{field.auto_id}}" onclick="return showAddAnotherPopup(this);"></a>
 					  {% endif %}
 					  
 					  </span>

@@ -55,6 +55,11 @@ class DeleteProject(DeleteView):
     template_name = 'delete.html'
     def get_success_url(self):
         return reverse('showProject')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['ProjectId']=self.get_object().id
+        return context
     
     @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
@@ -68,8 +73,10 @@ class EditExperiment(UpdateView):
     template_name = 'editForm.html/'
     
     def get_success_url(self):
-        projectId = self.request.session['projectId']
+        
+        #projectId = self.request.session['projectId']
         expe = Experiment.objects.get(pk=self.get_object().id)
+        projectId = expe.project.id
         aliasList=["Experiment",expe.project.project_name,expe.experiment_name]
         expe.dcic_alias = LABNAME +"_".join(aliasList)
         expe.save()
@@ -82,10 +89,13 @@ class EditExperiment(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(EditExperiment , self).get_context_data(**kwargs)
         obj = Experiment.objects.get(pk=self.get_object().id)
+        
+        projectId=obj.project.id
+
         if(obj.experiment_fields):
             context['jsonObj']= json.loads(obj.experiment_fields)
         context['form'].fields["type"].queryset = JsonObjField.objects.filter(field_type="Experiment")
-        context['form'].fields["imageObjects"].queryset = ImageObjects.objects.filter(project=self.request.session['projectId'])
+        context['form'].fields["imageObjects"].queryset = ImageObjects.objects.filter(project=projectId)
         context['form'].fields["authentication_docs"].queryset = Protocol.objects.filter(protocol_type__choice_name="Authentication document")
         context['form'].fields["protocol"].queryset = Protocol.objects.filter(~Q(protocol_type__choice_name="Authentication document"))
         context['action'] = reverse('editProject',
@@ -96,6 +106,7 @@ class EditExperiment(UpdateView):
             for f in formFields:
                 context['form'].fields[f].queryset = (context['form'].fields[f].queryset).filter(userOwner=self.request.user.pk)
         
+        context['ProjectId']=projectId
         return context
     
     @method_decorator(require_permission)
@@ -107,8 +118,15 @@ class DeleteExperiment(DeleteView):
     model = Experiment
     template_name = 'deleteExperiment.html'
     def get_success_url(self):
-        projectId = self.request.session['projectId']
-        return reverse('detailProject', kwargs={'pk': projectId})
+        expe = Experiment.objects.get(pk=self.get_object().id)
+        projectId= expe.project.id
+        return reverse('detailProject', kwargs={'prj_pk': projectId})
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        expe = Experiment.objects.get(pk=self.get_object().id)
+        context['ProjectId']= expe.project.id
+        return context
     
     @method_decorator(require_permission)
     def dispatch(self, request, *args, **kwargs):
@@ -130,15 +148,20 @@ class EditIndividual(UpdateView):
         individual.dcic_alias = LABNAME +"_".join(aliasList)
         individual.save()
         return reverse('detailExperiment', kwargs={'pk': experimentId})
-    
+
     def get_context_data(self, **kwargs):
         context = super(EditIndividual , self).get_context_data(**kwargs)
         context['form'].fields["individual_type"].queryset = JsonObjField.objects.filter(field_type="Individual")
         obj = Individual.objects.get(pk=self.get_object().id)
         if (obj.individual_fields):
             context['jsonObj']= json.loads(obj.individual_fields)
+        #what is this?
         context['action'] = reverse('detailExperiment',
                                 kwargs={'pk': self.get_object().id})
+                                
+        previous_link=self.request.META['HTTP_REFERER']
+        expid=previous_link.split('/')[-2]
+        context['ProjectId']=(Experiment.objects.get(id=expid)).project.id
         return context
     
     @method_decorator(require_permission)

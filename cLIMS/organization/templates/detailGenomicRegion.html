@@ -39,7 +39,7 @@
 		{% else %}
     <p>No data available.</p>
 {% endif %}
-<a type="button" class="btn btn-warning pull-right goBack" href="{% url 'detailExperiment' request.session.experimentId %}">Go Back</a>
+<a type="button" class="btn btn-warning pull-right goBack" onclick="history.back()">Go Back</a>
 <br/><br/>
 </div>
 {% endblock %} 

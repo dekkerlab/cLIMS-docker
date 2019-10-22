@@ -16,7 +16,7 @@
     <a href="/addIndividual/{{ project.id }}">
 		<button type="button" class="btn btn-success view_only">Experiment Wizard</button>
 	</a>
-     <a href="/addSequencingRun">
+     <a href="/addSequencingRun/{{ project.id }}">
 		<button type="button" class="btn btn-success view_only">Sequencing Run Wizard</button>
 	</a>
 	{% if request.session.currentGroup  ==  "admin"%}
@@ -116,19 +116,19 @@
     {% endfor %}
   	</tbody>
  </table><br/>
- <a href="/exportExperiment">
+ <a href="/exportExperiment/{{ project.id }}">
 		<button type="button" class="btn btn-success">Export Experiment meta data</button>
 	</a>
-	<a href="/exportAnalysis">
+	<a href="/exportAnalysis/{{ project.id }}">
 		<button type="button" class="btn btn-success">Export Analysis</button>
 	</a>
-	<a href="/exportGEO">
+	<a href="/exportGEO/{{ project.id }}">
 		<button type="button" class="btn btn-success">Export- GEO</button>
 	</a>
-	<a href="/dcicView">
+	<a href="/dcicView/{{ project.id }}">
 		<button type="button" class="btn btn-success">DCIC View</button>
 	</a>
-	<a href="/cloneExperimentList">
+	<a href="/cloneExperimentList/{{ project.id }}">
 		<button type="button" class="btn btn-success view_only">Clone Experiment</button>
 	</a>
 	<a href="/importSequencingFiles/{{ project.id }}">
@@ -235,13 +235,13 @@
 <div class="tab-content">
   <div id="add" class="tab-pane fade in active view_only">
     <h3>Add Tags and Sets</h3>
-    <a href="/addTag">
+    <a href="/addTag/{{ project.id }}">
 		<button type="button" class="btn btn-success">Tag Experiments</button>
 	</a>
-    <a href="/addExperimentSet">
+    <a href="/addExperimentSet/{{ project.id }}">
 		<button type="button" class="btn btn-success">Experiment Set</button>
 	</a>
-	<a href="/addFileSet">
+	<a href="/addFileSet/{{ project.id }}">
 		<button type="button" class="btn btn-success">File Set</button>
 	</a><br/><br/>
   </div>
