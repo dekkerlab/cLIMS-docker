@@ -1,4 +1,4 @@
-Django==1.9.7
+Django==1.11.23
 django-crispy-forms==1.6.0
 openpyxl==2.4.0
 xlutils==2.0.0
