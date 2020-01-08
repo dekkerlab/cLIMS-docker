@@ -16,6 +16,10 @@ galGal6:
 galGal5:
   bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/galGal5/galGal5.fa*'
   chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/galGal5.reduced.chrom.sizes'
-dino-v1.0:
-  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/dino-v1.0/dino-v1.0.fa*'
-  chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/dino-v1.0.reduced.chrom.sizes'
+smic1.0:
+  bwa_index_wildcard_path: '/nl/umw_job_dekker/users/an27w/dinoflagellets/genome/smic1.0/smic1.0.fa*'
+  chrom_sizes_path: '/nl/umw_job_dekker/users/an27w/dinoflagellets/genome/smic1.0/smic1.0.chrom.sizes'
+sacCer3:
+  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/sacCer3/sacCer3.*'
+  chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/sacCer3.reduced.chrom.sizes'
+ 
