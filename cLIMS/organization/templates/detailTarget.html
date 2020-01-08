@@ -13,10 +13,10 @@
     <span class="tableHead">
     	Target Details:<br/> 
     </span>
-    <a href="/deleteTarget/{{ target.id }}">
+    <a href="/deleteTarget/{{prj_pk}}/{{exp_pk}}/{{ target.id }}">
 	<button type="button" class="btn btn-danger pull-right hidden show">Delete Target</button>
 	</a>
-	<a href="/editTarget/{{target.id}}">
+	<a href="/editTarget/{{prj_pk}}/{{exp_pk}}/{{target.id}}">
 		<button type="button" class="btn btn-warning pull-right hidden show">Edit Target</button>
 	</a>
 	<br/>
@@ -24,16 +24,16 @@
 	<span class="rowHead">Targeted Genes: </span>{{target.targeted_genes}}<br/>
 	<span class="rowHead">Targeted Region: </span>
 	{% if not target.document  == None %}
-		<a href="/detailGenomicRegions/{{target.targeted_region}}">{{target.targeted_region}}</a>
+		<a href="/detailGenomicRegions/{{prj_pk}}/{{exp_pk}}/{{target.targeted_region.id}}">{{target.targeted_region}}</a>
 	{% endif %}<br/>
 		<span class="rowHead">Target URL: </span>{{target.url}}<br/>
 		<span class="rowHead">Target Documents: </span>
 		{% if not target.document  == None %}
-			<a href="/detailDocument/{{target.documents.id}}">{{target.document}}</a>
+			<a href="/detailDocument/{{prj_pk}}/{{exp_pk}}/{{target.document.id}}">{{target.document}}</a>
 		{% endif %}<br/>
 		<span class="rowHead">Target References: </span>
 		{% if not target.references  == None %}
-			<a href="/detailPublication/{{target.references.id}}">{{target.references}}</a>
+			<a href="/detailPublication/{{prj_pk}}/{{exp_pk}}/{{target.references.id}}">{{target.references}}</a>
 		{% endif %}<br/>
 			<span class="rowHead">Target DBxrefs: </span>{{target.dbxrefs}}<br/>	
 		{% if target.contributing_labs.all%}

@@ -174,7 +174,6 @@ class DetailProject(View):
     template_name = 'detailProject.html'
     error_page = 'error.html'
     def get(self,request,prj_pk):
-#        request.session['projectId'] = pk
         request.session['finalizeOnly'] = False
         context = {}
         prj = Project.objects.get(pk=prj_pk)
@@ -215,8 +214,7 @@ def addUnits(jsonValue):
 class DetailExperiment(View):
     template_name = 'detailExperiment.html'
     error_page = 'error.html'
-    def get(self,request,exp_pk):
-#        request.session['experimentId'] = pk
+    def get(self,request,prj_pk,exp_pk):
         context = {}
         experiment = Experiment.objects.get(pk=exp_pk)
         if(experiment.experiment_fields):
@@ -313,20 +311,24 @@ class DetailAnalysis(View):
 class DetailPublication(View):
     template_name = 'detailPublication.html'
     error_page = 'error.html'
-    def get(self,request,pub_pk):
+    def get(self,request,prj_pk,exp_pk,pub_pk):
         context = {}
         publication = Publication.objects.get(pk=pub_pk)
         context['publication']= publication
+        context['prj_pk']=prj_pk
+        context['exp_pk']=exp_pk
         return render(request, self.template_name, context)
 
 @class_login_required
 class DetailProtocol(View):
     template_name = 'detailProtocol.html'
     error_page = 'error.html'
-    def get(self,request,protocol_pk):
+    def get(self,request,prj_pk,exp_pk,protocol_pk):
         context = {}
         protocol = Protocol.objects.get(pk=protocol_pk)
         context['protocol']= protocol
+        context['prj_pk']=prj_pk
+        context['exp_pk']=exp_pk
         return render(request, self.template_name, context)
 
 
@@ -334,10 +336,12 @@ class DetailProtocol(View):
 class DetailDocument(View):
     template_name = 'detailDocument.html'
     error_page = 'error.html'
-    def get(self,request,doc_pk):
+    def get(self,request,prj_pk,exp_pk,doc_pk):
         context = {}
         document = Document.objects.get(pk=doc_pk)
         context['document']= document
+        context['prj_pk']=prj_pk
+        context['exp_pk']=exp_pk
         return render(request, self.template_name, context)
 
 
@@ -355,30 +359,36 @@ class DetailEnzyme(View):
 class DetailConstruct(View):
     template_name = 'detailConstructs.html'
     error_page = 'error.html'
-    def get(self,request,construct_pk):
+    def get(self,request,prj_pk,exp_pk,construct_pk):
         context = {}
         construct = Construct.objects.get(pk=construct_pk)
         context['construct']= construct
+        context['prj_pk']=prj_pk
+        context['exp_pk']=exp_pk
         return render(request, self.template_name, context)
 
 @class_login_required
 class DetailGenomicRegions(View):
     template_name = 'detailGenomicRegion.html'
     error_page = 'error.html'
-    def get(self,request,genreg_pk):
+    def get(self,request,prj_pk,exp_pk,genreg_pk):
         context = {}
         region = GenomicRegions.objects.get(pk=genreg_pk)
         context['region']= region
+        context['prj_pk']=prj_pk
+        context['exp_pk']=exp_pk
         return render(request, self.template_name, context)
 
 @class_login_required
 class DetailTarget(View):
     template_name = 'detailTarget.html'
     error_page = 'error.html'
-    def get(self,request,target_pk):
+    def get(self,request,prj_pk,exp_pk,target_pk):
         context = {}
         target = Target.objects.get(pk=target_pk)
         context['target']= target
+        context['prj_pk']=prj_pk
+        context['exp_pk']=exp_pk
         return render(request, self.template_name, context)
 
 
@@ -594,6 +604,7 @@ class AddBiosample(View):
                 for l in labs:
                     iLab = ContributingLabs.objects.get(pk=l)
                     biosample.contributing_labs.add(iLab)
+                request.session['biosamplePK'] = biosample.pk
                 biosamplePK= biosample.pk
                 return HttpResponseRedirect('/addExperiment/'+prj_pk+'/'+str(biosamplePK))
             else:
@@ -1151,7 +1162,6 @@ class AddSequencingRun(View):
             for expsPk in run_Experiment:
                 exp = Experiment.objects.get(pk=expsPk)
                 form.run_Experiment.add(exp)
-#            request.session['runId'] = form.pk
             return HttpResponseRedirect('/detailProject/'+prj_pk)
         else:
             form.fields["run_Experiment"].queryset = Experiment.objects.filter(project=prj_pk).order_by('-pk')
@@ -1246,8 +1256,8 @@ class AddSeqencingFile(View):
     
     def post(self,request,exp_pk):
         form = self.form_class(request.POST)
+        experiment=Experiment.objects.get(id=exp_pk)
         if form.is_valid():
-            experiment=Experiment.objects.get(id=exp_pk)
             file = form.save(commit=False)
             file.project = Project.objects.get(pk=experiment.project.id)
             file.sequencingFile_backupPath = ""
@@ -1261,7 +1271,7 @@ class AddSeqencingFile(View):
             for l in labs:
                 iLab = ContributingLabs.objects.get(pk=l)
                 file.contributing_labs.add(iLab)
-            return HttpResponseRedirect('/detailExperiment/'+exp_pk)
+            return HttpResponseRedirect('/detailExperiment/'+str(experiment.project.id)+'/'+exp_pk+'/')
         else:
             form.fields["sequencingFile_run"].queryset = SequencingRun.objects.filter(project=experiment.project.id)
             form.fields["file_format"].queryset = Choice.objects.filter(choice_type="file_format")

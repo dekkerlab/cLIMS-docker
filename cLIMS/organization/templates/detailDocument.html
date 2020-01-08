@@ -13,10 +13,10 @@
     <span class="tableHead">
     	Document Details: {{ document.publication_title }}
     </span>
-    <a href="/deleteDocument/{{ document.id }}">
+    <a href="/deleteDocument/{{prj_pk}}/{{exp_pk}}/{{ document.id }}">
 	<button type="button" class="btn btn-danger pull-right hidden show view_only">Delete Document</button>
 	</a>
-	<a href="/editDocument/{{document.id}}">
+	<a href="/editDocument/{{prj_pk}}/{{exp_pk}}/{{document.id}}">
 		<button type="button" class="btn btn-warning pull-right hidden show view_only">Edit Document</button>
 	</a>
 	<br/>
@@ -28,7 +28,7 @@
     	{% endif %}
     	
     	{% if not document.references  == None %}
-    	<span class="rowHead">Document References:</span><a href="/detailPublication/{{ document.references.id}}">{{ document.references }}</a><br/>
+    	<span class="rowHead">Document References:</span><a href="/detailPublication/{{prj_pk}}/{{exp_pk}}/{{ document.references.id}}">{{ document.references }}</a><br/>
     	{% endif %}
     	<span class="rowHead">Document URL:</span>{{ document.url }}<br/>
     	
