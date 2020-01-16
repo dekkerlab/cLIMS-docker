@@ -12,9 +12,9 @@ class UserOwner (models.Model):
 
 class Document(models.Model):
     name = models.CharField(max_length=300, null=False, default="", unique=True, db_index=True, help_text="Name of the document", validators=[alphanumeric])
-    type = models.ForeignKey('organization.Choice',related_name='docChoice',on_delete=models.CASCADE, help_text="The category that best describes the document.")
+    type = models.ForeignKey('organization.Choice',null=True, related_name='docChoice',on_delete=models.SET_NULL, help_text="The category that best describes the document.")
     attachment = models.FileField(upload_to='uploads/')
-    references = models.ForeignKey('organization.Publication', null=True, blank=True, on_delete=models.CASCADE, help_text="The publications that provide more information about the object.")
+    references = models.ForeignKey('organization.Publication', null=True, blank=True, on_delete=models.SET_NULL, help_text="The publications that provide more information about the object.")
     url = models.URLField(max_length=200,  null=True, blank=True, help_text="An external resource with additional information about the object")
     dcic_alias = models.CharField(max_length=500, null=False, default="", unique=True, db_index=True, help_text="Provide an alias name for the object for DCIC submission.")
     update_dcic = models.BooleanField(default=False, help_text="This object needs to be updated at DCIC.")
@@ -27,7 +27,7 @@ class Document(models.Model):
 
 class References(models.Model):
     document = models.ForeignKey(Document, null=True, blank=True, on_delete=models.SET_NULL, help_text="Documents that provide additional information (not data file).")
-    references = models.ForeignKey('organization.Publication', null=True, blank=True, help_text="The publications that provide more information about the object.")
+    references = models.ForeignKey('organization.Publication', null=True, blank=True,on_delete=models.SET_NULL, help_text="The publications that provide more information about the object.")
     url = models.URLField(max_length=200,  null=True, blank=True, help_text="An external resource with additional information about the object")
     dbxrefs = models.CharField(max_length=100, null=True, blank=True, help_text="Unique identifiers from external resources, enter as a database name:identifier eg. HGNC:PARK2")
     class Meta:
