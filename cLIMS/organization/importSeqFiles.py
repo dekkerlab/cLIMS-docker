@@ -7,12 +7,12 @@ from django.contrib import messages
 from dryLab.models import *
     
 @login_required 
-def importSeqFiles(request,pk):
+def importSeqFiles(request,prj_pk):
     template_name = 'importFiles.html'
     excel_file = request.FILES['excel_file']
     excel_file_content=excel_file.read().decode("utf-8")
     lines = excel_file_content.rstrip().split("\n")
-    project=Project.objects.get(pk=pk)
+    project=Project.objects.get(pk=prj_pk)
     exsisting_files=SeqencingFile.objects.filter(project=project).values_list('sequencingFile_mainPath',flat=True)
     runDict=OrderedDict()
     dupDict=OrderedDict()

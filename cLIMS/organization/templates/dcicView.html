@@ -32,8 +32,8 @@
     <a href="/detailProject/{{ project.id }}">
 		<button type="button" class="btn btn-info">Back to project</button>
 	</a>
-    <button type="submit" class="btn btn-success" formaction="/exportDCIC/">Export- DCIC</button>
- 	<button type="submit" class="btn btn-success view_only" formaction="/dcicFinalizeSubmission/">Finalize DCIC Submission</button>
+    <button type="submit" class="btn btn-success" formaction="/exportDCIC/{{ project.id }}/">Export- DCIC</button>
+ 	<button type="submit" class="btn btn-success view_only" formaction="/dcicFinalizeSubmission/{{ project.id }}/">Finalize DCIC Submission</button>
  	<button type="button" class="btn btn-danger" id="unselect">Unselect All</button>
  	</span><br/><br/>
     {% for exp in experiments %}

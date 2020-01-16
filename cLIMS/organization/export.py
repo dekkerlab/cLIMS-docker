@@ -24,11 +24,11 @@ import re
 
 
 @login_required 
-def exportExperiment(request):
+def exportExperiment(request,prj_pk):
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="meta_data_sample.csv"'
-    projectId = request.session['projectId']
+    projectId = prj_pk
     dbdata = Experiment.objects.filter(project=projectId)
     writer = csv.writer(response)
     for a in dbdata:
@@ -102,14 +102,25 @@ def export(analysisType,ws, projectId):
         pass
     
 @login_required 
-def exportAnalysis(request):
+def exportAnalysis(request,pk):
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=mymodel.xls'
     wb = xlwt.Workbook(encoding='utf-8')
     
-    projectId = request.session['projectId']
-    ana = Analysis.objects.filter(analysis_exp__project=projectId)
+    projectId = pk
+    print("In analysis:",projectId)
+    exp=Experiment.objects.get(project=projectId)
+    print("ExpId",exp.id)
+    #ana = Analysis.objects.filter(analysis_exp__project=projectId)
+    ana = Analysis.objects.filter(analysis_exp=exp.id)
+
+    '''
+    exps=Experiment.objects.filter(project=pk)
+    ana = Analysis.objects.filter(analysis_exp__in=exps)
+    print(ana)
+    '''
+    print(ana) 
     
     analysis = list(set([x.analysis_type for x in ana]))
     
@@ -133,13 +144,13 @@ def exportAnalysis(request):
              
         else:
             pass
-        
+       
     wb.save(response)
     return response
 
 @login_required 
-def exportGEO(request):
-    projectId = request.session['projectId']
+def exportGEO(request,prj_pk):
+    projectId = prj_pk
     prj = Project.objects.get(pk=projectId)
     runUnits = SequencingRun.objects.filter(project=projectId)
     files = SeqencingFile.objects.filter(sequencingFile_exp__project=projectId).order_by('pk')
@@ -590,9 +601,9 @@ def appendTechRep(expPk,singleExp):
     singleExp.append(tech_rep_no)
     
     
-def populateDict(request, experimentList):
+def populateDict(request, experimentList,pk):
     finalizeOnly = request.session['finalizeOnly']
-    projectId = request.session['projectId']
+    projectId = pk
     bioSample = Biosample.objects.filter(expBio__pk__in=experimentList)
     dcicExcelSheet=defaultdict(list)
 
@@ -1211,17 +1222,17 @@ def removeDup(dcicExcelSheet):
 #     return(columnNamesDict)   
                 
 @login_required 
-def exportDCIC(request):
+def exportDCIC(request,prj_pk):
     expPks = request.POST.getlist('dcic')
     if(len(expPks) != 0):
         experiments = Experiment.objects.filter(pk__in=expPks)
     else:
-        projectId = request.session['projectId']
+        projectId = prj_pk
         experiments = Experiment.objects.filter(project=projectId)
     if(all(ExperimentSet.objects.filter(experimentSet_exp=exp) for exp in experiments)):
         # Create the HttpResponse object with the appropriate CSV header.
         if(request.session['finalizeOnly']):
-            dcicExcelSheet = populateDict(request, experiments)
+            dcicExcelSheet = populateDict(request, experiments,prj_pk)
             for e in experiments:
                 e.finalize_dcic_submission=True
                 e.save()
@@ -1232,7 +1243,7 @@ def exportDCIC(request):
             response['Content-Disposition'] = 'attachment; filename=DCIC.xlsx'
             file_path_new = ROOTFOLDER+'/organization/static/siteWide/DCIC-Metadata_entry_form_FEB2018.xlsx'
             wb = load_workbook(file_path_new)
-            dcicExcelSheet = populateDict(request, experiments)
+            dcicExcelSheet = populateDict(request, experiments,prj_pk)
             
             dcicExcelSheetOrdered = collections.OrderedDict(dcicExcelSheet)
             
@@ -1256,4 +1267,4 @@ def exportDCIC(request):
             return response
     else:
         messages.error(request, 'Please add the all experiments into biological/technical replicate experiment set!')
-        return HttpResponseRedirect('/detailProject/'+request.session['projectId'])
+        return HttpResponseRedirect('/detailProject/'+prj_pk)
