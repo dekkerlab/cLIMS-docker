@@ -79,13 +79,12 @@ class IndividualForm(ModelForm):
     use_required_attribute = False
     document = forms.ModelChoiceField(Document.objects.all(), widget=SelectWithPop, required=False, label_suffix='addDocumens')
     references = forms.ModelChoiceField(Publication.objects.all(), widget=SelectWithPop, required=False, label_suffix='addPublication')
-    
 #     def __init__(self, *args, **kwargs):
 #         super(IndividualForm, self).__init__(*args, **kwargs)
         #add_related_field_wrapper(self, 'documents')
     class Meta:
         model = Individual
-        exclude = ('individual_fields','userOwner','dcic_alias','update_dcic',)
+        exclude = ('individual_fields','userOwner','dcic_alias','update_dcic','temp_var')
         fields = ['individual_name','individual_vendor','individual_type','references','document','contributing_labs','url','dbxrefs']
     
     def save (self, *args, **kwargs):

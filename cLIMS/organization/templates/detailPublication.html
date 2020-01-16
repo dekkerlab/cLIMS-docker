@@ -10,10 +10,10 @@
     <span class="tableHead">
     	Publication Details: {{ publication.publication_title }}
     </span>
-   <a href="/deletePublication/{{ publication.id }}">
+   <a href="/deletePublication/{{prj_pk}}/{{exp_pk}}/{{ publication.id }}">
 	<button type="button" class="btn btn-danger pull-right view_only">Delete Reference</button>
 	</a>
-	<a href="/editPublication/{{ publication.id}}">
+	<a href="/editPublication/{{prj_pk}}/{{exp_pk}}/{{ publication.id}}">
 		<button type="button" class="btn btn-warning pull-right view_only">Edit Reference</button>
 	</a>
 	<br/>
@@ -41,7 +41,7 @@
 {% else %}
     <p>No data available.</p>
 {% endif %}
-<a type="button" class="btn btn-warning pull-right goBack" href="{% url 'detailExperiment' request.session.experimentId %}">Go Back</a>
+<a type="button" class="btn btn-warning pull-right goBack" onclick="history.back()">Go Back</a>
 <br/><br/>
 </div>
 {% endblock %} 
