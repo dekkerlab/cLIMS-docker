@@ -1223,7 +1223,12 @@ def removeDup(dcicExcelSheet):
                 
 @login_required 
 def exportDCIC(request,prj_pk):
-    expPks = request.POST.getlist('dcic')
+    input_keys = [key for key in request.POST if key.startswith("dcic")]
+    expPks = []
+    for k in input_keys:
+        ep = request.POST.getlist(k)
+        expPks.append(ep)
+    expPks = sum(expPks, [])
     if(len(expPks) != 0):
         experiments = Experiment.objects.filter(pk__in=expPks)
     else:

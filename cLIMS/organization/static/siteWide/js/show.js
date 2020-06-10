@@ -99,10 +99,10 @@ $(document).ready(function(){
        });
         $("#unselect").click(function(){
             alert("If nothing selected all experiments will be considered.")
-            $('input:checkbox[name=dcic]').attr('checked',false);
+            $('input:checkbox').attr('checked',false);
         });
         $("#checkAll").change(function () {
             $("input:checkbox").prop('checked', $(this).prop("checked"));
-        });
+	 });
         
 });

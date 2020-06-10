@@ -126,7 +126,7 @@ class Individual(References, UserOwner):
     dcic_alias = models.CharField(max_length=500, null=False, default="", unique=True, db_index=True, help_text="Provide an alias name for the object for DCIC submission.")
     update_dcic = models.BooleanField(default=False, help_text="This object needs to be updated at DCIC.")
     contributing_labs = models.ManyToManyField('organization.ContributingLabs', blank=True, help_text="Contributing labs for this individual.")
-    temp_var = models.IntegerField(null=True,blank=True)
+    #temp_var = models.IntegerField(null=True,blank=True)
     def __str__(self):
         return self.individual_name
     class Meta:
