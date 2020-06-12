@@ -1618,13 +1618,11 @@ class DcicView(View):
         context = {}
         sets={}
         project = Project.objects.get(pk=projectId)
-        #experiments=Experiment.objects.filter(project=projectId).order_by('-pk')
         expSet = ExperimentSet.objects.filter(project=projectId).order_by('-pk')
         for s in expSet:
             sets[s]=s.experimentSet_exp.all()
         context['project']= project
         context["expSet"] = sets
-        #context['experiments']= experiments
         return render(request, self.template_name, context)
     
 @class_login_required
