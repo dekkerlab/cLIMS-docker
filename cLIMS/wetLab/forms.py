@@ -84,7 +84,7 @@ class IndividualForm(ModelForm):
         #add_related_field_wrapper(self, 'documents')
     class Meta:
         model = Individual
-        exclude = ('individual_fields','userOwner','dcic_alias','update_dcic','temp_var')
+        exclude = ('individual_fields','userOwner','dcic_alias','update_dcic')
         fields = ['individual_name','individual_vendor','individual_type','references','document','contributing_labs','url','dbxrefs']
     
     def save (self, *args, **kwargs):

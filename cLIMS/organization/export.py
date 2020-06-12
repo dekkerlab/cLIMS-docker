@@ -201,7 +201,8 @@ def exportGEO(request,prj_pk):
         ws.cell(row=sampleRowNo, column=2).value = str(exp.experiment_name)
         ws.cell(row=sampleRowNo, column=3).value = str(exp.experiment_biosample.biosample_biosource.biosource_tissue)
         ws.cell(row=sampleRowNo, column=4).value = str(exp.experiment_biosample.biosample_individual.individual_type)
-        ws.cell(row=sampleRowNo, column=6).value = str(exp.experiment_enzyme.enzyme_name) 
+        if(type(exp.experiment_enzyme)!=type(None)):
+            ws.cell(row=sampleRowNo, column=6).value = str(exp.experiment_enzyme.enzyme_name) 
         ws.cell(row=sampleRowNo, column=7).value = str(exp.experiment_biosample.biosample_biosource.biosource_cell_line)  
         ws.cell(row=sampleRowNo, column=8).value = str("DNA")
         ws.cell(row=sampleRowNo, column=9).value = str(exp.experiment_biosample.biosample_biosource.biosource_description)
@@ -224,7 +225,8 @@ def exportGEO(request,prj_pk):
         ws.cell(row=rawFilesRowNo, column=1).value = str(file.sequencingFile_name)
         ws.cell(row=rawFilesRowNo, column=2).value = str(file.file_format)
         ws.cell(row=rawFilesRowNo, column=3).value = str(file.sequencingFile_md5sum)
-        ws.cell(row=rawFilesRowNo, column=4).value = str(file.sequencingFile_run.run_sequencing_instrument.choice_name)
+        if(type(file.sequencingFile_run.run_sequencing_instrument)!=type(None)):
+            ws.cell(row=rawFilesRowNo, column=4).value = str(file.sequencingFile_run.run_sequencing_instrument.choice_name)
         ws.cell(row=rawFilesRowNo, column=5).value = str(file.read_length)
         ws.cell(row=rawFilesRowNo, column=6).value = "paired-end"
         ws.cell(row=rawFilesRowNo, column=7).value = str(file.sequencingFile_mainPath)
@@ -1223,7 +1225,12 @@ def removeDup(dcicExcelSheet):
                 
 @login_required 
 def exportDCIC(request,prj_pk):
-    expPks = request.POST.getlist('dcic')
+    input_keys = [key for key in request.POST if key.startswith("dcic")]
+    expPks = []
+    for k in input_keys:
+        ep = request.POST.getlist(k)
+        expPks.append(ep)
+    expPks = sum(expPks, [])
     if(len(expPks) != 0):
         experiments = Experiment.objects.filter(pk__in=expPks)
     else:
