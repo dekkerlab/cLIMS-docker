@@ -10,13 +10,13 @@
     <span class="tableHead">
     	Publication Details: {{ publication.publication_title }}
     </span>
-   <a href="/deletePublication/{{prj_pk}}/{{exp_pk}}/{{ publication.id }}">
+   <!--<a href="/deletePublication/{{prj_pk}}/{{exp_pk}}/{{ publication.id }}">
 	<button type="button" class="btn btn-danger pull-right view_only">Delete Reference</button>
 	</a>
 	<a href="/editPublication/{{prj_pk}}/{{exp_pk}}/{{ publication.id}}">
 		<button type="button" class="btn btn-warning pull-right view_only">Edit Reference</button>
 	</a>
-	<br/>
+	<br/>-->
     	<span class="rowHead">Publication Title:</span>{{ publication.publication_title }}<br/>
     	<span class="rowHead">Publication Authors:</span>{{ publication.publication_id }}<br/>
     	{% if not publication.attachment  == None %}

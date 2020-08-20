@@ -79,14 +79,14 @@
 {% for images in experiment.imageObjects.all %}
 <a href="/media/{{images.imageObjects_images}}" target="_blank">{{images.imageObjects_name}}</a><br/>
 
-<div class="paddingSpace  hidden show">
+<!--<div class="paddingSpace  hidden show">
 <a href="/deleteImageObjects/{{ experiment.project.id }}/{{ experiment.id }}/{{images.id }}">
 <button type="button" class="btn btn-danger pull-right">Delete Image </button>
 </a>
 <a href="/editImageObjects/{{ experiment.project.id }}/{{ experiment.id }}/{{images.id}}">
 	<button type="button" class="btn btn-warning pull-right hidden show">Edit Image</button>
 </a><br/>
-</div>
+</div>-->
 {% endfor %}
 {% if experiment.contributing_labs.all%}
 <span class="rowHead">Contributing Labs:</span><br/>
@@ -117,12 +117,12 @@
 <br/>
 <div class="divData hidden">
 {% for individual in individuals %}
-<a href="/deleteIndividual/{{ experiment.project.id }}/{{ individual.id }}">
+<!--<a href="/deleteIndividual/{{ experiment.project.id }}/{{ individual.id }}">
 <button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
 </a>
 <a href="/editIndividual/{{ experiment.project.id }}/{{ experiment.id }}/{{individual.id}}">
 	<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
-</a>
+</a>-->
 <span class="rowHead">Individual Name: </span>{{individual.individual_name}}<br/>
 <span class="rowHead">Individual Vendor: </span>{{individual.individual_vendor}}<br/>
 <span class="rowHead">Individual URL: </span><a target="_blank" href="{{individual.url}}">{{individual.url}}</a><br/>
@@ -167,12 +167,12 @@
 <a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
 <span class="tableHead">Associated Biosource Details</span><br/>
 <div class="divData hidden">
-<a href="/deleteBiosource/{{ experiment.project.id }}/{{ biosource.id }}">
+<!--<a href="/deleteBiosource/{{ experiment.project.id }}/{{ biosource.id }}">
 <button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
 </a>
 <a href="/editBiosource/{{ experiment.project.id }}/{{ experiment.id }}/{{biosource.id}}">
 	<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
-</a>
+</a>-->
 <span class="rowHead">Biosource Name: </span>{{biosource.biosource_name}}<br/>
 <span class="rowHead">Biosource Type: </span>{{biosource.biosource_type}}<br/>
 <span class="rowHead">Biosource Cell Line: </span>{{ biosource.biosource_cell_line }}<br/>
@@ -222,12 +222,12 @@
 <span class="tableHead">Associated Biosource Modification</span><br/>
 <div class="divData hidden">
 {% for modification in modificationBio.all %}
-<a href="/deleteModification/{{ experiment.project.id }}/{{ experiment.id }}/{{modification.id}}">
+<!--<a href="/deleteModification/{{ experiment.project.id }}/{{ experiment.id }}/{{modification.id}}">
 	<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
 </a>
 <a href="/editModification/{{ experiment.project.id }}/{{ experiment.id }}/{{modification.id}}">
 	<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
-</a>
+</a>-->
 		<span class="rowHead">Modification Name: </span>{{modification.modification_name}}<br/>
 		<span class="rowHead">Modification Type: </span>{{modification.modification_type}}<br/>
 		<span class="rowHead">Modification Constructs:</span><a href="/detailConstruct/{{ experiment.project.id }}/{{ experiment.id }}/{{modification.constructs.id}}">{{modification.constructs}}</a><br/>
@@ -268,12 +268,12 @@
 <a style="cursor: pointer;"><i class="fa fa-minus-square-o collapse hidden" aria-hidden="true"></i></a>
 <span class="tableHead">Associated Biosample Details</span><br/>
 <div class="divData hidden">
-<a href="/deleteBiosample/{{ experiment.project.id }}/{{ biosample.id }}">
+<!--<a href="/deleteBiosample/{{ experiment.project.id }}/{{ biosample.id }}">
 <button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
 </a>
 <a href="/editBiosample/{{ experiment.project.id }}/{{ experiment.id }}/{{biosample.id}}">
 	<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
-</a>
+</a>-->
 <span class="rowHead">Biosample Name: </span>{{biosample.biosample_name}}<br/>
 <span class="rowHead">Biosample Biosource: </span>{{biosample.biosample_biosource}}<br/>
 <span class="rowHead">Biosample Individual: </span>{{ biosample.biosample_individual }}<br/>
@@ -351,14 +351,14 @@
 <span class="rowHead">Biosample Images: </span><br/>
 {% for images in biosample.imageObjects.all %}
 <a href="/media/{{images.imageObjects_images}}" target="_blank">{{images.imageObjects_name}}</a><br/>
-<div class="paddingSpace  hidden show">
+<!--<div class="paddingSpace  hidden show">
 <a href="/deleteImageObjects/{{ experiment.project.id }}/{{ experiment.id }}/{{images.id }}">
 <button type="button" class="btn btn-danger pull-right">Delete Image </button>
 </a>
 <a href="/editImageObjects/{{ experiment.project.id }}/{{ experiment.id }}/{{images.id}}">
 	<button type="button" class="btn btn-warning pull-right hidden show">Edit Image</button>
 </a><br/>
-</div>
+</div>-->
 {% endfor %}
 
 {% if biosample.authentication_protocols.all%}
@@ -378,12 +378,12 @@
 <span class="tableHead">Associated Biosample Treatment RNAi</span><br/>
 <div class="divData hidden">
 		{% for treatment in treatmentRnai %}
-			<a href="/deleteTreatmentRnai/{{ experiment.project.id }}/{{ experiment.id }}/{{ treatment.id }}">
+			<!--<a href="/deleteTreatmentRnai/{{ experiment.project.id }}/{{ experiment.id }}/{{ treatment.id }}">
 				<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
 			</a>
 			<a href="/editTreatmentRnai/{{ experiment.project.id }}/{{ experiment.id }}/{{treatment.id}}">
 				<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
-			</a>
+			</a>-->
 			RNAi Treatment<br/>
 			<span class="rowHead">TreatmentRnai Name: </span>{{treatment.treatmentRnai_name}}<br/>
 			<span class="rowHead">TreatmentRnai Type: </span>{{treatment.treatmentRnai_type}}<br/>
@@ -424,12 +424,12 @@
 <span class="tableHead">Associated Biosample Treatment Chemical</span><br/>
 <div class="divData hidden">
 		{% for treatment in treatmentChemical %}
-			<a href="/deleteTreatmentChemical/{{ experiment.project.id }}/{{ experiment.id }}/{{ treatment.id }}">
+			<!--<a href="/deleteTreatmentChemical/{{ experiment.project.id }}/{{ experiment.id }}/{{ treatment.id }}">
 				<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
 			</a>
 			<a href="/editTreatmentChemical/{{ experiment.project.id }}/{{ experiment.id }}/{{treatment.id}}">
 				<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
-			</a>
+			</a>-->
 			Chemical Treatment<br/>
 			<span class="rowHead">TreatmentChemical Name: </span>{{treatment.treatmentChemical_name}}<br/>
 			<span class="rowHead">TreatmentChemical Chemical: </span>{{treatment.treatmentChemical_chemical}}<br/>
@@ -469,12 +469,12 @@
 <span class="tableHead">Associated Biosample Treatment Other</span><br/>
 <div class="divData hidden">
 		{% for treatment in otherTreatment %}
-			<a href="/deleteOther/{{ experiment.project.id }}/{{ experiment.id }}/{{ treatment.id }}">
+			<!--<a href="/deleteOther/{{ experiment.project.id }}/{{ experiment.id }}/{{ treatment.id }}">
 				<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
 			</a>
 			<a href="/editOther/{{ experiment.project.id }}/{{ experiment.id }}/{{treatment.id}}">
 				<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
-			</a>
+			</a>-->
 			Other Treatment<br/>
 			<span class="rowHead">Treatment Name: </span>{{treatment.name}}<br/>
 			
@@ -507,12 +507,12 @@
 <span class="tableHead">Associated Biosample Modification</span><br/>
 <div class="divData hidden">
 {% for mod in modification.all %}
-<a href="/deleteModification/{{ experiment.project.id }}/{{ experiment.id }}/{{ mod.id }}">
+<!--<a href="/deleteModification/{{ experiment.project.id }}/{{ experiment.id }}/{{ mod.id }}">
 	<button type="button" class="btn btn-danger pull-right hidden show">Delete</button>
 </a>
 <a href="/editModification/{{ experiment.project.id }}/{{ experiment.id }}/{{mod.id}}">
 	<button type="button" class="btn btn-warning pull-right hidden show">Edit</button>
-</a>
+</a>-->
 Modification:<br/>
 		<span class="rowHead">Modification Name: </span>{{mod.modification_name}}<br/>
 		<span class="rowHead">Modification Type: </span>{{mod.modification_type}}<br/>
@@ -573,14 +573,14 @@ Modification:<br/>
 		<span class="rowHead">Sequencing File Format: </span>{{file.file_format}}<br/>
 		<span class="rowHead">Sequencing File Classification: </span>{{file.file_classification}}<br/>
 		<span class="rowHead">Sequencing File Format Specification: </span>{{file.file_format_specifications}}<br/>
-		<div class="paddingSpace  hidden show">
+		<!--<div class="paddingSpace  hidden show">
 	  		<a href="/deleteBarcode/{{ experiment.project.id }}/{{ experiment.id }}/{{file.file_barcode.id }}">
 				<button type="button" class="btn btn-danger pull-left hidden show">Delete Barcode</button>
 			</a>
 			<a href="/editBarcode/{{ experiment.project.id }}/{{ experiment.id }}/{{file.file_barcode.id}}">
 				<button type="button" class="btn btn-warning pull-left  hidden show">Edit Barcode</button> 
 			</a><br/><br/>
-		</div>
+		</div>-->
 		<span class="rowHead">Sequencing Barcode: </span>{{file.file_barcode.barcode_name}}<br/>
 		<span class="rowHead">Barcode Index: </span>{{file.file_barcode.barcode_index}}<br/>
 		<span class="rowHead">Barcode Position: </span>{{file.file_barcode.barcode_position}}<br/>
