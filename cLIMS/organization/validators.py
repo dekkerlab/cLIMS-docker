@@ -10,5 +10,7 @@ alphanumeric = RegexValidator(r'^[0-9a-zA-Z-.]*$', 'Only alphanumeric characters
 
 def compareJsonInitial(obj_json_fields,self):
     for key in obj_json_fields:
-            if(obj_json_fields[key]!=self.data[key]):
+            if(key not in self.data.keys()):
+                self.instance.update_dcic=True
+            elif(obj_json_fields[key]!=self.data[key]):
                 self.instance.update_dcic=True

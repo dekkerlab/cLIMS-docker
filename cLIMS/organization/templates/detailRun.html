@@ -49,14 +49,14 @@
     	<span class="rowHead">Barcode:</span>{{ sequencingRun.run_Add_Barcode }}<br/>
     	{% for barcode in barcodes %}
 	  		({{ forloop.counter }}) {{barcode.barcode_exp}} - {{barcode.barcode_name_1}} -  {{barcode.barcode_name_2}}<br/>
-	  		<div class="paddingSpace  hidden show">
+	  		<!--<div class="paddingSpace  hidden show">
 	  		<a href="/deleteBarcode/{{ barcode.id }}">
 				<button type="button" class="btn btn-danger pull-left hidden show">Delete Barcode</button>
 			</a>
 			<a href="/editBarcode/{{barcode.id}}">
 				<button type="button" class="btn btn-warning pull-left  hidden show">Edit Barcode</button> 
 			</a><br/><br/>
-			</div>
+			</div>-->
 		{% endfor %}
  {% endcomment %}
  
