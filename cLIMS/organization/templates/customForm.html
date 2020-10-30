@@ -39,10 +39,18 @@ function makeReq() {
 			{% endfor %}
 			<br/><br/><input type="radio" id="newForm" name="selectForm"  onclick="makeReq()" value="new" checked="checked">&nbsp;&nbsp;OR Fill a new one<br/><br/>
 		{% endif %}
-		
+	
 		 {% if form %}
 			{{ form.non_field_errors }}
 			{% for field in form %}
+					  {% if form_class == "Experiment Clone" and 'Biosample name' in field.label %}
+						<p style="color:red">CAUTION!!! Entering details below will create NEW Biosample.
+							If left blank, it will use the EXISTING Biosample of the experiment being cloned.
+						</p>
+						<p style="color:red">Editing the Biosample after cloning will make the changes 
+							in all the experiments wherever this new/existing Biosample is used.
+						</p>
+					  {% endif %}
 				<div class="fieldWrapper">
 					 {{field.errors}}
 					 <a style="cursor: pointer;"><i class="fa fa-question-circle" title="{{field.help_text}}"></i></a>
