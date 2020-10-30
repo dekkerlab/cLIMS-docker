@@ -98,7 +98,6 @@ class EditExperiment(UpdateView):
         obj = Experiment.objects.get(pk=self.get_object().id)
         
         projectId=obj.project.id
-
         if(obj.experiment_fields):
             context['jsonObj']= json.loads(obj.experiment_fields)
         context['form'].fields["type"].queryset = JsonObjField.objects.filter(field_type="Experiment")
@@ -286,6 +285,7 @@ class EditBiosample(UpdateView):
             for f in formFields:
                 context['form'].fields[f].queryset = (context['form'].fields[f].queryset).filter(userOwner=self.request.user.pk)
         context['ProjectId']=self.kwargs['prj_pk']
+        context['caution']= True
         return context
 
         

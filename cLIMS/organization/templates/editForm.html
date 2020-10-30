@@ -28,6 +28,13 @@ function makeReq() {
     {% endif %}
 	<form method="post" enctype="multipart/form-data">
 		{% csrf_token %}
+		{% if caution  %}
+						<p style="color:red"> 
+							CAUTION!!! Changing name will NOT create a new Biosample, existing Biosample will be renamed.
+							Making changes here will make changes in the all the Experiments 
+							where this biosample is used.
+						</p>
+		{% endif %}
 		<h1>{{form_class}}</h1>
 		{% if  isExisting %}
 		<input type="radio" id="oldForm" name="selectForm" onclick="makeReq()" value="old">&nbsp;&nbsp;Choose Existing One<br/><br/>
