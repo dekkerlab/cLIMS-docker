@@ -134,7 +134,7 @@ class Award(models.Model):
         return self.award_name
 
 class Tag(models.Model):
-    tag_name = models.CharField(max_length=100, null=False, default="", unique=True, db_index=True, validators=[alphanumeric])
+    tag_name = models.CharField(max_length=100, null=True,blank=True, default="", unique=True, db_index=True, validators=[alphanumeric])
     project =  models.ForeignKey('organization.Project',related_name='tagProject', on_delete=models.CASCADE,)
     tag_exp = models.ManyToManyField(Experiment, related_name='tagExp')
     tag_user = models.ForeignKey(User, related_name='tagUser', on_delete=models.CASCADE,)

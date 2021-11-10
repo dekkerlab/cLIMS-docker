@@ -53,7 +53,6 @@ class ExperimentForm(ModelForm):
                                                            label_suffix='addProtocol',
                                                            help_text="Images or Documents that authenticate the experiment e.g. Fragment Analyzer document, Gel images.")
     variation = forms.ModelChoiceField(Protocol.objects.all(), widget=SelectWithPop, label_suffix='addProtocol', required=False, label="Protocol Variations")
-    
     class Meta:
         model = Experiment
         exclude = ('project','experiment_biosample','experiment_fields','dcic_alias','update_dcic','finalize_dcic_submission',)
@@ -126,12 +125,28 @@ class AwardForm(ModelForm):
         model = Award
         exclude = ('',)
    
-
 class TagForm(ModelForm):
     use_required_attribute = False
     class Meta:
         model = Tag
         exclude = ('tag_user','project',)
+        fields = ['tag_name','tag_exp']
+
+class TagSearchForm(BaseSearchForm):
+    use_required_attribute = False
+    formName = 'TagSearchForm'
+    class Meta:
+        base_qs = Tag.objects
+        search_fields = ('tag_name',) 
+
+        # assumes a fulltext index has been defined on the fields
+        # 'name,description,specifications,id'
+        fulltext_indexes = (
+            ('tag_name', 2), # name matches are weighted higher
+        )
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super(TagSearchForm, self).__init__(*args, **kwargs)
 
 class CloneExperimentForm(forms.Form):
     use_required_attribute = False

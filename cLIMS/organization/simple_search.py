@@ -174,6 +174,8 @@ class BaseSearchForm(forms.Form):
                         if (userType == "member" or userType == "memberWithEditAccess"):
                             if (self.formName == 'ProjectSearchForm'):
                                 qs = qs.filter(q, Q(project_owner=userId) |  Q(project_contributor=userId))
+                            elif (self.formName == 'TagSearchForm'):
+                                qs = qs.filter(q)
                             else:
                                 qs = qs.filter(q, Q(project__project_owner=userId) |  Q(project__project_contributor=userId))
                         else:
