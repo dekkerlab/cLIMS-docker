@@ -53,6 +53,7 @@ class ExperimentForm(ModelForm):
                                                            label_suffix='addProtocol',
                                                            help_text="Images or Documents that authenticate the experiment e.g. Fragment Analyzer document, Gel images.")
     variation = forms.ModelChoiceField(Protocol.objects.all(), widget=SelectWithPop, label_suffix='addProtocol', required=False, label="Protocol Variations")
+    
     class Meta:
         model = Experiment
         exclude = ('project','experiment_biosample','experiment_fields','dcic_alias','update_dcic','finalize_dcic_submission',)
@@ -125,6 +126,7 @@ class AwardForm(ModelForm):
         model = Award
         exclude = ('',)
    
+
 class TagForm(ModelForm):
     use_required_attribute = False
     class Meta:

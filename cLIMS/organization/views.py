@@ -208,7 +208,6 @@ def addUnits(jsonValue):
     jsonValueLoad=json.loads(jsonValue)
     for keys in list(jsonValueLoad):
         values=jsonValueLoad[keys]
-        print(type(values))
         if("units" in keys):
             splitKey=keys.split("_units")
             att=jsonValueLoad[splitKey[0]]
@@ -421,7 +420,6 @@ class AddIndividual(View):
         selectForm.fields["Individual"].queryset = Individual.objects.all()
         isExisting = (selectForm.fields["Individual"].queryset.count() > 0)
         existing = selectForm['Individual']
-        print("Test ",type(existing))
         form = self.form_class()
         form.fields["individual_type"].queryset = JsonObjField.objects.filter(field_type="Individual")
         return render(request, self.template_name,{'form':form, 'form_class':"Individual", 'existing':existing,'isExisting':isExisting, 'ProjectId':prj_pk})
@@ -1552,7 +1550,6 @@ class AddAnalysis(View):
 def constructForm(request):
     if request.method == 'POST' and request.is_ajax():
         pk = request.POST.get('pk')
-        print("In construct:",pk)
         obj = JsonObjField.objects.get(pk=pk)
         orderedValues= orderByNumber(obj.field_set)
         return HttpResponse(json.dumps({'field_set': orderedValues, 'model':obj.field_type}), content_type="application/json")
