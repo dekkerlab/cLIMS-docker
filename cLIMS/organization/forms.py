@@ -132,6 +132,23 @@ class TagForm(ModelForm):
     class Meta:
         model = Tag
         exclude = ('tag_user','project',)
+        fields = ['tag_name','tag_exp']
+
+class TagSearchForm(BaseSearchForm):
+    use_required_attribute = False
+    formName = 'TagSearchForm'
+    class Meta:
+        base_qs = Tag.objects
+        search_fields = ('tag_name',) 
+
+        # assumes a fulltext index has been defined on the fields
+        # 'name,description,specifications,id'
+        fulltext_indexes = (
+            ('tag_name', 2), # name matches are weighted higher
+        )
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super(TagSearchForm, self).__init__(*args, **kwargs)
 
 class CloneExperimentForm(forms.Form):
     use_required_attribute = False

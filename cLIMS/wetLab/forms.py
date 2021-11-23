@@ -12,7 +12,7 @@ from django import forms
 from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
 from wetLab.wrapper import add_related_field_wrapper, SelectWithPop,\
     MultipleSelectWithPop
-from organization.models import Publication
+from organization.models import Publication,Tag
 from dryLab.models import ImageObjects
 import json
 from organization.validators import compareJsonInitial
@@ -102,6 +102,7 @@ class SelectForm(forms.Form):
         Individual = forms.ModelChoiceField(queryset=Individual.objects.all(), empty_label=None)
         Biosource = forms.ModelChoiceField(queryset=Biosource.objects.all(), empty_label=None)
         Biosample = forms.ModelChoiceField(queryset=Biosample.objects.all(), empty_label=None)
+        Tag = forms.ModelChoiceField(queryset=Tag.objects.all(), empty_label=None)
 
 class DocumentForm(ModelForm):
     use_required_attribute = False

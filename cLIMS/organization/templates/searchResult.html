@@ -87,6 +87,42 @@
 	</table>
 {%endif%}
 
+{%if tag%}
+	<h3>TAGGED</h3>
+		<table class="table table-bordered table-hover table-responsive">
+		 <tr>
+		<td><span class="rowHead">Tag Name</span></td>
+		<!--<td><span class="rowHead">Project Name</span></td>
+		<td><span class="rowHead">Owner</span></td>
+		<td><span class="rowHead">Members Name</span></td>-->
+		<td><span class="rowHead">Experiments</span></td>
+	</tr>
+	{% for t in tag %}
+		<tr>
+			<td>{{ t.tag_name }}</td>
+			<!--<td>{{ t.project }}</td>
+			<td>{{ t.project.project_owner }}</td>
+			<td>
+				{% for values in t.project.project_contributor.all %}
+				{{ values }}<br/>
+				{% endfor %}
+			</td>-->
+			<td>
+				{% for values in t.tag_exp.all %}
+				({{ forloop.counter }})
+				{% if values in allexps or userType == "admin" %}
+					<a href="/detailExperiment/{{values.project.id}}/{{values.id}}">{{ values }}</a> <br/>
+				{%else%}
+					{{values}}
+					 <br/>
+				{% endif %}
+				{% endfor %}
+			</td>
+		</tr>
+	{% endfor %}
+	</table>
+{%endif%}
+
 {%if results%}
 	<p>No match found.</p>
 {%endif%}

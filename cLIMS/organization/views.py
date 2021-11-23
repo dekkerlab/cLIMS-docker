@@ -184,7 +184,13 @@ class DetailProject(View):
         sequencingRuns = SequencingRun.objects.filter(project=prj_pk).order_by('-pk')
         experimentSets = ExperimentSet.objects.filter(project=prj_pk).order_by('-pk')
         fileSets = FileSet.objects.filter(project=prj_pk).order_by('-pk')
-        tags = Tag.objects.filter(project=prj_pk).order_by('-pk')
+        tags = Tag.objects.all()
+        alltags = list(tags)
+        for t in tags:
+            ir = t.tag_exp.all() & experiments
+            if(ir.count()==0):
+                alltags.remove(t)
+        tags = Tag.objects.filter(id__in=[o.id for o in alltags])
         
 #         for run in sequencingRuns:
 #             run.run_Add_Barcode = run.get_run_Add_Barcode_display()
@@ -1374,28 +1380,47 @@ class AddTag(View):
     template_name = 'customForm.html'
     error_page = 'error.html'   
     form_class = TagForm
+    selectForm_class = SelectForm
     
     def get(self,request,prj_pk):
+        selectForm = self.selectForm_class()
+        selectForm.fields["Tag"].queryset = Tag.objects.all()
+        isExisting = (selectForm.fields["Tag"].queryset.count() > 0)
+        existing = selectForm['Tag']
         form = self.form_class()
         form.fields["tag_exp"].queryset = Experiment.objects.filter(project=prj_pk)
-        return render(request, self.template_name,{'form':form, 'form_class':"Tag"})
+        return render(request, self.template_name,{'form':form, 'form_class':"Tag",'existing':existing,'isExisting':isExisting})
     
     def post(self,request,prj_pk):
         form = self.form_class(request.POST)
+        selectForm = self.selectForm_class(request.POST)
+        existingSelect = request.POST.get('selectForm')
         if form.is_valid():
-            tag = form.save(commit=False)
-            tag.tag_user = User.objects.get(pk=request.user.id)
-            tag.project = Project.objects.get(pk=prj_pk)
-            tag.save()
-            tagExp = request.POST.getlist('tag_exp')
-            for exp in tagExp:
-                e = Experiment.objects.get(pk=exp)
-                tag.tag_exp.add(e)
+            if existingSelect == "old":
+                val= selectForm['Tag'].value()
+                oldTag = Tag.objects.get(pk=val)
+                print("old:",oldTag.tag_exp.all())
+                tagExp = request.POST.getlist('tag_exp')
+                for exp in tagExp:
+                    e = Experiment.objects.get(pk=exp)
+                    oldTag.tag_exp.add(e)
+            else:
+                tag = form.save(commit=False)
+                tag.tag_user = User.objects.get(pk=request.user.id)
+                tag.project = Project.objects.get(pk=prj_pk)
+                tag.save()
+                tagExp = request.POST.getlist('tag_exp')
+                for exp in tagExp:
+                    e = Experiment.objects.get(pk=exp)
+                    tag.tag_exp.add(e)
                 
             return HttpResponseRedirect('/detailProject/'+prj_pk)
         else:
+            selectForm.fields["Tag"].queryset = Tag.objects.all()
+            isExisting = (selectForm.fields["Tag"].queryset.count() > 0)
+            existing = selectForm['Tag']
             form.fields["tag_exp"].queryset = Experiment.objects.filter(project=prj_pk)
-            return render(request, self.template_name,{'form':form, 'form_class':"Tag"})
+            return render(request, self.template_name,{'form':form, 'form_class':"Tag",'existing':existing,'isExisting':isExisting})
 
     @method_decorator(view_only)
     def dispatch(self, request, *args, **kwargs):
@@ -1589,8 +1614,12 @@ class SequencingRunView(View):
 @login_required
 def searchView(request):
     context ={}
+    userType = request.session['currentGroup']
+    allexps = Experiment.objects.filter((Q(project__project_owner=request.user.id) | Q(project__project_contributor=request.user.id)),project__project_active="True").distinct().order_by('-pk')
+    context['allexps']=allexps
+    context['userType']=userType
     if request.GET:
-        for searchModelForm in [ProjectSearchForm,ExperimentSearchForm,SequencingRunSearchForm,SeqencingFileSearchForm]:
+        for searchModelForm in [ProjectSearchForm,ExperimentSearchForm,SequencingRunSearchForm,SeqencingFileSearchForm,TagSearchForm]:
             form = searchModelForm(request.GET,request=request )
             if form.is_valid():
                 results = form.get_result_queryset()
@@ -1604,6 +1633,9 @@ def searchView(request):
                 context['runs']=results
             elif ((results) and (searchModelForm == SeqencingFileSearchForm)):
                 context['files']=results
+            elif ((results) and (searchModelForm == TagSearchForm)):
+                context['tag']=results
+                print(results)
         if not bool(context):
             context['results']="No result"
     return render(request, 'searchResult.html', context)

@@ -258,7 +258,9 @@
         <span class="rowHead">Tag Name</span>{{tag.tag_name | linebreaks}}
         <span class="rowHead">Tagged Experiments</span><br/>
         {% for values in tag.tag_exp.all %}
+					{%if values in experiments %}
 	    			({{ forloop.counter }}) {{values}}<br/>
+					{%endif%}
 	  	{% endfor %}
         </div>
       {% endfor %}
