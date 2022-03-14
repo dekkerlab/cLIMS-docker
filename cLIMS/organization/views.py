@@ -178,6 +178,7 @@ class DetailProject(View):
         context = {}
         prj = Project.objects.get(pk=prj_pk)
         request.session['project_ownerId']=prj.project_owner.id
+        request.session['project_id']=prj_pk
     #     units = Lane.objects.filter(project=pk)
     #     files = DeepSeqFile.objects.filter(project=pk)
         experiments = Experiment.objects.filter(project=prj_pk).order_by('-pk')
