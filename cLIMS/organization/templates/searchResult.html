@@ -36,7 +36,7 @@
   		</tr>
 	{% for experiment in experiments %}
 		<tr>
-			<td><a href="/detailExperiment/{{experiment.id}}">{{ experiment.experiment_name }}</a></td>
+			<td><a href="/detailExperiment/{{experiment.project.id}}/{{experiment.id}}">{{ experiment.experiment_name }}</a></td>
 			<td>{{ experiment.experiment_biosample }}</td>
 			<td>{{ experiment.experiment_protocol }}</td>
 			<td>{{ experiment.experiment_enzyme }}</td>
@@ -80,7 +80,7 @@
 		<tr>
 			<td>{{ file.sequencingFile_name }}</td>
 			<td>{{ file.project }}</a></td>
-			<td><a href="/detailExperiment/{{file.sequencingFile_exp.id}}">{{ file.sequencingFile_exp }}</a></td>
+			<td><a href="/detailExperiment/{{file.sequencingFile_exp.project.id}}/{{file.sequencingFile_exp.id}}">{{ file.sequencingFile_exp }}</a></td>
 			<td>{{ file.sequencingFile_mainPath }}</td>
 		</tr>
 	{% endfor %}

@@ -12,6 +12,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
+from organization.models import Project
  
  
 # content_type = ContentType.objects.get_for_model(User)
@@ -26,9 +27,11 @@ def require_permission(view):
         userID = get_user(request).id
         ownerID = request.session['project_ownerId']
         ownertype=request.session['currentGroup']
+        prjID = request.session['project_id']
+        mem = Project.objects.get(pk=prjID).project_contributor.values_list('id', flat=True)
         if (ownertype == "admin"):
             return view(request, *args, **kwargs)
-        elif(ownerID==userID):
+        elif(ownerID==userID or userID in mem):
             return view(request, *args, **kwargs)
         else:
             url = '{}?next={}'.format(
@@ -39,6 +42,7 @@ def require_permission(view):
 
 
 def class_login_required(cls):
+    #print("Class: ",cls)
     if (not isinstance(cls, type) or not issubclass(cls, View)):
         raise ImproperlyConfigured("class_login_required must be applied to subclass of View class.")
     decorator = method_decorator(login_required)
