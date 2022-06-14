@@ -22,4 +22,10 @@ smic1.0:
 sacCer3:
   bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/sacCer3/sacCer3.*'
   chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/sacCer3.reduced.chrom.sizes'
+DT40:
+  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/DT40/DT40.*'
+  chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/DT40.reduced.chrom.sizes'
+T2T:
+  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/T2T/T2T.*'
+  chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/T2T.chrom.sizes'
  
