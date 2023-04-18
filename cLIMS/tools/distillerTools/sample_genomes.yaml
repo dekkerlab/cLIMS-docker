@@ -1,31 +1,31 @@
 hg38:
-  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/hg38/hg38*'
-  chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/hg38.reduced.chrom.sizes'
+  bwa_index_wildcard_path: '/pi/job.dekker-umw/common/reference/bwa/hg38/hg38*'
+  chrom_sizes_path: '/pi/job.dekker-umw/common/reference/sorted_chromsizes/hg38.reduced.chrom.sizes'
 hg19:
-  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/hg19/hg19.fa*'
-  chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/hg19.reduced.chrom.sizes'
+  bwa_index_wildcard_path: '/pi/job.dekker-umw/common/reference/bwa/hg19/hg19.fa*'
+  chrom_sizes_path: '/pi/job.dekker-umw/common/reference/sorted_chromsizes/hg19.reduced.chrom.sizes'
 mm10:
-  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/mm10/mm10*'
-  chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/mm10.reduced.chrom.sizes'
+  bwa_index_wildcard_path: '/pi/job.dekker-umw/common/reference/bwa/mm10/mm10*'
+  chrom_sizes_path: '/pi/job.dekker-umw/common/reference/sorted_chromsizes/mm10.reduced.chrom.sizes'
 mm9:
-  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/mm9/mm9*'
-  chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/mm9.reduced.chrom.sizes'
+  bwa_index_wildcard_path: '/pi/job.dekker-umw/common/reference/bwa/mm9/mm9*'
+  chrom_sizes_path: '/pi/job.dekker-umw/common/reference/sorted_chromsizes/mm9.reduced.chrom.sizes'
 galGal6:
-  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/galGal6/galGal6.fa*'
-  chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/galGal6.reduced.chrom.sizes'
+  bwa_index_wildcard_path: '/pi/job.dekker-umw/common/reference/bwa/galGal6/galGal6.fa*'
+  chrom_sizes_path: '/pi/job.dekker-umw/common/reference/sorted_chromsizes/galGal6.reduced.chrom.sizes'
 galGal5:
-  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/galGal5/galGal5.fa*'
-  chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/galGal5.reduced.chrom.sizes'
+  bwa_index_wildcard_path: '/pi/job.dekker-umw/common/reference/bwa/galGal5/galGal5.fa*'
+  chrom_sizes_path: '/pi/job.dekker-umw/common/reference/sorted_chromsizes/galGal5.reduced.chrom.sizes'
 smic1.0:
-  bwa_index_wildcard_path: '/nl/umw_job_dekker/users/an27w/dinoflagellets/genome/smic1.0/smic1.0.fa*'
-  chrom_sizes_path: '/nl/umw_job_dekker/users/an27w/dinoflagellets/genome/smic1.0/smic1.0.chrom.sizes'
+  bwa_index_wildcard_path: '/pi/job.dekker-umw/common/reference/bwa/smic1.0/smic1.0*'
+  chrom_sizes_path: '/pi/job.dekker-umw/common/reference/sorted_chromsizes/smic1.0.chrom.sizes'
 sacCer3:
-  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/sacCer3/sacCer3.*'
-  chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/sacCer3.reduced.chrom.sizes'
+  bwa_index_wildcard_path: '/pi/job.dekker-umw/common/reference/bwa/sacCer3/sacCer3.*'
+  chrom_sizes_path: '/pi/job.dekker-umw/common/reference/sorted_chromsizes/sacCer3.reduced.chrom.sizes'
 DT40:
-  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/DT40/DT40.*'
-  chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/DT40.reduced.chrom.sizes'
+  bwa_index_wildcard_path: '/pi/job.dekker-umw/common/reference/bwa/DT40/DT40.*'
+  chrom_sizes_path: '/pi/job.dekker-umw/common/reference/sorted_chromsizes/DT40.reduced.chrom.sizes'
 T2T:
-  bwa_index_wildcard_path: '/nl/umw_job_dekker/cshare/reference/bwa/T2T/T2T.*'
-  chrom_sizes_path: '/nl/umw_job_dekker/cshare/reference/sorted_chromsizes/T2T.chrom.sizes'
+  bwa_index_wildcard_path: '/pi/job.dekker-umw/common/reference/bwa/T2T/T2T.*'
+  chrom_sizes_path: '/pi/job.dekker-umw/common/reference/sorted_chromsizes/T2T.chrom.sizes'
  

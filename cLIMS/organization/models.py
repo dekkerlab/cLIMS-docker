@@ -55,6 +55,14 @@ class Experiment(References):
         ('μg', 'μg'),
         ('ml', 'ml'),
         ('cells', 'cells'),
+        ('nuclei', 'nuclei'),
+    )
+    COLLECTION_CHOICES = (
+        ('', ''),
+        ('Trypsin', 'Trypsin'),
+        ('Scarpe', 'Scrape'),
+        ('Shake Off', 'Shake Off'),
+        ('Spin Down', 'Spin Down'),
     )
     experiment_name = models.CharField(max_length=300, null=False, unique=True, default="", db_index=True, validators=[alphanumeric])
     project = models.ForeignKey(Project,related_name='expProject', on_delete=models.CASCADE,)
@@ -83,6 +91,7 @@ class Experiment(References):
     update_dcic = models.BooleanField(default=False, help_text="This object needs to be updated at DCIC.")
     finalize_dcic_submission = models.BooleanField(default=False, help_text="This object and related entries have been submitted to DCIC")
     contributing_labs = models.ManyToManyField(ContributingLabs, blank=True, help_text="Contributing labs for this experiment.")
+    collection_method = models.CharField(max_length=20, choices=COLLECTION_CHOICES, default="",null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
