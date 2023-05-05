@@ -47,6 +47,7 @@
 <span class="rowHead">Biosample: </span>{{ experiment.experiment_biosample }}<br/>
 <span class="rowHead">Biosample Quantity: </span>{{ experiment.biosample_quantity }}<br/>
 <span class="rowHead">Biosample Quantity Units: </span>{{ experiment.biosample_quantity_units }}<br/>
+<span class="rowHead">Collection Method: </span>{{ experiment.collection_method }}<br/>
 <span class="rowHead">Protocol: </span><a href="/detailProtocol/{{ experiment.project.id }}/{{ experiment.id }}/{{ experiment.protocol.id }}">{{ experiment.protocol }}</a><br/>
 <span class="rowHead">Protocol Variations: </span><br/>
 {% if not experiment.variation  == None %}
