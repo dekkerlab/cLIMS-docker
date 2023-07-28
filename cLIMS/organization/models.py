@@ -60,7 +60,7 @@ class Experiment(References):
     COLLECTION_CHOICES = (
         ('', ''),
         ('Trypsin', 'Trypsin'),
-        ('Scarpe', 'Scrape'),
+        ('Scrape', 'Scrape'),
         ('Shake Off', 'Shake Off'),
         ('Spin Down', 'Spin Down'),
     )
@@ -72,7 +72,7 @@ class Experiment(References):
     experiment_biosample = models.ForeignKey('wetLab.Biosample',related_name='expBio', on_delete=models.CASCADE,help_text="Starting biological material.")
     biosample_quantity = models.FloatField(null=False, default="0", help_text="Quantity of your starting material, e.g. No of cells")
     biosample_quantity_units= models.CharField(
-        max_length=5,
+        max_length=10,
         choices=UNIT_CHOICES,
         default='',
     )

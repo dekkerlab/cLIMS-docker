@@ -35,6 +35,7 @@ from django.utils.decorators import method_decorator
 import organization
 from django.contrib.auth.models import Permission
 from organization.importSeqFiles import *
+from organization.importNanoporeData import *
 import ast
 from django.core.exceptions import ObjectDoesNotExist
 from tools.distillerTools.prepare_project_file import exportYML 
@@ -1919,6 +1920,17 @@ def downloadFile(request):
             return response
     raise Http404
 
+@login_required 
+def downloadFileNanopore(request):
+    path= ROOTFOLDER+'/organization/static/siteWide/NanoporeSeqFiles.csv'
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404
+
 
 @class_login_required        
 class MoveExperiments(View): 
@@ -2082,4 +2094,125 @@ class ExportDistiller(View):
             for form in formset:
                 form.fields["experiments"].queryset = Experiment.objects.filter(project_id=prj_pk)
             return render(request, self.template_name,{'formset':formset, 'form_class':"Export Distiller project.yml"})
+
+@class_login_required        
+class ImportNanoporeData(View): 
+    template_name = 'customForm.html'
+    error_page = 'error.html'
+    form_class = ImportNanoporeDataForm
+    
+    def get(self,request,prj_pk):
+        form = self.form_class()
+        return render(request, self.template_name,{'form':form, 'form_class':"Import Nanopore Data"})
+    
+    def post(self,request,prj_pk):
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            request, template_name, context = importNanoporeData(request,prj_pk)
+            return render(request,template_name, context)
+        else:
+            return render(request, self.template_name,{'form':form, 'form_class':"Import Nanopore Data"})
+    
+    @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
+    @method_decorator(require_permission)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+
+@class_login_required        
+class CreateNanoporeSequencingFiles(View):
+    def post(self,request,prj_pk):
+        runDict=request.POST.get('runDict')
+        orderList=request.POST.get('orderList')
+        orderListb=ast.literal_eval(orderList)
+        print("Run:\n",runDict)
+        print("ol:\n",orderList)
+        print("olb:\n",orderListb)
+        
+        exNameIndx=runIndx=md5sumIndx=sha256sumIndx=ftypeIndx=bpathIndx=None
+        
+        if("Experiment" in orderListb):
+            exNameIndx=orderListb.index("Experiment")
+        if("Run" in orderListb):
+            runIndx=orderListb.index("Run")
+        if("md5sum" in orderListb):
+            md5sumIndx=orderListb.index("md5sum")
+        if("sha256sum" in orderListb):
+            sha256sumIndx=orderListb.index("sha256sum")
+        if("Type" in orderListb):
+            ftypeIndx=orderListb.index("Type")
+        if("BackupPath" in orderListb):
+            bpathIndx=orderListb.index("BackupPath")
+        
+        c=ast.literal_eval(runDict)
+        notExist=[]
+        for keys, values in c:
+            exp=None
+            run=None
+            filePath=keys
+            n=filePath.split("/")
+            fileName=n[-1]
+            
+
+            expName=values[exNameIndx]
+            seqRunName=values[runIndx]
+            runNameDate=seqRunName.split("-")[1]
+            md5sum=""
+            sha256sum=""
+            if(md5sumIndx):
+                md5sum=values[md5sumIndx]
+            if(sha256sumIndx):
+                sha256sum=values[sha256sumIndx]
+            if(bpathIndx):
+                bpath=values[bpathIndx]
+            ftype=values[ftypeIndx]
+            exp_project=None
+            try:
+                if (Experiment.objects.get(experiment_name=expName)):
+                    exp=Experiment.objects.get(experiment_name=expName)
+                    exp_project=exp.project.pk
+                if (SequencingRun.objects.get(run_name=seqRunName, project=Project.objects.get(pk=prj_pk))):
+                    run=SequencingRun.objects.get(run_name=seqRunName, project=Project.objects.get(pk=prj_pk))
+                if(Experiment.objects.get(experiment_name=expName) and SequencingRun.objects.get(run_name=seqRunName, project=Project.objects.get(pk=prj_pk)) and exp_project==int(prj_pk)):
+                    f=SeqencingFile(sequencingFile_name=fileName, project = Project.objects.get(pk=prj_pk))
+                    f.file_format= Choice.objects.get(choice_name=ftype)
+                    
+                    f.sequencingFile_mainPath=filePath
+                    f.sequencingFile_run=run
+                    f.sequencingFile_exp=exp
+                    f.sequencingFile_md5sum=md5sum
+                    f.sequencingFile_sha256sum=sha256sum
+                    f.sequencingFile_backupPath=bpath
+                    f.paired_end=1
+                    #f.related_files=None
+                    aliasList=["SeqencingFile",f.project.project_name,f.sequencingFile_exp.experiment_name,f.sequencingFile_name]
+                    try:
+                        f.dcic_alias = LABNAME +"_".join(aliasList)
+                        f.update_dcic = True
+                        f.save()
+                    except IntegrityError:
+                        f.sequencingFile_name = runNameDate+"-"+fileName
+                        aliasList=["SeqencingFile",f.project.project_name,f.sequencingFile_exp.experiment_name,runNameDate+"-"+fileName]
+                        f.dcic_alias = LABNAME +"_".join(aliasList)
+                        f.update_dcic = True
+                        f.save()
+            except ObjectDoesNotExist:
+                if(exp is None):
+                    notExist.append(expName)
+                if(run is None):
+                    notExist.append(seqRunName)
+            if(exp_project!=int(prj_pk)):
+                notExist.append(expName)
+        if(len(notExist)>0):
+            messages.error(request,",".join(set(notExist))+' does not exists in this project. Files not added for these.')
+        else:
+            messages.info(request,"You have added your files successfully!")
+        return HttpResponseRedirect('/detailProject/'+prj_pk)
+    
+    @method_decorator(view_only)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request,  *args, **kwargs)
+    
         

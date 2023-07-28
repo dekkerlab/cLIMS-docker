@@ -59,7 +59,6 @@ class ExperimentForm(ModelForm):
         exclude = ('project','experiment_biosample','experiment_fields','dcic_alias','update_dcic','finalize_dcic_submission',)
         fields = ['experiment_name','biocore_name','bio_rep_no','tec_rep_no','biosample_quantity','biosample_quantity_units','collection_method','protocol','type','variation','experiment_enzyme',
                   'antibody','authentication_docs','imageObjects','references','document','contributing_labs','url','dbxrefs','experiment_description']
-         
        
         
     def save (self, *args, **kwargs):
@@ -186,6 +185,10 @@ class ExportDistillerForm(forms.Form):
         self.empty_permitted = False
         
 ExportDistillerFormSet = formset_factory(ExportDistillerForm, extra=1)
+
+class ImportNanoporeDataForm(forms.Form):
+    use_required_attribute = False
+    excel_file=forms.FileField(help_text="Upload the excel sheet in correct format here")
 
     
 

@@ -76,6 +76,9 @@ function makeReq() {
 				{% if form_class == "Import Sequencing Files" %}
 				<a type="button" class="btn btn-warning pull-right" href="{% url 'downloadFile' %}">Download sample csv file</a>
 				{% endif %}
+				{% if form_class == "Import Nanopore Data" %}
+				<a type="button" class="btn btn-warning pull-right" href="{% url 'downloadFileNanopore' %}">Download sample csv file</a>
+				{% endif %}
 				{% if jsonObj %}
 					  	<input type="text" class ="hidden" id = "jso" value="{{jsonObj}}">
 				{% endif %}

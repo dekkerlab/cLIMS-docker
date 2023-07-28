@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% block content %}
+
  <script src="{% static "siteWide/js/show.js" %}"></script>
   
 <div class="bodyContent container">
@@ -33,10 +34,11 @@
           {% if sha256sum %}
           <td class="col-xs-2"><span class="rowHead">sha256sum</span></td>
           {% endif %}
+          <td class="col-xs-2"><span class="rowHead">Type</span></td>
           {% if BackupPath %}
           <td class="col-xs-7"><span class="rowHead">BackupPath</span></td>
           {% endif %}
-          <td class="col-xs-7"><span class="rowHead">File Name</span></td>
+          <td class="col-xs-7"><span class="rowHead">File Path</span></td>
       </tr>
 	 {% for key, values in dupDict %}
 	 <tr>
@@ -50,7 +52,6 @@
  </table>
 {% endif %}
  
-
  
  {% if runDict %}
 <span class="tableHead">
@@ -68,10 +69,12 @@
           {% if sha256sum %}
           <td class="col-xs-2"><span class="rowHead">sha256sum</span></td>
           {% endif %}
+          <td class="col-xs-2"><span class="rowHead">Type</span></td>
           {% if BackupPath %}
           <td class="col-xs-7"><span class="rowHead">BackupPath</span></td>
           {% endif %}
-          <td class="col-xs-7"><span class="rowHead">File Name</span></td>
+          <td class="col-xs-7"><span class="rowHead">File Path</span></td>
+        </tr></span></td>
       </tr>
 	 {% for key, values in runDict %}
 	 <tr>
@@ -87,7 +90,7 @@
     {% csrf_token %}
     <input type="hidden" id="runDictionary" name="runDict" value="{{runDict}}">
     <input type="hidden" id="order" name="orderList" value="{{orderList}}">
- 	<button type="submit" id="import" class="btn btn-success" formaction="/createSequencingFiles/{{ project.id }}/">Yes! That's correct</button>
+ 	<button type="submit" id="import" class="btn btn-success" formaction="/createNanoporeSequencingFiles/{{ project.id }}/">Yes! That's correct</button>
  	<a href="/detailProject/{{project.id}}/">
 		<button type="button" class="btn btn-success">No! cancel</button>
 	</a>
