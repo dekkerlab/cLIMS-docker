@@ -130,10 +130,8 @@ urlpatterns = [
     url(r'^importSequencingFiles/(?P<prj_pk>[0-9]+)/$', ImportSequencingFiles.as_view(), name='importSequencingFiles'),
     url(r'^createSequencingFiles/(?P<prj_pk>[0-9]+)/$', CreateSequencingFiles.as_view(), name='createSequencingFiles'),
     url(r'^downloadFile/$', views.downloadFile, name='downloadFile'),
-    url(r'^downloadFileNanopore/$', views.downloadFileNanopore, name='downloadFileNanopore'),
     url(r'^moveExperiments/(?P<prj_pk>[0-9]+)/$', MoveExperiments.as_view(), name='moveExperiments'),
     url(r'^exportDistiller/(?P<prj_pk>[0-9]+)/$', ExportDistiller.as_view(), name='exportDistiller'),
-    url(r'^importNanoporeData/(?P<prj_pk>[0-9]+)/$', ImportNanoporeData.as_view(), name='importNanoporeData'),
     url(r'^createNanoporeSequencingFiles/(?P<prj_pk>[0-9]+)/$', CreateNanoporeSequencingFiles.as_view(), name='createNanoporeSequencingFiles'),
     
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 

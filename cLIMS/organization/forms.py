@@ -185,11 +185,6 @@ class ExportDistillerForm(forms.Form):
         self.empty_permitted = False
         
 ExportDistillerFormSet = formset_factory(ExportDistillerForm, extra=1)
-
-class ImportNanoporeDataForm(forms.Form):
-    use_required_attribute = False
-    excel_file=forms.FileField(help_text="Upload the excel sheet in correct format here")
-
     
 
 

@@ -74,10 +74,8 @@ function makeReq() {
 				<button type="button" id="autoPop" class="btn btn-link pull-right">Auto populate fields with in situ Hi-C details</button><br/><br/>
 				{% endif %}
 				{% if form_class == "Import Sequencing Files" %}
+				<p style="color:red"> Note: Make sure the upload has only one sequencing run.</p>
 				<a type="button" class="btn btn-warning pull-right" href="{% url 'downloadFile' %}">Download sample csv file</a>
-				{% endif %}
-				{% if form_class == "Import Nanopore Data" %}
-				<a type="button" class="btn btn-warning pull-right" href="{% url 'downloadFileNanopore' %}">Download sample csv file</a>
 				{% endif %}
 				{% if jsonObj %}
 					  	<input type="text" class ="hidden" id = "jso" value="{{jsonObj}}">

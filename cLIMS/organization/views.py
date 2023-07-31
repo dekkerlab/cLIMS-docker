@@ -35,7 +35,6 @@ from django.utils.decorators import method_decorator
 import organization
 from django.contrib.auth.models import Permission
 from organization.importSeqFiles import *
-from organization.importNanoporeData import *
 import ast
 from django.core.exceptions import ObjectDoesNotExist
 from tools.distillerTools.prepare_project_file import exportYML 
@@ -1821,22 +1820,23 @@ class ImportSequencingFiles(View):
 @class_login_required        
 class CreateSequencingFiles(View):
     def post(self,request,prj_pk):
+        print("In seq")
         runDict=request.POST.get('runDict')
         orderList=request.POST.get('orderList')
         orderListb=ast.literal_eval(orderList)
-        
         exNameIndx=runIndx=md5sumIndx=sha256sumIndx=None
         
-        if("Experiment" in orderListb):
-            exNameIndx=orderListb.index("Experiment")
-        if("Run" in orderListb):
-            runIndx=orderListb.index("Run")
+        if("Experiment Name" in orderListb):
+            exNameIndx=orderListb.index("Experiment Name")
+        if("Sequencing Run Name" in orderListb):
+            runIndx=orderListb.index("Sequencing Run Name")
         if("md5sum" in orderListb):
             md5sumIndx=orderListb.index("md5sum")
         if("sha256sum" in orderListb):
             sha256sumIndx=orderListb.index("sha256sum")
         
         c=ast.literal_eval(runDict)
+        print("Rundict View:",c)
         notExist=[]
         for keys, values in c:
             exp=None
@@ -1912,17 +1912,6 @@ class CreateSequencingFiles(View):
 @login_required 
 def downloadFile(request):
     path= ROOTFOLDER+'/organization/static/siteWide/importSeqFiles.csv'
-    file_path = os.path.join(settings.MEDIA_ROOT, path)
-    if os.path.exists(file_path):
-        with open(file_path, 'rb') as fh:
-            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
-            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
-            return response
-    raise Http404
-
-@login_required 
-def downloadFileNanopore(request):
-    path= ROOTFOLDER+'/organization/static/siteWide/NanoporeSeqFiles.csv'
     file_path = os.path.join(settings.MEDIA_ROOT, path)
     if os.path.exists(file_path):
         with open(file_path, 'rb') as fh:
@@ -2095,35 +2084,11 @@ class ExportDistiller(View):
                 form.fields["experiments"].queryset = Experiment.objects.filter(project_id=prj_pk)
             return render(request, self.template_name,{'formset':formset, 'form_class':"Export Distiller project.yml"})
 
-@class_login_required        
-class ImportNanoporeData(View): 
-    template_name = 'customForm.html'
-    error_page = 'error.html'
-    form_class = ImportNanoporeDataForm
-    
-    def get(self,request,prj_pk):
-        form = self.form_class()
-        return render(request, self.template_name,{'form':form, 'form_class':"Import Nanopore Data"})
-    
-    def post(self,request,prj_pk):
-        form = self.form_class(request.POST, request.FILES)
-        if form.is_valid():
-            request, template_name, context = importNanoporeData(request,prj_pk)
-            return render(request,template_name, context)
-        else:
-            return render(request, self.template_name,{'form':form, 'form_class':"Import Nanopore Data"})
-    
-    @method_decorator(view_only)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request,  *args, **kwargs)
-    
-    @method_decorator(require_permission)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request,  *args, **kwargs)
 
 @class_login_required        
 class CreateNanoporeSequencingFiles(View):
     def post(self,request,prj_pk):
+        print("In nano")
         runDict=request.POST.get('runDict')
         orderList=request.POST.get('orderList')
         orderListb=ast.literal_eval(orderList)
@@ -2133,10 +2098,10 @@ class CreateNanoporeSequencingFiles(View):
         
         exNameIndx=runIndx=md5sumIndx=sha256sumIndx=ftypeIndx=bpathIndx=None
         
-        if("Experiment" in orderListb):
-            exNameIndx=orderListb.index("Experiment")
-        if("Run" in orderListb):
-            runIndx=orderListb.index("Run")
+        if("Experiment Name" in orderListb):
+            exNameIndx=orderListb.index("Experiment Name")
+        if("Sequencing Run Name" in orderListb):
+            runIndx=orderListb.index("Sequencing Run Name")
         if("md5sum" in orderListb):
             md5sumIndx=orderListb.index("md5sum")
         if("sha256sum" in orderListb):
