@@ -11,78 +11,79 @@ def importSeqFiles(request,prj_pk):
     template_name = 'importFiles.html'
     excel_file = request.FILES['excel_file']
     excel_file_content=excel_file.read().decode("utf-8")
+    #Experiment Name,Sequencing Run Name,File Path,Type,md5sum,sha256sum,BackupPath
     lines = excel_file_content.rstrip().split("\n")
     project=Project.objects.get(pk=prj_pk)
     exsisting_files=SeqencingFile.objects.filter(project=project).values_list('sequencingFile_mainPath',flat=True)
     runDict=OrderedDict()
     dupDict=OrderedDict()
-    orderList=[]
+    orderList=["Experiment Name","Sequencing Run Name","md5sum","sha256sum","BackupPath"]
+    nano=["Experiment Name","Sequencing Run Name","Type","md5sum","sha256sum","BackupPath"]
     context = {}
-    count=1
-    for line in lines:
+    rn=lines[1].split(',')[1]
+    platform=SequencingRun.objects.get(run_name=rn).run_sequencing_instrument.choice_name
+    print(platform)
+    md5sum=sha256=ftype=bpath=False
+    for line in lines[1:]:
         line=line.rstrip("\r")
         v=line.split(",")
-        if(count==1):
-            exName=seqRun=filePath=md5sum=sha256=False
-            runName=expName=path=""
-
-            if("Experiment Name" in v):
-                exName=True
-                exNameIndx=v.index("Experiment Name")
-                orderList.append("Experiment")
-            if("Sequencing Run Name" in v):
-                seqRun=True
-                seqRunIndx=v.index("Sequencing Run Name")
-                orderList.append("Run")
-            if("File Path" in v):
-                filePath=True
-                filePathIndx=v.index("File Path")
-            if("md5sum" in v):
-                md5sum=True
-                md5sumIndx=v.index("md5sum")
-                orderList.append("md5sum")
-            if("sha256sum" in v):
-                sha256=True
-                sha256Indx=v.index("sha256sum")
-                orderList.append("sha256sum")
+        runName=expName=path=""
+        md5Sum=sha256sum=BackupPath=""
+        if(v[0]!=""):
+            expName=v[0]
+        if(v[1]!=""):
+            runName=v[1]
+        if(v[2]!=""):
+            path=v[2]
+        
+        if(expName!= "" and path!= "" and runName!=""):
+            runDict[path]=[expName,runName]
         else:
-            if(seqRun==True and v[seqRunIndx]!=""):
-                runName=v[seqRunIndx]
-            if(exName==True and v[exNameIndx]!=""):
-                expName=v[exNameIndx]
-            if(filePath==True and v[filePathIndx]!=""):
-                path=v[filePathIndx]
-            
-            if(expName!= "" and path!= ""):
-                runDict[v[filePathIndx]]=[expName,runName]
-            
-            else:
-                messages.error(request,"something is not correct with your input file.")
+            messages.error(request,"something is not correct with your input file; check Experiment Name, Run Name and FilePath")
+            runDict.clear()
+            dupDict.clear()
+            break
+        
+        if(platform=="Nanopore"):
+            print("In Nanopore condition")
+            ftype=True
+            template_name='importNanopore.html'
+            orderList=nano
+            if(v[3]==""):
+                messages.error(request,"Missing Entry in Type column.")
+                runDict.clear()
+                dupDict.clear()
                 break
-            
-            if(md5sum==True and v[md5sumIndx]!=""):
-                md5Sum=v[md5sumIndx]
-                runDict[v[filePathIndx]].append(md5Sum)
-                context['md5sum']=True
             else:
-                context['md5sum']=False
-                
-                
-            if(sha256==True and v[sha256Indx]!=""):
-                sha256sum=v[sha256Indx]
-                runDict[v[filePathIndx]].append(sha256sum)
-                context['sha256sum']=True
-            else:
-                context['sha256sum']=False
+                filetype=v[3]
+                runDict[path].append(filetype) 
+
+
+        if(v[4]!=""):
+            md5Sum=v[4]
+            md5sum=True
+        runDict[path].append(md5Sum)           
+        if(v[5]!=""):
+            sha256sum=v[5]
+            sha256=True 
+        runDict[path].append(sha256sum)  
+        if(v[6]!=""):
+            BackupPath=v[6]
+            bpath=True
+        runDict[path].append(BackupPath)
             
-            if(path in exsisting_files):
-               dupDict[path]=runDict[path]
-               del runDict[path]
-        count+=1
+        if(path in exsisting_files):
+           dupDict[path]=runDict[path]
+           del runDict[path]
     
     if " " in runDict:
         del runDict[" "]
     
+    context['md5sum']=md5sum
+    context['sha256sum']=sha256
+    context['BackupPath']=bpath
+    context['ftype']=ftype
+
     runDictSorted=sorted(runDict.items())
     dupDictSorted=sorted(dupDict.items())
     context['runDict'] = runDictSorted

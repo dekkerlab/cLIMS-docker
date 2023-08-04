@@ -69,6 +69,7 @@ class SeqencingFile(models.Model):
     dcic_alias = models.CharField(max_length=500, null=False, default="", unique=True, db_index=True, help_text="Provide an alias name for the object for DCIC submission.")
     update_dcic = models.BooleanField(default=False, help_text="This object needs to be updated at DCIC.")
     contributing_labs = models.ManyToManyField('organization.ContributingLabs', blank=True, help_text="Contributing labs for this File.")
+    sequencingFile_metadata = models.TextField( null=True, blank=True, help_text="Notes for the project.")
     def __str__(self):
         return self.sequencingFile_name
 

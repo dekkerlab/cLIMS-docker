@@ -132,5 +132,6 @@ urlpatterns = [
     url(r'^downloadFile/$', views.downloadFile, name='downloadFile'),
     url(r'^moveExperiments/(?P<prj_pk>[0-9]+)/$', MoveExperiments.as_view(), name='moveExperiments'),
     url(r'^exportDistiller/(?P<prj_pk>[0-9]+)/$', ExportDistiller.as_view(), name='exportDistiller'),
+    url(r'^createNanoporeSequencingFiles/(?P<prj_pk>[0-9]+)/$', CreateNanoporeSequencingFiles.as_view(), name='createNanoporeSequencingFiles'),
     
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
