@@ -38,7 +38,7 @@ fi
 
 #COMPOSEFILE=development_docker-compose.yml
 
-DBFILE=$1.sql.txt
+DBFILE=$1.new.sql.txt
 
 if [ ! $2 ];
 then
