@@ -6,7 +6,7 @@ git clone https://github.com/dekkerlab/cLIMS-docker.git
 
 cd cLIMS-docker/Docker/
 
-docker-compose -f production_docker-compose.yml build
+docker compose -f production_docker-compose.yml build
 
 chmod 755 initialize.sh
 
@@ -14,5 +14,5 @@ chmod 755 initialize.sh
 
 ./initialize.sh 2017/11/14
 
-docker-compose -f production_docker-compose.yml up -d
+docker compose -f production_docker-compose.yml up -d
   
