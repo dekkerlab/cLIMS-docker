@@ -22,7 +22,7 @@ PRODUCTION_PORT=8080
 ## Make sure that certain environment
 ## variables exist
 if [ ! $DB_NAME  ] || [ ! $DB_USER ]|| \
-   [ ! $DB_PORT ] || [ ! $DB_PORT ];
+   [ ! $DB_HOST ] || [ ! $DB_PORT ];
 then
    echo Error: Could not find the DB_* envrionment variables
    exit 1
@@ -33,7 +33,7 @@ fi
 ## Make sure that postgres server is up
 ## and running
 
-while ! nc -w 1 -z db 5432;
+while ! nc -w 1 -z $DB_HOST $DB_PORT;
 do
    sleep 0.1;
 done;
